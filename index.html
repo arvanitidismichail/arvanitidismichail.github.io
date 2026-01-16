@@ -6,6 +6,7 @@
     <title>CV - Dr Michail Arvanitidis</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" type='text/css' href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
     
     <style>
         /* --- Modern Black & Blue Theme with Stars --- */
@@ -33,18 +34,27 @@
             max-width: 900px;
             margin: 40px auto;
             padding: 40px;
-            /* Transparency kept at 0.75 for mobile visibility */
-            background-color: rgba(22, 27, 34, 0.75); 
+            background-color: rgba(22, 27, 34, 0.75); /* Transparent for stars */
             border: 1px solid #30363d;
             border-radius: 15px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.7);
             backdrop-filter: blur(5px);
         }
 
-        /* --- Header & Profile Image --- */
+        /* --- Header Styling --- */
         header {
             text-align: center;
             margin-bottom: 50px;
+        }
+
+        /* University Logo Styling */
+        .uni-logo {
+            max-width: 200px; /* Adjust size as needed */
+            height: auto;
+            margin-bottom: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
         
         .profile-img {
@@ -53,20 +63,33 @@
             border-radius: 50%;
             border: 4px solid #58a6ff;
             object-fit: cover;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             box-shadow: 0 0 20px rgba(88, 166, 255, 0.4);
         }
 
         h1 {
             color: #58a6ff;
-            margin: 10px 0;
+            margin: 5px 0;
             font-size: 2.2em;
         }
 
         .credentials {
             color: #8b949e;
             font-size: 1.1em;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
+        }
+
+        .location-line {
+            color: #c9d1d9;
+            font-size: 1.0em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .location-line i {
+            color: #fa4549; /* Red pin color */
         }
 
         .bio-text {
@@ -80,12 +103,17 @@
         .social-links {
             margin-top: 15px;
             margin-bottom: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
         }
         .social-links a {
             color: #c9d1d9;
-            font-size: 1.5em;
-            margin: 0 12px;
+            font-size: 1.6em; /* Slightly larger for visibility */
             transition: color 0.3s ease, transform 0.2s;
+            display: flex;
+            align-items: center;
         }
         .social-links a:hover {
             color: #58a6ff;
@@ -110,7 +138,19 @@
             text-decoration: none;
         }
 
-        /* --- Timeline Design (Perfectly Centered Circles) --- */
+        /* --- Animation Class --- */
+        .animate-box {
+            opacity: 0; 
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        
+        .animate-box.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- Timeline Design --- */
         .section-title {
             color: #58a6ff;
             border-bottom: 2px solid #30363d;
@@ -130,27 +170,12 @@
         .timeline-item {
             position: relative;
             margin-bottom: 40px;
-            opacity: 0; 
-            transform: translateY(20px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-        
-        .timeline-item.visible {
-            opacity: 1;
-            transform: translateY(0);
         }
 
-        /* The Circle Dot */
         .timeline-item::before {
             content: '';
             position: absolute;
-            /* CALCULATION FOR PERFECT CENTERING:
-               - Padding-left is 30px.
-               - Border is 3px. Center of border is at approx 31.5px from content start.
-               - Dot is 20px wide (14px + 6px border).
-               - 31.5px + 10px (radius) = 41.5px
-            */
-            left: -41.5px; 
+            left: -41.5px; /* Perfectly Centered */
             top: 5px; 
             width: 14px;
             height: 14px;
@@ -231,12 +256,8 @@
         a { color: #58a6ff; text-decoration: none; }
         a:hover { text-decoration: underline; }
 
-        /* --- Mobile Optimization --- */
         @media (max-width: 768px) {
-            .container {
-                margin: 20px;
-                padding: 20px;
-            }
+            .container { margin: 20px; padding: 20px; }
             h1 { font-size: 1.8em; }
         }
 
@@ -247,11 +268,17 @@
     <canvas id="star-canvas"></canvas>
 
     <div class="container">
-        <header>
+        <header class="animate-box">
+            <img src="./uob.png" alt="University of Birmingham" class="uni-logo">
+
             <img src="./office-1.jpg" alt="Dr Michail Arvanitidis" class="profile-img">
             
             <h1>Dr Michail Arvanitidis</h1>
             <div class="credentials">PT, PhD, MSc, MMACP</div>
+            
+            <div class="location-line">
+                <i class="fas fa-map-marker-alt"></i> United Kingdom 🇬🇧
+            </div>
             
             <p class="bio-text">
                 My current research examines cervical adaptations in NASA astronauts following spaceflight, 
@@ -262,6 +289,7 @@
             <div class="social-links">
                 <a href="mailto:your.email@bham.ac.uk" title="Email"><i class="fas fa-envelope"></i></a>
                 <a href="https://www.linkedin.com/in/michail-arvanitidis-67848a130" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                <a href="https://www.researchgate.net/profile/Michail-Arvanitidis?ev=hdr_xprf" target="_blank" title="ResearchGate"><i class="ai ai-researchgate"></i></a>
                 <a href="https://scholar.google.com/citations?user=fHHpMb0AAAAJ&hl=en&oi=ao" target="_blank" title="Google Scholar"><i class="fas fa-graduation-cap"></i></a>
                 <a href="https://github.com/arvanitidismichail" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
             </div>
@@ -271,109 +299,117 @@
             </a>
         </header>
 
-        <h2 class="section-title">Technical Expertise</h2>
-        <div class="skills-container">
-            <span class="skill-tag"><i class="devicon-matlab-plain"></i>MATLAB</span>
-            <span class="skill-tag"><i class="devicon-r-plain"></i>R Programming</span>
-            <span class="skill-tag"><i class="fas fa-wave-square"></i>HDsEMG</span>
-            <span class="skill-tag"><i class="fas fa-chart-line"></i>Signal Processing</span>
-            <span class="skill-tag"><i class="fas fa-microscope"></i>Ultrasound Imaging</span>
-            <span class="skill-tag"><i class="fas fa-dumbbell"></i>Isokinetic Dynamometry</span>
-            <span class="skill-tag"><i class="fas fa-notes-medical"></i>Clinical Research</span>
-        </div>
-
-        <h2 class="section-title">Professional Experience</h2>
-        <div class="timeline">
-            
-            <div class="timeline-item">
-                <div class="job-title">Post-doctoral Research Fellow</div>
-                <span class="company-date">CPR Spine, University of Birmingham | Sep 2022 - Present</span>
-                <p>Leading research on cervical spine and muscle adaptation after spaceflight (Project: 'Cervical in Space'). Investigating relationship to herniation risk to support NASA astronaut health.</p>
+        <section class="animate-box">
+            <h2 class="section-title">Technical Expertise</h2>
+            <div class="skills-container">
+                <span class="skill-tag"><i class="devicon-matlab-plain"></i>MATLAB</span>
+                <span class="skill-tag"><i class="devicon-r-plain"></i>R Programming</span>
+                <span class="skill-tag"><i class="fas fa-wave-square"></i>HDsEMG</span>
+                <span class="skill-tag"><i class="fas fa-chart-line"></i>Signal Processing</span>
+                <span class="skill-tag"><i class="fas fa-microscope"></i>Ultrasound Imaging</span>
+                <span class="skill-tag"><i class="fas fa-dumbbell"></i>Isokinetic Dynamometry</span>
+                <span class="skill-tag"><i class="fas fa-notes-medical"></i>Clinical Research</span>
             </div>
+        </section>
 
-            <div class="timeline-item">
-                <div class="job-title">Pre-doctoral Fellow</div>
-                <span class="company-date">CPR Spine, University of Birmingham | Feb 2021 - Aug 2022</span>
-                <p>Conducted research on cervical spine adaptations. Supported by the Centre of Precision Rehabilitation for Spinal Pain.</p>
+        <section>
+            <h2 class="section-title animate-box">Professional Experience</h2>
+            <div class="timeline">
+                <div class="timeline-item animate-box">
+                    <div class="job-title">Post-doctoral Research Fellow</div>
+                    <span class="company-date">CPR Spine, University of Birmingham | Sep 2022 - Present</span>
+                    <p>Leading research on cervical spine and muscle adaptation after spaceflight (Project: 'Cervical in Space'). Investigating relationship to herniation risk to support NASA astronaut health.</p>
+                </div>
+
+                <div class="timeline-item animate-box">
+                    <div class="job-title">Pre-doctoral Fellow</div>
+                    <span class="company-date">CPR Spine, University of Birmingham | Feb 2021 - Aug 2022</span>
+                    <p>Conducted research on cervical spine adaptations. Supported by the Centre of Precision Rehabilitation for Spinal Pain.</p>
+                </div>
+
+                <div class="timeline-item animate-box">
+                    <div class="job-title">Specialist Musculoskeletal Physiotherapist</div>
+                    <span class="company-date">The Birmingham Back Pain Clinic | Jun 2018 - Present</span>
+                    <p>Specialist clinical practice managing complex musculoskeletal spinal conditions.</p>
+                </div>
             </div>
+        </section>
 
-            <div class="timeline-item">
-                <div class="job-title">Specialist Musculoskeletal Physiotherapist</div>
-                <span class="company-date">The Birmingham Back Pain Clinic | Jun 2018 - Present</span>
-                <p>Specialist clinical practice managing complex musculoskeletal spinal conditions.</p>
+        <section>
+            <h2 class="section-title animate-box">Education</h2>
+            <div class="timeline">
+                <div class="timeline-item animate-box">
+                    <div class="job-title">Doctor of Philosophy (PhD)</div>
+                    <span class="company-date">University of Birmingham | 2019 - 2024</span>
+                    <p>Sport, Exercise and Rehabilitation Sciences. Thesis on control of trunk muscle force in low back pain using High-Density Surface Electromyography.</p>
+                </div>
+
+                <div class="timeline-item animate-box">
+                    <div class="job-title">MSc Advanced Manipulative Physiotherapy</div>
+                    <span class="company-date">University of Birmingham | 2017 - 2019</span>
+                </div>
+
+                <div class="timeline-item animate-box">
+                    <div class="job-title">BSc Physiotherapy (First Class Honours)</div>
+                    <span class="company-date">University of Thessaly | 2011 - 2016</span>
+                </div>
             </div>
+        </section>
 
-        </div>
+        <section class="animate-box">
+            <h2 class="section-title">Recent Publications</h2>
+            <div>
+                <div class="publication-item">
+                    <a href="https://doi.org/10.33393/aop.2025.3476" target="_blank" class="pub-link">
+                        Validation of a Novel device for Assessing Neck Muscle Strength <i class="fas fa-external-link-alt"></i>
+                    </a>
+                    <br>
+                    <strong>Arvanitidis M</strong>, Mak HHK, Martinez-Valdes E, Barbero M, Falla D. (2025). 
+                    <br><em>Arch Physiother. 15:148-157.</em>
+                </div>
 
-        <h2 class="section-title">Education</h2>
-        <div class="timeline">
-            <div class="timeline-item">
-                <div class="job-title">Doctor of Philosophy (PhD)</div>
-                <span class="company-date">University of Birmingham | 2019 - 2024</span>
-                <p>Sport, Exercise and Rehabilitation Sciences. Thesis on control of trunk muscle force in low back pain using High-Density Surface Electromyography.</p>
+                <div class="publication-item">
+                    <a href="https://doi.org/10.1038/s41598-024-69050-x" target="_blank" class="pub-link">
+                        Eccentric exercise-induced delayed onset trunk muscle soreness alters high-density surface EMG-torque relationships and lumbar kinematics <i class="fas fa-external-link-alt"></i>
+                    </a>
+                    <br>
+                    <strong>Arvanitidis M</strong>, Jiménez-Grande D, Haouidji-Javaux N, Falla D, Martinez-Valdes E. (2024). 
+                    <br><em>Scientific Reports. 14(1):18589.</em>
+                </div>
+
+                <div class="publication-item">
+                    <a href="https://doi.org/10.1249/MSS.0000000000003314" target="_blank" class="pub-link">
+                        Low Back Pain-Induced Dynamic Trunk Muscle Control Impairments Are Associated with Altered Spatial EMG-Torque Relationships <i class="fas fa-external-link-alt"></i>
+                    </a>
+                    <br>
+                    <strong>Arvanitidis M</strong>, Jiménez-Grande D, Haouidji-Javaux N, Falla D, Martinez-Valdes E. (2024). 
+                    <br><em>Med Sci Sports Exerc. 56(2):193-208.</em>
+                </div>
+
+                <div class="publication-item">
+                    <a href="https://doi.org/10.1136/bmjopen-2024-098172" target="_blank" class="pub-link">
+                        Effects of microgravity on neuromuscular control of the spine: a protocol for a systematic review and meta-analysis <i class="fas fa-external-link-alt"></i>
+                    </a>
+                    <br>
+                    Devecchi V, <strong>Arvanitidis M</strong>, Falla D. (2025). 
+                    <br><em>BMJ Open. 15(6):e098172.</em>
+                </div>
             </div>
+        </section>
 
-            <div class="timeline-item">
-                <div class="job-title">MSc Advanced Manipulative Physiotherapy</div>
-                <span class="company-date">University of Birmingham | 2017 - 2019</span>
+        <section class="animate-box">
+            <h2 class="section-title">Hobbies</h2>
+            <div class="skills-container">
+                <span class="skill-tag"><i class="fas fa-dumbbell"></i>Gym</span>
+                <span class="skill-tag"><i class="fas fa-bicycle"></i>Cycling</span>
+                <span class="skill-tag"><i class="fas fa-music"></i>Music</span>
             </div>
-
-            <div class="timeline-item">
-                <div class="job-title">BSc Physiotherapy (First Class Honours)</div>
-                <span class="company-date">University of Thessaly | 2011 - 2016</span>
-            </div>
-        </div>
-
-        <h2 class="section-title">Recent Publications</h2>
-        <div>
-            <div class="publication-item">
-                <a href="https://doi.org/10.33393/aop.2025.3476" target="_blank" class="pub-link">
-                    Validation of a Novel device for Assessing Neck Muscle Strength <i class="fas fa-external-link-alt"></i>
-                </a>
-                <br>
-                <strong>Arvanitidis M</strong>, Mak HHK, Martinez-Valdes E, Barbero M, Falla D. (2025). 
-                <br><em>Arch Physiother. 15:148-157.</em>
-            </div>
-
-            <div class="publication-item">
-                <a href="https://doi.org/10.1038/s41598-024-69050-x" target="_blank" class="pub-link">
-                    Eccentric exercise-induced delayed onset trunk muscle soreness alters high-density surface EMG-torque relationships and lumbar kinematics <i class="fas fa-external-link-alt"></i>
-                </a>
-                <br>
-                <strong>Arvanitidis M</strong>, Jiménez-Grande D, Haouidji-Javaux N, Falla D, Martinez-Valdes E. (2024). 
-                <br><em>Scientific Reports. 14(1):18589.</em>
-            </div>
-
-            <div class="publication-item">
-                <a href="https://doi.org/10.1249/MSS.0000000000003314" target="_blank" class="pub-link">
-                    Low Back Pain-Induced Dynamic Trunk Muscle Control Impairments Are Associated with Altered Spatial EMG-Torque Relationships <i class="fas fa-external-link-alt"></i>
-                </a>
-                <br>
-                <strong>Arvanitidis M</strong>, Jiménez-Grande D, Haouidji-Javaux N, Falla D, Martinez-Valdes E. (2024). 
-                <br><em>Med Sci Sports Exerc. 56(2):193-208.</em>
-            </div>
-
-            <div class="publication-item">
-                <a href="https://doi.org/10.1136/bmjopen-2024-098172" target="_blank" class="pub-link">
-                    Effects of microgravity on neuromuscular control of the spine: a protocol for a systematic review and meta-analysis <i class="fas fa-external-link-alt"></i>
-                </a>
-                <br>
-                Devecchi V, <strong>Arvanitidis M</strong>, Falla D. (2025). 
-                <br><em>BMJ Open. 15(6):e098172.</em>
-            </div>
-        </div>
-
-        <h2 class="section-title">Hobbies</h2>
-        <div class="skills-container">
-            <span class="skill-tag"><i class="fas fa-dumbbell"></i>Gym</span>
-            <span class="skill-tag"><i class="fas fa-bicycle"></i>Cycling</span>
-            <span class="skill-tag"><i class="fas fa-music"></i>Music</span>
-        </div>
+        </section>
 
     </div>
 
     <script>
-        // --- STAR ANIMATION SCRIPT ---
+        // --- STAR ANIMATION ---
         const canvas = document.getElementById('star-canvas');
         const ctx = canvas.getContext('2d');
         
@@ -392,7 +428,8 @@
                     x: Math.random() * width,
                     y: Math.random() * height,
                     radius: Math.random() * 1.5,
-                    speed: Math.random() * 0.2 + 0.05,
+                    // FASTER SPEED SETTINGS HERE:
+                    speed: Math.random() * 0.6 + 0.3, // Increased from 0.2 to 0.6+
                     opacity: Math.random()
                 });
             }
@@ -400,14 +437,12 @@
 
         function animate() {
             ctx.clearRect(0, 0, width, height);
-            
             stars.forEach(star => {
                 ctx.beginPath();
                 ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
                 ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
                 ctx.fill();
                 star.y -= star.speed; 
-                
                 if (star.y < 0) {
                     star.y = height;
                     star.x = Math.random() * width;
@@ -431,7 +466,7 @@
             });
         }, observerOptions);
 
-        document.querySelectorAll('.timeline-item').forEach(item => {
+        document.querySelectorAll('.animate-box').forEach(item => {
             observer.observe(item);
         });
     </script>
