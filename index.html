@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CV - Dr Michail Arvanitidis</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" type='text/css' href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
+    
     <style>
         /* --- Modern Black & Blue Theme with Stars --- */
         body {
@@ -31,7 +33,7 @@
             max-width: 900px;
             margin: 40px auto;
             padding: 40px;
-            background-color: rgba(22, 27, 34, 0.90);
+            background-color: rgba(22, 27, 34, 0.85); /* Slightly more transparent for stars */
             border: 1px solid #30363d;
             border-radius: 15px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.7);
@@ -81,12 +83,12 @@
         .social-links a {
             color: #c9d1d9;
             font-size: 1.5em;
-            margin: 0 10px;
+            margin: 0 12px;
             transition: color 0.3s ease, transform 0.2s;
         }
         .social-links a:hover {
             color: #58a6ff;
-            transform: scale(1.1);
+            transform: scale(1.15);
         }
 
         .btn-download {
@@ -107,7 +109,7 @@
             text-decoration: none;
         }
 
-        /* --- Timeline Design --- */
+        /* --- Timeline Design (Fixed Alignment) --- */
         .section-title {
             color: #58a6ff;
             border-bottom: 2px solid #30363d;
@@ -121,7 +123,7 @@
         .timeline {
             position: relative;
             padding-left: 30px;
-            border-left: 3px solid #30363d;
+            border-left: 3px solid #30363d; /* The Line */
         }
 
         .timeline-item {
@@ -137,17 +139,25 @@
             transform: translateY(0);
         }
 
+        /* The Circle Dot */
         .timeline-item::before {
             content: '';
             position: absolute;
-            left: -38px;
-            top: 5px;
+            /* ALIGNMENT CALCULATION: 
+               Padding-left is 30px. Line width is 3px. 
+               Center of line is at -28.5px relative to content.
+               Dot is 20px wide (14+6). Center of dot needs to be at -28.5px.
+               Left edge = -38.5px.
+            */
+            left: -38.5px; 
+            top: 5px; /* Adjusts vertical alignment with text */
             width: 14px;
             height: 14px;
             border-radius: 50%;
             background-color: #0d1117;
             border: 3px solid #58a6ff;
             box-shadow: 0 0 8px rgba(88, 166, 255, 0.5);
+            z-index: 1;
         }
 
         .job-title {
@@ -164,26 +174,33 @@
             display: block;
         }
 
-        /* --- Skills Tags --- */
+        /* --- Skills Tags with Logos --- */
         .skills-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
         }
         .skill-tag {
+            display: flex;
+            align-items: center;
             background-color: #161b22;
             border: 1px solid #30363d;
             color: #79c0ff;
-            padding: 8px 15px;
+            padding: 8px 16px;
             border-radius: 20px;
-            font-size: 0.9em;
+            font-size: 0.95em;
             transition: all 0.2s;
+        }
+        .skill-tag i {
+            margin-right: 8px;
+            font-size: 1.1em;
         }
         .skill-tag:hover {
             background-color: #1f6feb;
             color: white;
             border-color: #58a6ff;
             cursor: default;
+            box-shadow: 0 0 10px rgba(31, 111, 235, 0.3);
         }
 
         /* --- Link Styling --- */
@@ -194,7 +211,6 @@
         }
         .publication-item:last-child { border-bottom: none; }
         
-        /* Specific style for publication links */
         .pub-link {
             color: #58a6ff;
             text-decoration: none;
@@ -240,21 +256,21 @@
                 <a href="https://github.com/arvanitidismichail" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
             </div>
 
-            <a href="./CV.pdf" class="btn-download" target="_blank">
+            <a href="./Part%20B2_MSCA%20PF_Arvanitidis.pdf" class="btn-download" target="_blank">
                 <i class="fas fa-file-pdf"></i> Download Full CV
             </a>
         </header>
 
         <h2 class="section-title">Technical Expertise</h2>
         <div class="skills-container">
-            <span class="skill-tag">MATLAB</span>
-            <span class="skill-tag">R Programming</span>
-            <span class="skill-tag">HDsEMG</span>
-            <span class="skill-tag">Isokinetic Dynamometry</span>
-            <span class="skill-tag">Ultrasound Imaging</span>
-            <span class="skill-tag">Signal Processing</span>
-            <span class="skill-tag">Clinical Research</span>
-            <span class="skill-tag">Neuromuscular Control</span>
+            <span class="skill-tag"><i class="devicon-matlab-plain"></i>MATLAB</span>
+            <span class="skill-tag"><i class="devicon-r-plain"></i>R Programming</span>
+            
+            <span class="skill-tag"><i class="fas fa-wave-square"></i>HDsEMG</span>
+            <span class="skill-tag"><i class="fas fa-chart-line"></i>Signal Processing</span>
+            <span class="skill-tag"><i class="fas fa-microscope"></i>Ultrasound Imaging</span>
+            <span class="skill-tag"><i class="fas fa-dumbbell"></i>Isokinetic Dynamometry</span>
+            <span class="skill-tag"><i class="fas fa-notes-medical"></i>Clinical Research</span>
         </div>
 
         <h2 class="section-title">Professional Experience</h2>
@@ -346,7 +362,8 @@
         const ctx = canvas.getContext('2d');
         
         let width, height, stars;
-        const numStars = 250;
+        // Increased stars significantly
+        const numStars = 800; 
 
         function init() {
             width = window.innerWidth;
@@ -360,7 +377,7 @@
                     x: Math.random() * width,
                     y: Math.random() * height,
                     radius: Math.random() * 1.5,
-                    speed: Math.random() * 0.4 + 0.1, 
+                    speed: Math.random() * 0.2 + 0.05, // Slower for background depth
                     opacity: Math.random()
                 });
             }
@@ -375,6 +392,8 @@
                 ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
                 ctx.fill();
                 star.y -= star.speed; 
+                
+                // Infinite loop for stars
                 if (star.y < 0) {
                     star.y = height;
                     star.x = Math.random() * width;
@@ -388,7 +407,7 @@
         animate();
 
         // --- SCROLL ANIMATION FOR TIMELINE ---
-        const observerOptions = { threshold: 0.2 };
+        const observerOptions = { threshold: 0.1 };
         
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
