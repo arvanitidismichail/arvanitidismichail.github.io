@@ -33,11 +33,12 @@
             max-width: 900px;
             margin: 40px auto;
             padding: 40px;
-            background-color: rgba(22, 27, 34, 0.85); /* Slightly more transparent for stars */
+            /* UPDATED: Increased transparency (0.75) to see more stars */
+            background-color: rgba(22, 27, 34, 0.75); 
             border: 1px solid #30363d;
             border-radius: 15px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.7);
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(5px); /* Reduced blur slightly */
         }
 
         /* --- Header & Profile Image --- */
@@ -109,7 +110,7 @@
             text-decoration: none;
         }
 
-        /* --- Timeline Design (Fixed Alignment) --- */
+        /* --- Timeline Design --- */
         .section-title {
             color: #58a6ff;
             border-bottom: 2px solid #30363d;
@@ -123,7 +124,7 @@
         .timeline {
             position: relative;
             padding-left: 30px;
-            border-left: 3px solid #30363d; /* The Line */
+            border-left: 3px solid #30363d;
         }
 
         .timeline-item {
@@ -139,18 +140,11 @@
             transform: translateY(0);
         }
 
-        /* The Circle Dot */
         .timeline-item::before {
             content: '';
             position: absolute;
-            /* ALIGNMENT CALCULATION: 
-               Padding-left is 30px. Line width is 3px. 
-               Center of line is at -28.5px relative to content.
-               Dot is 20px wide (14+6). Center of dot needs to be at -28.5px.
-               Left edge = -38.5px.
-            */
             left: -38.5px; 
-            top: 5px; /* Adjusts vertical alignment with text */
+            top: 5px; 
             width: 14px;
             height: 14px;
             border-radius: 50%;
@@ -174,7 +168,7 @@
             display: block;
         }
 
-        /* --- Skills Tags with Logos --- */
+        /* --- Skills & Hobbies Tags --- */
         .skills-container {
             display: flex;
             flex-wrap: wrap;
@@ -230,6 +224,15 @@
         a { color: #58a6ff; text-decoration: none; }
         a:hover { text-decoration: underline; }
 
+        /* --- Mobile Optimization (More Stars Visible) --- */
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px; /* More margin on sides so stars are visible */
+                padding: 20px;
+            }
+            h1 { font-size: 1.8em; }
+        }
+
     </style>
 </head>
 <body>
@@ -244,14 +247,14 @@
             <div class="credentials">PT, PhD, MSc, MMACP</div>
             
             <p class="bio-text">
-                Postdoctoral Research Fellow at the Centre of Precision Rehabilitation for Spinal Pain (CPR Spine), 
-                School of Sport, Exercise and Rehabilitation Sciences, University of Birmingham, United Kingdom. 
-                My current research examines cervical adaptations in NASA astronauts following spaceflight.
+                My current research examines cervical adaptations in NASA astronauts following spaceflight, 
+                aiming to enhance astronaut health for future missions. Additionally, my main interests 
+                involve studying motor adaptations in pain-affected or vulnerable populations.
             </p>
 
             <div class="social-links">
-                <a href="mailto:m.arvanitidis@bham.ac.uk" title="Email"><i class="fas fa-envelope"></i></a>
-                <a href="https://www.linkedin.com/in/michail-arvanitidis" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                <a href="mailto:your.email@bham.ac.uk" title="Email"><i class="fas fa-envelope"></i></a>
+                <a href="https://www.linkedin.com/in/michail-arvanitidis-67848a130" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
                 <a href="https://scholar.google.com/citations?user=fHHpMb0AAAAJ&hl=en&oi=ao" target="_blank" title="Google Scholar"><i class="fas fa-graduation-cap"></i></a>
                 <a href="https://github.com/arvanitidismichail" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
             </div>
@@ -265,7 +268,6 @@
         <div class="skills-container">
             <span class="skill-tag"><i class="devicon-matlab-plain"></i>MATLAB</span>
             <span class="skill-tag"><i class="devicon-r-plain"></i>R Programming</span>
-            
             <span class="skill-tag"><i class="fas fa-wave-square"></i>HDsEMG</span>
             <span class="skill-tag"><i class="fas fa-chart-line"></i>Signal Processing</span>
             <span class="skill-tag"><i class="fas fa-microscope"></i>Ultrasound Imaging</span>
@@ -315,7 +317,7 @@
             </div>
         </div>
 
-        <h2 class="section-title">Selected Publications (2024-2025)</h2>
+        <h2 class="section-title">Recent Publications</h2>
         <div>
             <div class="publication-item">
                 <a href="https://doi.org/10.33393/aop.2025.3476" target="_blank" class="pub-link">
@@ -354,6 +356,13 @@
             </div>
         </div>
 
+        <h2 class="section-title">Hobbies</h2>
+        <div class="skills-container">
+            <span class="skill-tag"><i class="fas fa-dumbbell"></i>Gym</span>
+            <span class="skill-tag"><i class="fas fa-bicycle"></i>Cycling</span>
+            <span class="skill-tag"><i class="fas fa-music"></i>Music</span>
+        </div>
+
     </div>
 
     <script>
@@ -362,7 +371,6 @@
         const ctx = canvas.getContext('2d');
         
         let width, height, stars;
-        // Increased stars significantly
         const numStars = 800; 
 
         function init() {
@@ -377,7 +385,7 @@
                     x: Math.random() * width,
                     y: Math.random() * height,
                     radius: Math.random() * 1.5,
-                    speed: Math.random() * 0.2 + 0.05, // Slower for background depth
+                    speed: Math.random() * 0.2 + 0.05,
                     opacity: Math.random()
                 });
             }
@@ -393,7 +401,6 @@
                 ctx.fill();
                 star.y -= star.speed; 
                 
-                // Infinite loop for stars
                 if (star.y < 0) {
                     star.y = height;
                     star.x = Math.random() * width;
@@ -406,7 +413,7 @@
         init();
         animate();
 
-        // --- SCROLL ANIMATION FOR TIMELINE ---
+        // --- SCROLL ANIMATION ---
         const observerOptions = { threshold: 0.1 };
         
         const observer = new IntersectionObserver((entries) => {
