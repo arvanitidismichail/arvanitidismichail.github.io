@@ -33,12 +33,12 @@
             max-width: 900px;
             margin: 40px auto;
             padding: 40px;
-            /* UPDATED: Increased transparency (0.75) to see more stars */
+            /* Transparency kept at 0.75 for mobile visibility */
             background-color: rgba(22, 27, 34, 0.75); 
             border: 1px solid #30363d;
             border-radius: 15px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.7);
-            backdrop-filter: blur(5px); /* Reduced blur slightly */
+            backdrop-filter: blur(5px);
         }
 
         /* --- Header & Profile Image --- */
@@ -110,7 +110,7 @@
             text-decoration: none;
         }
 
-        /* --- Timeline Design --- */
+        /* --- Timeline Design (Perfectly Centered Circles) --- */
         .section-title {
             color: #58a6ff;
             border-bottom: 2px solid #30363d;
@@ -140,10 +140,17 @@
             transform: translateY(0);
         }
 
+        /* The Circle Dot */
         .timeline-item::before {
             content: '';
             position: absolute;
-            left: -38.5px; 
+            /* CALCULATION FOR PERFECT CENTERING:
+               - Padding-left is 30px.
+               - Border is 3px. Center of border is at approx 31.5px from content start.
+               - Dot is 20px wide (14px + 6px border).
+               - 31.5px + 10px (radius) = 41.5px
+            */
+            left: -41.5px; 
             top: 5px; 
             width: 14px;
             height: 14px;
@@ -224,10 +231,10 @@
         a { color: #58a6ff; text-decoration: none; }
         a:hover { text-decoration: underline; }
 
-        /* --- Mobile Optimization (More Stars Visible) --- */
+        /* --- Mobile Optimization --- */
         @media (max-width: 768px) {
             .container {
-                margin: 20px; /* More margin on sides so stars are visible */
+                margin: 20px;
                 padding: 20px;
             }
             h1 { font-size: 1.8em; }
