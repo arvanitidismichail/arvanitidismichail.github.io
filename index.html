@@ -3,37 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My CV</title>
+    <title>CV - Dr Michail Arvanitidis</title>
     <style>
-        body { font-family: sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
-        h1 { border-bottom: 2px solid #333; }
-        h2 { color: #555; }
-        .job { margin-bottom: 20px; }
+        /* Modern Black & Blue Theme */
+        body {
+            background-color: #0d1117; /* Very dark blue/black */
+            color: #c9d1d9; /* Soft white text */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #161b22; /* Slightly lighter container */
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+        h1 {
+            color: #58a6ff; /* Bright Blue */
+            margin-bottom: 5px;
+            border-bottom: 2px solid #58a6ff;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #58a6ff;
+            margin-top: 30px;
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 5px;
+        }
+        .contact-info {
+            color: #8b949e;
+            font-size: 0.9em;
+            margin-bottom: 30px;
+        }
+        .job, .education-item {
+            margin-bottom: 20px;
+            padding-left: 15px;
+            border-left: 3px solid #1f6feb; /* Darker blue accent */
+        }
+        .job-title {
+            font-weight: bold;
+            color: #f0f6fc;
+            font-size: 1.1em;
+        }
+        .company-date {
+            font-style: italic;
+            color: #8b949e;
+            font-size: 0.9em;
+        }
+        a { color: #58a6ff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Your Name</h1>
-        <p>Email: you@example.com | Location: City, Country</p>
-    </header>
+    <div class="container">
+        <header>
+            <h1>Dr Michail Arvanitidis</h1>
+            <div class="contact-info">
+                <p>Location: City, Country | Email: your.email@example.com</p>
+                <p><a href="#">LinkedIn Profile</a> | <a href="#">GitHub Profile</a></p>
+            </div>
+        </header>
 
-    <section>
-        <h2>Experience</h2>
-        <div class="job">
-            <h3>Job Title</h3>
-            <p><strong>Company Name</strong> | 2020 - Present</p>
-            <ul>
-                <li>Responsibility or achievement one.</li>
-                <li>Responsibility or achievement two.</li>
-            </ul>
-        </div>
-    </section>
+        <section>
+            <h2>Professional Profile</h2>
+            <p>Write a short summary about your professional background and key skills here.</p>
+        </section>
 
-    <section>
-        <h2>Education</h2>
-        <p><strong>Degree Name</strong> - University Name (2016 - 2020)</p>
-    </section>
+        <section>
+            <h2>Experience</h2>
+            
+            <div class="job">
+                <div class="job-title">Senior Position Title</div>
+                <div class="company-date">Company Name | 2022 - Present</div>
+                <ul>
+                    <li>Description of your achievement or responsibility.</li>
+                    <li>Description of your achievement or responsibility.</li>
+                </ul>
+            </div>
+
+            <div class="job">
+                <div class="job-title">Previous Position Title</div>
+                <div class="company-date">Previous Company | 2018 - 2022</div>
+                <ul>
+                    <li>Description of your achievement or responsibility.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>Education</h2>
+            <div class="education-item">
+                <div class="job-title">PhD in [Field of Study]</div>
+                <div class="company-date">University Name | Year</div>
+            </div>
+        </section>
+    </div>
 
 </body>
 </html>
