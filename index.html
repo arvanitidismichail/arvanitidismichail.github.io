@@ -3,17 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="CV of Dr Michail Arvanitidis, Postdoctoral Research Fellow at the University of Birmingham specializing in cervical spine adaptations in astronauts and musculoskeletal pain.">
-    <title>CV - Dr Michail Arvanitidis</title>
+    <meta name="description" content="CV of Dr Michail Arvanitidis, Postdoctoral Research Fellow at the University of Birmingham specialising in cervical spine adaptations in astronauts and musculoskeletal pain.">
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="profile">
+    <meta property="og:title" content="Dr Michail Arvanitidis — Postdoctoral Research Fellow">
+    <meta property="og:description" content="Postdoctoral Research Fellow at the University of Birmingham researching cervical spine adaptations in NASA astronauts and musculoskeletal pain.">
+    <meta property="og:image" content="./office-1.jpg">
+    <meta property="og:url" content="https://arvanitidismichail.github.io">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Dr Michail Arvanitidis — Postdoctoral Research Fellow">
+    <meta name="twitter:description" content="Postdoctoral Research Fellow at the University of Birmingham researching cervical spine adaptations in NASA astronauts and musculoskeletal pain.">
+
+    <title>CV — Dr Michail Arvanitidis</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" type='text/css' href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-    
+
     <style>
-        /* --- Modern Black & Blue Theme with Stars --- */
+        /* --- CSS Custom Properties --- */
+        :root {
+            --bg-primary:    #0d1117;
+            --bg-secondary:  #161b22;
+            --bg-card:       rgba(22, 27, 34, 0.85);
+            --accent:        #58a6ff;
+            --accent-hover:  #388bfd;
+            --accent-dark:   #1f6feb;
+            --text-primary:  #f0f6fc;
+            --text-secondary:#c9d1d9;
+            --text-muted:    #8b949e;
+            --border:        #30363d;
+            --danger:        #fa4549;
+            --nav-height:    56px;
+        }
+
+        /* --- Reset & Base --- */
+        *, *::before, *::after { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
         body {
-            background-color: #0d1117;
-            color: #c9d1d9;
+            background-color: var(--bg-primary);
+            color: var(--text-secondary);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             margin: 0;
@@ -21,67 +52,115 @@
             overflow-x: hidden;
         }
 
+        /* Skip-to-content for keyboard / screen-reader users */
+        .skip-to-content {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--accent);
+            color: var(--bg-primary);
+            padding: 8px 16px;
+            z-index: 200;
+            font-weight: bold;
+            text-decoration: none;
+            transition: top 0.2s;
+        }
+        .skip-to-content:focus { top: 0; }
+
         /* Star Background Canvas */
         #star-canvas {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             z-index: -1;
         }
 
+        /* --- Navigation Bar --- */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            height: var(--nav-height);
+            background-color: rgba(13, 17, 23, 0.92);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 4px;
+            list-style: none;
+            margin: 0; padding: 0;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            transition: color 0.2s, background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .nav-links a:hover {
+            color: var(--text-primary);
+            background-color: rgba(88, 166, 255, 0.1);
+            text-decoration: none;
+        }
+        .nav-links a.active {
+            color: var(--accent);
+            background-color: rgba(88, 166, 255, 0.1);
+        }
+
+        /* --- Main Container --- */
         .container {
             max-width: 900px;
-            margin: 40px auto;
+            margin: calc(var(--nav-height) + 30px) auto 40px;
             padding: 40px;
-            background-color: rgba(22, 27, 34, 0.75); /* Transparent for stars */
-            border: 1px solid #30363d;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
             border-radius: 15px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.7);
             backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
         }
 
-        /* --- Header Styling --- */
+        /* --- Header --- */
         header {
             text-align: center;
             margin-bottom: 50px;
         }
 
-        /* University Logo Styling */
-        .uni-logo {
-            max-width: 200px; 
-            height: auto;
-            margin-bottom: 20px;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
         .profile-img {
-            width: 180px;
-            height: 180px;
+            width: 180px; height: 180px;
             border-radius: 50%;
-            border: 4px solid #58a6ff;
+            border: 4px solid var(--accent);
             object-fit: cover;
             margin-bottom: 15px;
             box-shadow: 0 0 20px rgba(88, 166, 255, 0.4);
         }
 
         h1 {
-            color: #58a6ff;
+            color: var(--accent);
             margin: 5px 0;
             font-size: 2.2em;
         }
 
         .credentials {
-            color: #8b949e;
+            color: var(--text-muted);
             font-size: 1.1em;
             margin-bottom: 10px;
         }
 
         .location-line {
-            color: #c9d1d9;
+            color: var(--text-secondary);
             font-size: 1.0em;
             margin-bottom: 20px;
             display: flex;
@@ -89,14 +168,12 @@
             justify-content: center;
             gap: 8px;
         }
-        .location-line i {
-            color: #fa4549; /* Red pin color */
-        }
+        .location-line i { color: var(--danger); }
 
         .bio-text {
             max-width: 700px;
             margin: 0 auto 20px auto;
-            color: #c9d1d9;
+            color: var(--text-secondary);
             font-style: italic;
         }
 
@@ -110,20 +187,21 @@
             gap: 20px;
         }
         .social-links a {
-            color: #c9d1d9;
-            font-size: 1.6em; 
+            color: var(--text-secondary);
+            font-size: 1.6em;
             transition: color 0.3s ease, transform 0.2s;
             display: flex;
             align-items: center;
         }
         .social-links a:hover {
-            color: #58a6ff;
+            color: var(--accent);
             transform: scale(1.15);
+            text-decoration: none;
         }
 
         .btn-download {
             display: inline-block;
-            background-color: #1f6feb;
+            background-color: var(--accent-dark);
             color: #ffffff;
             padding: 12px 24px;
             border-radius: 6px;
@@ -134,38 +212,42 @@
             margin-top: 10px;
         }
         .btn-download:hover {
-            background-color: #388bfd;
+            background-color: var(--accent-hover);
             box-shadow: 0 0 15px rgba(56, 139, 253, 0.5);
             text-decoration: none;
         }
 
-        /* --- Animation Class --- */
+        /* --- Scroll Animation --- */
         .animate-box {
-            opacity: 0; 
+            opacity: 0;
             transform: translateY(30px);
             transition: opacity 0.8s ease-out, transform 0.8s ease-out;
         }
-        
         .animate-box.visible {
             opacity: 1;
             transform: translateY(0);
         }
 
-        /* --- Timeline Design --- */
+        /* --- Section Titles --- */
         .section-title {
-            color: #58a6ff;
-            border-bottom: 2px solid #30363d;
+            color: var(--accent);
+            border-bottom: 2px solid var(--border);
             padding-bottom: 10px;
             margin-top: 50px;
             margin-bottom: 30px;
             text-transform: uppercase;
             letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
+        .section-title i { font-size: 0.85em; opacity: 0.8; }
 
+        /* --- Timeline --- */
         .timeline {
             position: relative;
             padding-left: 30px;
-            border-left: 3px solid #30363d;
+            border-left: 3px solid var(--border);
         }
 
         .timeline-item {
@@ -176,26 +258,25 @@
         .timeline-item::before {
             content: '';
             position: absolute;
-            left: -41.5px; /* Perfectly Centered */
-            top: 5px; 
-            width: 14px;
-            height: 14px;
+            left: -41.5px;
+            top: 5px;
+            width: 14px; height: 14px;
             border-radius: 50%;
-            background-color: #0d1117;
-            border: 3px solid #58a6ff;
+            background-color: var(--bg-primary);
+            border: 3px solid var(--accent);
             box-shadow: 0 0 8px rgba(88, 166, 255, 0.5);
             z-index: 1;
         }
 
         .job-title {
             font-weight: bold;
-            color: #f0f6fc;
+            color: var(--text-primary);
             font-size: 1.2em;
         }
 
         .company-date {
             font-style: italic;
-            color: #58a6ff;
+            color: var(--accent);
             font-size: 0.95em;
             margin-bottom: 10px;
             display: block;
@@ -210,305 +291,409 @@
         .skill-tag {
             display: flex;
             align-items: center;
-            background-color: #161b22;
-            border: 1px solid #30363d;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
             color: #79c0ff;
             padding: 8px 16px;
             border-radius: 20px;
             font-size: 0.95em;
             transition: all 0.2s;
         }
-        .skill-tag i {
-            margin-right: 8px;
-            font-size: 1.1em;
-        }
+        .skill-tag i { margin-right: 8px; font-size: 1.1em; }
         .skill-tag:hover {
-            background-color: #1f6feb;
+            background-color: var(--accent-dark);
             color: white;
-            border-color: #58a6ff;
+            border-color: var(--accent);
             cursor: default;
             box-shadow: 0 0 10px rgba(31, 111, 235, 0.3);
         }
 
-        /* --- Link Styling --- */
+        /* --- Publications --- */
         .publication-item {
             margin-bottom: 20px;
             padding-bottom: 20px;
-            border-bottom: 1px solid #30363d;
+            border-bottom: 1px solid var(--border);
         }
         .publication-item:last-child { border-bottom: none; }
-        
+
         .pub-link {
-            color: #58a6ff;
+            color: var(--accent);
             text-decoration: none;
             font-weight: bold;
             display: inline-block;
             transition: color 0.2s;
         }
-        .pub-link:hover {
-            color: #79c0ff;
-            text-decoration: underline;
+        .pub-link:hover { color: #79c0ff; text-decoration: underline; }
+        .pub-link i { font-size: 0.8em; margin-left: 5px; }
+
+        /* Show more / hide toggle */
+        .publications-hidden { display: none; }
+
+        .btn-show-more {
+            display: block;
+            width: 100%;
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--accent);
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95em;
+            margin-top: 10px;
+            transition: background-color 0.2s, border-color 0.2s;
         }
-        .pub-link i {
-            font-size: 0.8em;
-            margin-left: 5px;
+        .btn-show-more:hover {
+            background-color: rgba(88, 166, 255, 0.1);
+            border-color: var(--accent);
         }
-        
-        a { color: #58a6ff; text-decoration: none; }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85em;
+            padding: 20px 0 10px;
+            border-top: 1px solid var(--border);
+            margin-top: 50px;
+        }
+
+        /* --- Global link defaults --- */
+        a { color: var(--accent); text-decoration: none; }
         a:hover { text-decoration: underline; }
 
+        /* --- Responsive: tablet --- */
         @media (max-width: 768px) {
-            .container { margin: 20px; padding: 20px; }
+            .container {
+                margin: calc(var(--nav-height) + 15px) 15px 30px;
+                padding: 25px 20px;
+            }
             h1 { font-size: 1.8em; }
+            .nav-links a span { display: none; }
+            .nav-links a { padding: 8px 10px; }
         }
 
+        /* --- Responsive: small mobile --- */
+        @media (max-width: 480px) {
+            .container { padding: 20px 15px; margin-left: 10px; margin-right: 10px; }
+            h1 { font-size: 1.5em; }
+            .profile-img { width: 140px; height: 140px; }
+            .social-links { gap: 14px; }
+            .social-links a { font-size: 1.4em; }
+        }
+
+        /* --- Print styles --- */
+        @media print {
+            #star-canvas, .navbar, .btn-download, .btn-show-more { display: none !important; }
+            body { background: white; color: #111; }
+            .container {
+                margin: 0; padding: 20px;
+                border: none; box-shadow: none;
+                background: white; backdrop-filter: none;
+                max-width: 100%;
+            }
+            h1, .section-title, .company-date, .pub-link, a { color: #1a56cc !important; }
+            .skill-tag { border-color: #ccc; color: #333; background: #f5f5f5; }
+            .publications-hidden { display: block !important; }
+            .animate-box { opacity: 1 !important; transform: none !important; }
+            footer { display: none; }
+        }
     </style>
 </head>
 <body>
 
-    <canvas id="star-canvas"></canvas>
+    <a href="#main-content" class="skip-to-content">Skip to main content</a>
+    <canvas id="star-canvas" aria-hidden="true"></canvas>
 
-    <div class="container">
-        <header class="animate-box">
+    <!-- Navigation Bar -->
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+        <ul class="nav-links" role="list">
+            <li><a href="#about" aria-label="About"><i class="fas fa-user" aria-hidden="true"></i><span>About</span></a></li>
+            <li><a href="#expertise" aria-label="Skills"><i class="fas fa-tools" aria-hidden="true"></i><span>Skills</span></a></li>
+            <li><a href="#experience" aria-label="Experience"><i class="fas fa-briefcase" aria-hidden="true"></i><span>Experience</span></a></li>
+            <li><a href="#education" aria-label="Education"><i class="fas fa-graduation-cap" aria-hidden="true"></i><span>Education</span></a></li>
+            <li><a href="#publications" aria-label="Publications"><i class="fas fa-book-open" aria-hidden="true"></i><span>Publications</span></a></li>
+        </ul>
+    </nav>
 
+    <div class="container" id="main-content">
+
+        <!-- ===== HEADER / ABOUT ===== -->
+        <header class="animate-box" id="about">
             <img src="./office-1.jpg" alt="Dr Michail Arvanitidis" class="profile-img">
-            
             <h1>Dr Michail Arvanitidis</h1>
             <div class="credentials">PT, PhD, MSc, MMACP</div>
-            
+
             <div class="location-line">
-                <i class="fas fa-map-marker-alt"></i> Birmingham, United Kingdom 🇬🇧
+                <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                Birmingham, United Kingdom &#127468;&#127463;
             </div>
-            
+
             <p class="bio-text">
-                My current research examines cervical adaptations in NASA astronauts following spaceflight, 
-                aiming to enhance astronaut health for future missions. Additionally, my main interests 
+                My current research examines cervical adaptations in NASA astronauts following spaceflight,
+                aiming to enhance astronaut health for future missions. Additionally, my main interests
                 involve studying motor adaptations in individuals with persistent musculoskeletal pain.
             </p>
 
-            <div class="social-links">
-                <a href="mailto:m.arvanitidis@bham.ac.uk" title="Email"><i class="fas fa-envelope"></i></a>
-                <a href="https://www.linkedin.com/in/michail-arvanitidis-67848a130" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                <a href="https://www.researchgate.net/profile/Michail-Arvanitidis?ev=hdr_xprf" target="_blank" title="ResearchGate"><i class="ai ai-researchgate"></i></a>
-                <a href="https://scholar.google.com/citations?user=fHHpMb0AAAAJ&hl=en&oi=ao" target="_blank" title="Google Scholar"><i class="fas fa-graduation-cap"></i></a>
-                </div>
+            <div class="social-links" role="list" aria-label="Social and professional links">
+                <a href="mailto:m.arvanitidis@bham.ac.uk" title="Email" role="listitem" aria-label="Send email">
+                    <i class="fas fa-envelope" aria-hidden="true"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/michail-arvanitidis-67848a130" target="_blank" rel="noopener noreferrer" title="LinkedIn" role="listitem" aria-label="LinkedIn profile">
+                    <i class="fab fa-linkedin" aria-hidden="true"></i>
+                </a>
+                <a href="https://www.researchgate.net/profile/Michail-Arvanitidis?ev=hdr_xprf" target="_blank" rel="noopener noreferrer" title="ResearchGate" role="listitem" aria-label="ResearchGate profile">
+                    <i class="ai ai-researchgate" aria-hidden="true"></i>
+                </a>
+                <a href="https://scholar.google.com/citations?user=fHHpMb0AAAAJ&hl=en&oi=ao" target="_blank" rel="noopener noreferrer" title="Google Scholar" role="listitem" aria-label="Google Scholar profile">
+                    <i class="fas fa-graduation-cap" aria-hidden="true"></i>
+                </a>
+            </div>
 
-            <a href="./Part%20B2_MSCA%20PF_Arvanitidis.pdf" class="btn-download" target="_blank">
-                <i class="fas fa-file-pdf"></i> Download Full CV
+            <a href="./Part%20B2_MSCA%20PF_Arvanitidis.pdf" class="btn-download" target="_blank" rel="noopener noreferrer" aria-label="Download full CV as PDF">
+                <i class="fas fa-file-pdf" aria-hidden="true"></i> Download Full CV
             </a>
         </header>
 
-        <section class="animate-box">
-            <h2 class="section-title">Technical Expertise</h2>
-            <div class="skills-container">
-                <span class="skill-tag"><i class="devicon-matlab-plain"></i>MATLAB</span>
-                <span class="skill-tag"><i class="devicon-r-plain"></i>R Programming</span>
-                <span class="skill-tag"><i class="fas fa-wave-square"></i>HDsEMG</span>
-                <span class="skill-tag"><i class="fas fa-chart-line"></i>Signal Processing</span>
-                <span class="skill-tag"><i class="fas fa-microscope"></i>Ultrasound Imaging</span>
-                <span class="skill-tag"><i class="fas fa-dumbbell"></i>Isokinetic Dynamometry</span>
-                <span class="skill-tag"><i class="fas fa-notes-medical"></i>Clinical Research</span>
+        <!-- ===== TECHNICAL EXPERTISE ===== -->
+        <section class="animate-box" id="expertise" aria-labelledby="expertise-title">
+            <h2 class="section-title" id="expertise-title">
+                <i class="fas fa-tools" aria-hidden="true"></i>Technical Expertise
+            </h2>
+            <div class="skills-container" role="list" aria-label="Technical skills">
+                <span class="skill-tag" role="listitem"><i class="devicon-matlab-plain" aria-hidden="true"></i>MATLAB</span>
+                <span class="skill-tag" role="listitem"><i class="devicon-r-plain" aria-hidden="true"></i>R Programming</span>
+                <span class="skill-tag" role="listitem"><i class="fas fa-wave-square" aria-hidden="true"></i>HDsEMG</span>
+                <span class="skill-tag" role="listitem"><i class="fas fa-chart-line" aria-hidden="true"></i>Signal Processing</span>
+                <span class="skill-tag" role="listitem"><i class="fas fa-microscope" aria-hidden="true"></i>Ultrasound Imaging</span>
+                <span class="skill-tag" role="listitem"><i class="fas fa-dumbbell" aria-hidden="true"></i>Isokinetic Dynamometry</span>
+                <span class="skill-tag" role="listitem"><i class="fas fa-notes-medical" aria-hidden="true"></i>Clinical Research</span>
             </div>
         </section>
 
-        <section>
-            <h2 class="section-title animate-box">Professional Experience</h2>
-            <div class="timeline">
-                <div class="timeline-item animate-box">
+        <!-- ===== PROFESSIONAL EXPERIENCE ===== -->
+        <section id="experience" aria-labelledby="experience-title">
+            <h2 class="section-title animate-box" id="experience-title">
+                <i class="fas fa-briefcase" aria-hidden="true"></i>Professional Experience
+            </h2>
+            <div class="timeline" role="list">
+                <div class="timeline-item animate-box" role="listitem">
                     <div class="job-title">Post-doctoral Research Fellow</div>
-                    <span class="company-date">CPR Spine, University of Birmingham | Sep 2022 - Present</span>
+                    <span class="company-date">CPR Spine, University of Birmingham | Sep 2022 – Present</span>
                     <p>Leading research on cervical spine and muscle adaptation after spaceflight (Project: 'Cervical in Space'). Investigating relationship to herniation risk to support NASA astronaut health.</p>
                 </div>
 
-                <div class="timeline-item animate-box">
+                <div class="timeline-item animate-box" role="listitem">
                     <div class="job-title">Pre-doctoral Fellow</div>
-                    <span class="company-date">CPR Spine, University of Birmingham | Feb 2021 - Aug 2022</span>
+                    <span class="company-date">CPR Spine, University of Birmingham | Feb 2021 – Aug 2022</span>
                     <p>Conducted research on cervical spine adaptations. Supported by the Centre of Precision Rehabilitation for Spinal Pain.</p>
                 </div>
 
-                <div class="timeline-item animate-box">
+                <div class="timeline-item animate-box" role="listitem">
                     <div class="job-title">Specialist Musculoskeletal Physiotherapist</div>
-                    <span class="company-date">The Birmingham Back Pain Clinic | Jun 2018 - Present</span>
+                    <span class="company-date">The Birmingham Back Pain Clinic | Jun 2018 – Present</span>
                     <p>Specialist clinical practice managing complex musculoskeletal spinal conditions.</p>
                 </div>
             </div>
         </section>
 
-        <section>
-            <h2 class="section-title animate-box">Education</h2>
-            <div class="timeline">
-                <div class="timeline-item animate-box">
+        <!-- ===== EDUCATION ===== -->
+        <section id="education" aria-labelledby="education-title">
+            <h2 class="section-title animate-box" id="education-title">
+                <i class="fas fa-graduation-cap" aria-hidden="true"></i>Education
+            </h2>
+            <div class="timeline" role="list">
+                <div class="timeline-item animate-box" role="listitem">
                     <div class="job-title">Doctor of Philosophy (PhD)</div>
-                    <span class="company-date">University of Birmingham | 2019 - 2024</span>
+                    <span class="company-date">University of Birmingham | 2019 – 2024</span>
                     <p>Sport, Exercise and Rehabilitation Sciences. Thesis on control of trunk muscle force in low back pain using High-Density Surface Electromyography.</p>
                 </div>
 
-                <div class="timeline-item animate-box">
+                <div class="timeline-item animate-box" role="listitem">
                     <div class="job-title">MSc Advanced Manipulative Physiotherapy</div>
-                    <span class="company-date">University of Birmingham | 2017 - 2019</span>
+                    <span class="company-date">University of Birmingham | 2017 – 2019</span>
                 </div>
 
-                <div class="timeline-item animate-box">
+                <div class="timeline-item animate-box" role="listitem">
                     <div class="job-title">BSc Physiotherapy (First Class Honours)</div>
-                    <span class="company-date">University of Thessaly | 2011 - 2016</span>
+                    <span class="company-date">University of Thessaly | 2011 – 2016</span>
                 </div>
             </div>
         </section>
 
-        <section class="animate-box">
-            <h2 class="section-title">Recent Publications</h2>
-            <div>
+        <!-- ===== PUBLICATIONS ===== -->
+        <section class="animate-box" id="publications" aria-labelledby="publications-title">
+            <h2 class="section-title" id="publications-title">
+                <i class="fas fa-book-open" aria-hidden="true"></i>Recent Publications
+            </h2>
+            <div id="publications-list">
+
+                <!-- First 5 publications always visible -->
                 <div class="publication-item">
-                    <a href="https://doi.org/10.1007/s00421-025-06083-8" target="_blank" class="pub-link">
-                        Reduced knee extensor torque steadiness and increased motor unit discharge rate variability in young people with patellofemoral pain: a pilot study <i class="fas fa-external-link-alt"></i>
+                    <a href="https://doi.org/10.1007/s00421-025-06083-8" target="_blank" rel="noopener noreferrer" class="pub-link">
+                        Reduced knee extensor torque steadiness and increased motor unit discharge rate variability in young people with patellofemoral pain: a pilot study <i class="fas fa-external-link-alt" aria-hidden="true"></i>
                     </a>
                     <br>
-                    <strong>Arvanitidis M</strong>, Falla D, Negro F, Boccia G, Rainoldi A, Martinez-Valdes E. (2025). 
+                    <strong>Arvanitidis M</strong>, Falla D, Negro F, Boccia G, Rainoldi A, Martinez-Valdes E. (2025).
                     <br><em>Eur J Appl Physiol. Published online.</em>
                 </div>
 
                 <div class="publication-item">
-                    <a href="https://doi.org/10.1007/s11357-025-01987-x" target="_blank" class="pub-link">
-                        The effects of ageing on fatigue and endurance of the spinal extensor muscles: a systematic review and meta-analysis <i class="fas fa-external-link-alt"></i>
+                    <a href="https://doi.org/10.1007/s11357-025-01987-x" target="_blank" rel="noopener noreferrer" class="pub-link">
+                        The effects of ageing on fatigue and endurance of the spinal extensor muscles: a systematic review and meta-analysis <i class="fas fa-external-link-alt" aria-hidden="true"></i>
                     </a>
                     <br>
-                    Parrella M, <strong>Arvanitidis M</strong>, Macaluso A, Falla D. (2025). 
+                    Parrella M, <strong>Arvanitidis M</strong>, Macaluso A, Falla D. (2025).
                     <br><em>Geroscience. Published online.</em>
                 </div>
 
                 <div class="publication-item">
-                    <a href="https://doi.org/10.1016/j.msksp.2025.103428" target="_blank" class="pub-link">
-                        Association between neck muscle size and physical features in individuals with chronic non-specific neck pain: A systematic review <i class="fas fa-external-link-alt"></i>
+                    <a href="https://doi.org/10.1016/j.msksp.2025.103428" target="_blank" rel="noopener noreferrer" class="pub-link">
+                        Association between neck muscle size and physical features in individuals with chronic non-specific neck pain: A systematic review <i class="fas fa-external-link-alt" aria-hidden="true"></i>
                     </a>
                     <br>
-                    Sidiropoulos G, <strong>Arvanitidis M</strong>, Falla D, et al. (2025). 
+                    Sidiropoulos G, <strong>Arvanitidis M</strong>, Falla D, et al. (2025).
                     <br><em>Musculoskelet Sci Pract. 80:103428.</em>
                 </div>
 
                 <div class="publication-item">
-                    <a href="https://doi.org/10.1007/s00421-025-05864-5" target="_blank" class="pub-link">
-                        Fatigue-induced alterations in the spatial distribution of lumbar erector spinae activity in older versus young adults <i class="fas fa-external-link-alt"></i>
+                    <a href="https://doi.org/10.1007/s00421-025-05864-5" target="_blank" rel="noopener noreferrer" class="pub-link">
+                        Fatigue-induced alterations in the spatial distribution of lumbar erector spinae activity in older versus young adults <i class="fas fa-external-link-alt" aria-hidden="true"></i>
                     </a>
                     <br>
-                    Parrella M, Borzuola R, Siciliano FP, et al. (2025). 
+                    Parrella M, Borzuola R, Siciliano FP, et al. (2025).
                     <br><em>Eur J Appl Physiol. 125(12):3663-3674.</em>
                 </div>
 
                 <div class="publication-item">
-                    <a href="https://doi.org/10.33393/aop.2025.3476" target="_blank" class="pub-link">
-                        Validation of a Novel device for Assessing Neck Muscle Strength <i class="fas fa-external-link-alt"></i>
+                    <a href="https://doi.org/10.33393/aop.2025.3476" target="_blank" rel="noopener noreferrer" class="pub-link">
+                        Validation of a Novel device for Assessing Neck Muscle Strength <i class="fas fa-external-link-alt" aria-hidden="true"></i>
                     </a>
                     <br>
-                    <strong>Arvanitidis M</strong>, Mak HHK, Martinez-Valdes E, Barbero M, Falla D. (2025). 
+                    <strong>Arvanitidis M</strong>, Mak HHK, Martinez-Valdes E, Barbero M, Falla D. (2025).
                     <br><em>Arch Physiother. 15:148-157.</em>
                 </div>
 
-                <div class="publication-item">
-                    <a href="https://doi.org/10.1136/bmjopen-2024-098172" target="_blank" class="pub-link">
-                        Effects of microgravity on neuromuscular control of the spine: a protocol for a systematic review and meta-analysis <i class="fas fa-external-link-alt"></i>
-                    </a>
-                    <br>
-                    Devecchi V, <strong>Arvanitidis M</strong>, Falla D. (2025). 
-                    <br><em>BMJ Open. 15(6):e098172.</em>
-                </div>
+                <!-- Remaining 8 publications hidden by default -->
+                <div id="more-publications" class="publications-hidden">
+                    <div class="publication-item">
+                        <a href="https://doi.org/10.1136/bmjopen-2024-098172" target="_blank" rel="noopener noreferrer" class="pub-link">
+                            Effects of microgravity on neuromuscular control of the spine: a protocol for a systematic review and meta-analysis <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                        </a>
+                        <br>
+                        Devecchi V, <strong>Arvanitidis M</strong>, Falla D. (2025).
+                        <br><em>BMJ Open. 15(6):e098172.</em>
+                    </div>
 
-                <div class="publication-item">
-                    <a href="https://doi.org/10.1113/JP287588" target="_blank" class="pub-link">
-                        Load and muscle-dependent changes in triceps surae motor unit firing properties in individuals with non-insertional Achilles tendinopathy <i class="fas fa-external-link-alt"></i>
-                    </a>
-                    <br>
-                    Contreras-Hernandez I, Falla D, <strong>Arvanitidis M</strong>, Negro F, Jimenez-Grande D, Martinez-Valdes E. (2026). 
-                    <br><em>J Physiol. 604(2):955-978.</em>
-                </div>
+                    <div class="publication-item">
+                        <a href="https://doi.org/10.1113/JP287588" target="_blank" rel="noopener noreferrer" class="pub-link">
+                            Load and muscle-dependent changes in triceps surae motor unit firing properties in individuals with non-insertional Achilles tendinopathy <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                        </a>
+                        <br>
+                        Contreras-Hernandez I, Falla D, <strong>Arvanitidis M</strong>, Negro F, Jimenez-Grande D, Martinez-Valdes E. (2026).
+                        <br><em>J Physiol. 604(2):955-978.</em>
+                    </div>
 
-                <div class="publication-item">
-                    <a href="https://doi.org/10.1002/ejp.4716" target="_blank" class="pub-link">
-                        Does pain influence control of muscle force? A systematic review and meta-analysis <i class="fas fa-external-link-alt"></i>
-                    </a>
-                    <br>
-                    <strong>Arvanitidis M</strong>, Falla D, Sanderson A, Martinez-Valdes E. (2025). 
-                    <br><em>Eur J Pain. 29(2):e4716.</em>
-                </div>
+                    <div class="publication-item">
+                        <a href="https://doi.org/10.1002/ejp.4716" target="_blank" rel="noopener noreferrer" class="pub-link">
+                            Does pain influence control of muscle force? A systematic review and meta-analysis <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                        </a>
+                        <br>
+                        <strong>Arvanitidis M</strong>, Falla D, Sanderson A, Martinez-Valdes E. (2025).
+                        <br><em>Eur J Pain. 29(2):e4716.</em>
+                    </div>
 
-                <div class="publication-item">
-                    <a href="https://doi.org/10.1152/jn.00391.2023" target="_blank" class="pub-link">
-                        Achilles tendon morpho-mechanical parameters are related to triceps surae motor unit firing properties <i class="fas fa-external-link-alt"></i>
-                    </a>
-                    <br>
-                    Contreras-Hernandez I, <strong>Arvanitidis M</strong>, Falla D, Negro F, Martinez-Valdes E. (2024). 
-                    <br><em>J Neurophysiol. 132(4):1198-1210.</em>
-                </div>
+                    <div class="publication-item">
+                        <a href="https://doi.org/10.1152/jn.00391.2023" target="_blank" rel="noopener noreferrer" class="pub-link">
+                            Achilles tendon morpho-mechanical parameters are related to triceps surae motor unit firing properties <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                        </a>
+                        <br>
+                        Contreras-Hernandez I, <strong>Arvanitidis M</strong>, Falla D, Negro F, Martinez-Valdes E. (2024).
+                        <br><em>J Neurophysiol. 132(4):1198-1210.</em>
+                    </div>
 
-                <div class="publication-item">
-                    <a href="https://doi.org/10.1109/OJEMB.2024.3449548" target="_blank" class="pub-link">
-                        Novel Metrics for High-Density sEMG Analysis in the Time-Space Domain During Sustained Isometric Contractions <i class="fas fa-external-link-alt"></i>
-                    </a>
-                    <br>
-                    Corvini G, <strong>Arvanitidis M</strong>, Falla D, Conforto S. (2024). 
-                    <br><em>IEEE Open J Eng Med Biol. 5:760-768.</em>
-                </div>
+                    <div class="publication-item">
+                        <a href="https://doi.org/10.1109/OJEMB.2024.3449548" target="_blank" rel="noopener noreferrer" class="pub-link">
+                            Novel Metrics for High-Density sEMG Analysis in the Time-Space Domain During Sustained Isometric Contractions <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                        </a>
+                        <br>
+                        Corvini G, <strong>Arvanitidis M</strong>, Falla D, Conforto S. (2024).
+                        <br><em>IEEE Open J Eng Med Biol. 5:760-768.</em>
+                    </div>
 
-                <div class="publication-item">
-                    <a href="https://doi.org/10.1038/s41598-024-69050-x" target="_blank" class="pub-link">
-                        Eccentric exercise-induced delayed onset trunk muscle soreness alters high-density surface EMG-torque relationships and lumbar kinematics <i class="fas fa-external-link-alt"></i>
-                    </a>
-                    <br>
-                    <strong>Arvanitidis M</strong>, Jiménez-Grande D, Haouidji-Javaux N, Falla D, Martinez-Valdes E. (2024). 
-                    <br><em>Sci Rep. 14(1):18589.</em>
-                </div>
+                    <div class="publication-item">
+                        <a href="https://doi.org/10.1038/s41598-024-69050-x" target="_blank" rel="noopener noreferrer" class="pub-link">
+                            Eccentric exercise-induced delayed onset trunk muscle soreness alters high-density surface EMG-torque relationships and lumbar kinematics <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                        </a>
+                        <br>
+                        <strong>Arvanitidis M</strong>, Jim&#233;nez-Grande D, Haouidji-Javaux N, Falla D, Martinez-Valdes E. (2024).
+                        <br><em>Sci Rep. 14(1):18589.</em>
+                    </div>
 
-                <div class="publication-item">
-                    <a href="https://doi.org/10.1249/MSS.0000000000003314" target="_blank" class="pub-link">
-                        Low Back Pain-Induced Dynamic Trunk Muscle Control Impairments Are Associated with Altered Spatial EMG-Torque Relationships <i class="fas fa-external-link-alt"></i>
-                    </a>
-                    <br>
-                    <strong>Arvanitidis M</strong>, Jiménez-Grande D, Haouidji-Javaux N, Falla D, Martinez-Valdes E. (2024). 
-                    <br><em>Med Sci Sports Exerc. 56(2):193-208.</em>
-                </div>
+                    <div class="publication-item">
+                        <a href="https://doi.org/10.1249/MSS.0000000000003314" target="_blank" rel="noopener noreferrer" class="pub-link">
+                            Low Back Pain-Induced Dynamic Trunk Muscle Control Impairments Are Associated with Altered Spatial EMG-Torque Relationships <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                        </a>
+                        <br>
+                        <strong>Arvanitidis M</strong>, Jim&#233;nez-Grande D, Haouidji-Javaux N, Falla D, Martinez-Valdes E. (2024).
+                        <br><em>Med Sci Sports Exerc. 56(2):193-208.</em>
+                    </div>
 
-                <div class="publication-item">
-                    <a href="https://doi.org/10.1038/s41598-022-19516-7" target="_blank" class="pub-link">
-                        People with chronic low back pain display spatial alterations in high-density surface EMG-torque oscillations <i class="fas fa-external-link-alt"></i>
-                    </a>
-                    <br>
-                    <strong>Arvanitidis M</strong>, Jiménez-Grande D, Haouidji-Javaux N, Falla D, Martinez-Valdes E. (2022). 
-                    <br><em>Sci Rep. 12(1):15178.</em>
-                </div>
+                    <div class="publication-item">
+                        <a href="https://doi.org/10.1038/s41598-022-19516-7" target="_blank" rel="noopener noreferrer" class="pub-link">
+                            People with chronic low back pain display spatial alterations in high-density surface EMG-torque oscillations <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                        </a>
+                        <br>
+                        <strong>Arvanitidis M</strong>, Jim&#233;nez-Grande D, Haouidji-Javaux N, Falla D, Martinez-Valdes E. (2022).
+                        <br><em>Sci Rep. 12(1):15178.</em>
+                    </div>
+                </div><!-- /#more-publications -->
+            </div><!-- /#publications-list -->
+
+            <button class="btn-show-more" id="show-more-btn" onclick="togglePublications()"
+                    aria-expanded="false" aria-controls="more-publications">
+                <i class="fas fa-chevron-down" aria-hidden="true"></i> Show 8 more publications
+            </button>
+        </section>
+
+        <!-- ===== HOBBIES ===== -->
+        <section class="animate-box" id="hobbies" aria-labelledby="hobbies-title">
+            <h2 class="section-title" id="hobbies-title">
+                <i class="fas fa-heart" aria-hidden="true"></i>Hobbies
+            </h2>
+            <div class="skills-container" role="list" aria-label="Hobbies">
+                <span class="skill-tag" role="listitem"><i class="fas fa-dumbbell" aria-hidden="true"></i>Gym</span>
+                <span class="skill-tag" role="listitem"><i class="fas fa-bicycle" aria-hidden="true"></i>Cycling</span>
+                <span class="skill-tag" role="listitem"><i class="fas fa-music" aria-hidden="true"></i>Music</span>
             </div>
         </section>
 
-        <section class="animate-box">
-            <h2 class="section-title">Hobbies</h2>
-            <div class="skills-container">
-                <span class="skill-tag"><i class="fas fa-dumbbell"></i>Gym</span>
-                <span class="skill-tag"><i class="fas fa-bicycle"></i>Cycling</span>
-                <span class="skill-tag"><i class="fas fa-music"></i>Music</span>
-            </div>
-        </section>
+        <footer>
+            <p>Dr Michail Arvanitidis &mdash; Postdoctoral Research Fellow, University of Birmingham</p>
+        </footer>
 
-    </div>
+    </div><!-- /.container -->
 
     <script>
         // --- STAR ANIMATION ---
         const canvas = document.getElementById('star-canvas');
-        const ctx = canvas.getContext('2d');
-        
+        const ctx    = canvas.getContext('2d');
+
         let width, height, stars;
-        const numStars = 800; 
+        let animationId;
+        const numStars = window.innerWidth < 768 ? 400 : 800;
 
         function init() {
-            width = window.innerWidth;
+            width  = window.innerWidth;
             height = window.innerHeight;
-            canvas.width = width;
+            canvas.width  = width;
             canvas.height = height;
             stars = [];
-
             for (let i = 0; i < numStars; i++) {
                 stars.push({
-                    x: Math.random() * width,
-                    y: Math.random() * height,
-                    radius: Math.random() * 1.5,
-                    speed: Math.random() * 0.6 + 0.3,
+                    x:       Math.random() * width,
+                    y:       Math.random() * height,
+                    radius:  Math.random() * 1.5,
+                    speed:   Math.random() * 0.6 + 0.3,
                     opacity: Math.random()
                 });
             }
@@ -518,36 +703,63 @@
             ctx.clearRect(0, 0, width, height);
             stars.forEach(star => {
                 ctx.beginPath();
-                ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+                ctx.fillStyle = `rgba(255,255,255,${star.opacity})`;
                 ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
                 ctx.fill();
-                star.y -= star.speed; 
-                if (star.y < 0) {
-                    star.y = height;
-                    star.x = Math.random() * width;
-                }
+                star.y -= star.speed;
+                if (star.y < 0) { star.y = height; star.x = Math.random() * width; }
             });
-            requestAnimationFrame(animate);
+            animationId = requestAnimationFrame(animate);
         }
+
+        // Pause when the tab is not visible — saves CPU/battery
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                cancelAnimationFrame(animationId);
+            } else {
+                animate();
+            }
+        });
 
         window.addEventListener('resize', init);
         init();
         animate();
 
-        // --- SCROLL ANIMATION ---
-        const observerOptions = { threshold: 0.1 };
-        
-        const observer = new IntersectionObserver((entries) => {
+        // --- SCROLL FADE-IN ANIMATION ---
+        const observer = new IntersectionObserver(
+            entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+            { threshold: 0.1 }
+        );
+        document.querySelectorAll('.animate-box').forEach(el => observer.observe(el));
+
+        // --- ACTIVE NAV LINK ON SCROLL ---
+        const sections  = document.querySelectorAll('[id]');
+        const navLinks  = document.querySelectorAll('.nav-links a');
+
+        const navObserver = new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
+                    navLinks.forEach(link => {
+                        link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
+                    });
                 }
             });
-        }, observerOptions);
+        }, { threshold: 0.4 });
 
-        document.querySelectorAll('.animate-box').forEach(item => {
-            observer.observe(item);
-        });
+        sections.forEach(section => navObserver.observe(section));
+
+        // --- PUBLICATIONS TOGGLE ---
+        function togglePublications() {
+            const more = document.getElementById('more-publications');
+            const btn  = document.getElementById('show-more-btn');
+            const open = btn.getAttribute('aria-expanded') === 'true';
+
+            more.classList.toggle('publications-hidden', open);
+            btn.setAttribute('aria-expanded', String(!open));
+            btn.innerHTML = open
+                ? '<i class="fas fa-chevron-down" aria-hidden="true"></i> Show 8 more publications'
+                : '<i class="fas fa-chevron-up"   aria-hidden="true"></i> Show fewer publications';
+        }
     </script>
 </body>
 </html>
