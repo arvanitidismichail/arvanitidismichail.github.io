@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -78,6 +78,7 @@
   --measure:    40rem;
   --sans: 'Avenir Next', 'Avenir', 'Mulish', -apple-system, BlinkMacSystemFont,
           'Segoe UI', system-ui, 'Helvetica Neue', Arial, sans-serif;
+  color-scheme: light;
 }
 
 html[data-theme="dark"] {
@@ -93,6 +94,7 @@ html[data-theme="dark"] {
   --accent-soft:rgba(125, 180, 232, 0.10);
   --mark:       #3fc9c0;
   --mark-soft:  rgba(63, 201, 192, 0.11);
+  color-scheme: dark;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -1372,11 +1374,10 @@ footer {
   function get() { try { return localStorage.getItem('theme'); } catch (e) { return null; } }
   function set(v) { try { localStorage.setItem('theme', v); } catch (e) {} }
 
+  // Dark is the default (set on <html>). Only a visitor's own choice overrides it.
   var saved = get();
-  if (saved === 'dark' || saved === 'light') {
+  if (saved === 'light' || saved === 'dark') {
     root.setAttribute('data-theme', saved);
-  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    root.setAttribute('data-theme', 'dark');
   }
 
   btn.addEventListener('click', function () {

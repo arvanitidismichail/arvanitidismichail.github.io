@@ -20,8 +20,9 @@ Live at <https://arvanitidismichail.github.io>
   without it, then to the system sans.
 - **Colour** — navy `#103a63` as the accent, teal `#0d8b86` for awards and status markers,
   on a near-white paper background. Dark theme lightens both to `#7db4e8` / `#3fc9c0`.
-- Theme follows the visitor's system preference and can be toggled; the choice is remembered
-  in `localStorage`.
+- Dark is the default, set as `data-theme="dark"` on `<html>` so there is no flash of light
+  before the script runs. Visitors can switch to light with the toggle and the choice is
+  remembered in `localStorage`; system preference is deliberately not consulted.
 - Section reveals are disabled automatically under `prefers-reduced-motion`.
 - Structured data (schema.org `Person`, including ORCID) is embedded in `<head>`.
 - Dedicated print styles — Ctrl/Cmd-P produces a clean document.
