@@ -10,9 +10,21 @@ Live at <https://arvanitidismichail.github.io>
 | File | Purpose |
 | --- | --- |
 | `index.html` | The whole site — single self-contained page (HTML + CSS + JS). |
-| `CV_Michail_Arvanitidis.pdf` | Full academic CV, linked from the "Download full CV" button. |
-| `office-1.jpg` | Profile photograph. |
+| `CV_Michail_Arvanitidis.pdf` | Full academic CV, linked from the "Curriculum vitae" link. |
+| `office-1.jpg` | Portrait. |
 | `uob.png` | University of Birmingham mark. |
+
+## Design
+
+- **Type** — Avenir Next, falling back to Mulish (loaded from Google Fonts) for visitors
+  without it, then to the system sans.
+- **Colour** — navy `#103a63` as the accent, teal `#0d8b86` for awards and status markers,
+  on a near-white paper background. Dark theme lightens both to `#7db4e8` / `#3fc9c0`.
+- Theme follows the visitor's system preference and can be toggled; the choice is remembered
+  in `localStorage`.
+- Section reveals are disabled automatically under `prefers-reduced-motion`.
+- Structured data (schema.org `Person`, including ORCID) is embedded in `<head>`.
+- Dedicated print styles — Ctrl/Cmd-P produces a clean document.
 
 ## Updating
 
@@ -24,16 +36,9 @@ Everything lives in `index.html`. Common edits:
   - `data-status` — `published`, `review` or `prep`
   - `data-first` — `1` if first author, otherwise `0`
   - `data-search` — lowercase text blob searched by the search box (authors, title, journal, topic)
-- **Update the header counts** — the four tiles in `<div class="metrics">` and the
-  `<span class="count">` next to the Publications heading.
+- **Update the counts** — the four figures in `<div class="tally">` and the
+  `<span class="label aside">` next to the Publications heading.
 - **Replace the CV PDF** — overwrite `CV_Michail_Arvanitidis.pdf`, keeping the filename.
 
-No build step and no dependencies. Push to `main` and GitHub Pages redeploys.
-
-## Notes
-
-- Theme follows the visitor's system preference and can be toggled; the choice is remembered
-  in `localStorage`.
-- The starfield background is disabled automatically under `prefers-reduced-motion`.
-- Structured data (schema.org `Person`) is embedded in `<head>` for search engines.
-- The page has dedicated print styles — Ctrl/Cmd-P produces a clean document.
+No build step and no dependencies. Push to `main` and GitHub Pages redeploys. Hard-refresh
+after a push — Pages caches `index.html` for about ten minutes.
