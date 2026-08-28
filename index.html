@@ -312,7 +312,7 @@ h1 {
    Research
    ============================================================ */
 #research { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; align-items: start; }
-#research > h2, #research > h3, #research > .tags { grid-column: 1 / -1; }
+#research > h2, #research > h3, #research > .tags, #research > .figs { grid-column: 1 / -1; }
 
 .strand {
   max-width: none; margin-bottom: 0;
@@ -485,6 +485,85 @@ a.pub-title .ext svg { width: 10px; height: 10px; fill: none; stroke: currentCol
   max-width: 46rem;
 }
 
+
+/* ============================================================
+   Journals ticker + numbered credentials
+   ============================================================ */
+.marquee {
+  display: grid; gap: .7rem; margin-top: .3rem;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+          mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+}
+.marquee-row { overflow: hidden; }
+.marquee-track {
+  display: flex; gap: .7rem; width: max-content;
+  animation: mq-left 52s linear infinite;
+}
+.marquee-row[data-dir="r"] .marquee-track { animation-name: mq-right; animation-duration: 58s; }
+@keyframes mq-left  { from { transform: translateX(0); }     to { transform: translateX(-50%); } }
+@keyframes mq-right { from { transform: translateX(-50%); }  to { transform: translateX(0); } }
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track { animation-play-state: paused; }
+
+.jpill {
+  flex: none; white-space: nowrap;
+  font-family: var(--sans); font-size: 0.83rem; color: var(--ink-2);
+  border: 1px solid var(--rule); border-radius: 999px;
+  padding: .45rem .95rem; background: var(--surface);
+}
+main > section:nth-of-type(odd) .jpill { background: var(--paper); }
+
+.numbered {
+  list-style: none; margin: .2rem 0 0; padding: 0;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0 2.5rem;
+}
+.numbered.numbered-wide { grid-template-columns: 1fr; }
+.numbered li {
+  display: grid; grid-template-columns: 2.4rem 1fr auto;
+  gap: 0 .6rem; align-items: baseline;
+  padding: .68rem 0; border-bottom: 1px solid var(--rule-soft);
+  font-family: var(--sans); font-size: 0.9rem; color: var(--ink-2);
+}
+.numbered .n {
+  font-size: 0.7rem; font-weight: 700; letter-spacing: .1em;
+  color: var(--mark); font-variant-numeric: tabular-nums;
+}
+.numbered .t { line-height: 1.45; }
+.numbered .t .sub { display: block; color: var(--ink-3); font-size: 0.8rem; margin-top: .1rem; }
+.numbered .y {
+  font-size: 0.78rem; font-weight: 500; letter-spacing: .04em;
+  color: var(--ink-3); font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee { -webkit-mask-image: none; mask-image: none; }
+  .marquee-row { overflow-x: auto; }
+  .marquee-track { animation: none; }
+}
+
+/* ============================================================
+   Photographs
+   ============================================================ */
+.figs { display: grid; gap: 1.1rem; margin: 2.6rem 0 0; }
+.figs figure { margin: 0; }
+.figs img {
+  width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; display: block;
+  border-radius: 14px; border: 1px solid var(--rule);
+  background: var(--surface);
+  transition: border-color .18s ease, transform .18s ease;
+}
+.figs figure:hover img { border-color: var(--mark); transform: translateY(-2px); }
+.figs figcaption {
+  font-family: var(--sans);
+  font-size: 0.745rem; line-height: 1.5; letter-spacing: .035em;
+  color: var(--ink-3); margin-top: .6rem;
+}
+.figs figcaption b { color: var(--ink-2); font-weight: 600; }
+/* deliberately uneven columns — a row of equal tiles reads as a template */
+.figs-4 { grid-template-columns: 1.32fr 1fr 1fr 1.18fr; }
+.figs-2 { grid-template-columns: 1.28fr 1fr; }
+.figs-1 { grid-template-columns: minmax(0, 32rem); }
+
 /* ============================================================
    Footer
    ============================================================ */
@@ -565,6 +644,9 @@ footer {
   h2 { grid-template-columns: 1fr; gap: .45rem; margin-bottom: 1.6rem; }
   main > section > h2::before { font-size: 0.72rem; }
   #research { grid-template-columns: 1fr; gap: 1rem; }
+  .figs-4 { grid-template-columns: 1fr 1fr; }
+  .figs-2, .figs-1 { grid-template-columns: 1fr; }
+  .numbered { grid-template-columns: 1fr; gap: 0; }
   .tally .n { font-size: 1.85rem; }
   .nav-in, .page { padding-left: 1.5rem; padding-right: 1.5rem; }
   .nav-name { display: none; }
@@ -608,6 +690,10 @@ footer {
   .strand { background: none !important; border: 0 !important; border-radius: 0 !important;
     padding: 0 !important; margin-bottom: 10pt !important; }
   .tally { border-top: 1pt solid #000; }
+  .figs { display: none; }
+  .marquee { -webkit-mask-image: none; mask-image: none; }
+  .marquee-track { animation: none; flex-wrap: wrap; width: auto; }
+  .numbered { grid-template-columns: 1fr; }
   .publication-item, .entry, .row, .strand { break-inside: avoid; }
   .hidden { display: block !important; }
   .rise { opacity: 1 !important; transform: none !important; }
@@ -768,6 +854,20 @@ footer {
       <span class="tag"><svg class="ti"><use href="#i-r"/></svg>R</span>
       <span class="tag"><svg class="ti"><use href="#i-ar"/></svg>Augmented reality biofeedback systems</span>
       <span class="tag"><svg class="ti"><use href="#i-review"/></svg>Systematic review &amp; meta-analysis</span>
+    </div>
+    <div class="figs figs-2 rise">
+      <figure>
+        <img src="./photo-nasa-jsc.jpg" srcset="./photo-nasa-jsc@sm.jpg 640w, ./photo-nasa-jsc.jpg 1280w"
+             sizes="(max-width: 820px) 46vw, 24vw" width="1280" height="960"
+             loading="lazy" decoding="async" alt="Michail Arvanitidis outside the NASA Lyndon B. Johnson Space Center sign, Houston">
+        <figcaption><b>NASA Lyndon B. Johnson Space Center</b><br>Houston, Texas</figcaption>
+      </figure>
+      <figure>
+        <img src="./photo-nasa-shuttle.jpg" srcset="./photo-nasa-shuttle@sm.jpg 640w, ./photo-nasa-shuttle.jpg 1280w"
+             sizes="(max-width: 820px) 46vw, 24vw" width="1280" height="960"
+             loading="lazy" decoding="async" alt="Michail Arvanitidis in front of the Shuttle Carrier Aircraft at Space Center Houston">
+        <figcaption><b>Space Center Houston</b><br>Independence Plaza</figcaption>
+      </figure>
     </div>
   </section>
 
@@ -1197,6 +1297,32 @@ footer {
   <section id="talks" aria-labelledby="talks-t">
     <h2 id="talks-t">Conference presentations <span class="label aside">13 oral · 9 poster</span></h2>
     <p class="asterisk-note rise">Refereed conference proceedings. An asterisk marks the presenter.</p>
+    <div class="figs figs-4 rise">
+      <figure>
+        <img src="./photo-talk-1.jpg" srcset="./photo-talk-1@sm.jpg 640w, ./photo-talk-1.jpg 1280w"
+             sizes="(max-width: 820px) 46vw, 24vw" width="1280" height="960"
+             loading="lazy" decoding="async" alt="Michail Arvanitidis presenting at a lectern beside a projected slide">
+        <figcaption><b>Oral presentation</b><br>2023</figcaption>
+      </figure>
+      <figure>
+        <img src="./photo-talk-2.jpg" srcset="./photo-talk-2@sm.jpg 640w, ./photo-talk-2.jpg 1280w"
+             sizes="(max-width: 820px) 46vw, 24vw" width="1280" height="960"
+             loading="lazy" decoding="async" alt="Michail Arvanitidis presenting beside a projected acknowledgements slide">
+        <figcaption><b>Oral presentation</b><br>2024</figcaption>
+      </figure>
+      <figure>
+        <img src="./photo-poster-1.jpg" srcset="./photo-poster-1@sm.jpg 640w, ./photo-poster-1.jpg 1280w"
+             sizes="(max-width: 820px) 46vw, 24vw" width="1280" height="960"
+             loading="lazy" decoding="async" alt="Michail Arvanitidis beside his poster on neck force control in astronauts">
+        <figcaption><b>Neck force control in astronauts post spaceflight</b><br>ISEK XXV Congress, June 2024</figcaption>
+      </figure>
+      <figure>
+        <img src="./photo-poster-2.jpg" srcset="./photo-poster-2@sm.jpg 640w, ./photo-poster-2.jpg 1280w"
+             sizes="(max-width: 820px) 46vw, 24vw" width="1280" height="960"
+             loading="lazy" decoding="async" alt="Michail Arvanitidis beside his poster on motor unit behaviour in patellofemoral pain">
+        <figcaption><b>Motor unit behaviour in patellofemoral pain</b><br>International MotoNeuron Society Meeting, July 2025</figcaption>
+      </figure>
+    </div>
     <h3>Oral &mdash; 13 presentations</h3>
     <div class="rows rise">
       <div class="row">
@@ -1450,28 +1576,46 @@ footer {
       </div>
     </div>
 
+    <div class="figs figs-1 rise">
+      <figure>
+        <img src="./photo-ppi.jpg" srcset="./photo-ppi@sm.jpg 640w, ./photo-ppi.jpg 1280w"
+             sizes="(max-width: 820px) 46vw, 24vw" width="1280" height="960"
+             loading="lazy" decoding="async" alt="Michail Arvanitidis presenting low back pain research to a Patient and Public Involvement audience">
+        <figcaption><b>Patient and Public Involvement session</b><br>CPR Spine, University of Birmingham</figcaption>
+      </figure>
+    </div>
+
     <h3>Journal peer review</h3>
-    <p class="inline-list rise">Applied Psychophysiology and Biofeedback · BMC Musculoskeletal Disorders ·
-    Clinical Biomechanics · European Journal of Applied Physiology · European Spine Journal ·
-    Journal of Applied Biomechanics · Journal of Applied Physiology · Journal of Biomechanics ·
-    Journal of Electromyography and Kinesiology · Journal of Sports Sciences ·
-    Musculoskeletal Science and Practice · Occupational and Environmental Medicine · PLOS ONE ·
-    Scientific Reports</p>
+    <div class="marquee rise" role="list" aria-label="Journals reviewed for">
+      <div class="marquee-row">
+        <div class="marquee-track"><span class="jpill">Applied Psychophysiology and Biofeedback</span><span class="jpill">BMC Musculoskeletal Disorders</span><span class="jpill">Clinical Biomechanics</span><span class="jpill">European Journal of Applied Physiology</span><span class="jpill">European Spine Journal</span><span class="jpill">Journal of Applied Biomechanics</span><span class="jpill">Journal of Applied Physiology</span><span class="jpill">Applied Psychophysiology and Biofeedback</span><span class="jpill">BMC Musculoskeletal Disorders</span><span class="jpill">Clinical Biomechanics</span><span class="jpill">European Journal of Applied Physiology</span><span class="jpill">European Spine Journal</span><span class="jpill">Journal of Applied Biomechanics</span><span class="jpill">Journal of Applied Physiology</span></div>
+      </div>
+      <div class="marquee-row" data-dir="r">
+        <div class="marquee-track"><span class="jpill">Journal of Biomechanics</span><span class="jpill">Journal of Electromyography and Kinesiology</span><span class="jpill">Journal of Sports Sciences</span><span class="jpill">Musculoskeletal Science and Practice</span><span class="jpill">Occupational and Environmental Medicine</span><span class="jpill">PLOS ONE</span><span class="jpill">Scientific Reports</span><span class="jpill">Journal of Biomechanics</span><span class="jpill">Journal of Electromyography and Kinesiology</span><span class="jpill">Journal of Sports Sciences</span><span class="jpill">Musculoskeletal Science and Practice</span><span class="jpill">Occupational and Environmental Medicine</span><span class="jpill">PLOS ONE</span><span class="jpill">Scientific Reports</span></div>
+      </div>
+    </div>
 
     <h3>Registration and membership</h3>
-    <p class="inline-list rise">Health and Care Professions Council (HCPC), 2018 ·
-    Chartered Society of Physiotherapy, 2018 ·
-    Musculoskeletal Association of Chartered Physiotherapists, 2019 ·
-    International Society of Electrophysiology and Kinesiology, 2020 ·
-    Association of Chartered Physiotherapists in Occupational Health and Ergonomics, 2026 ·
-    Panhellenic Association of Physiotherapists, 2016</p>
+    <ol class="numbered  rise">
+      <li><span class="n">01</span><span class="t">Health and Care Professions Council (HCPC)</span><span class="y">2018</span></li>
+      <li><span class="n">02</span><span class="t">Chartered Society of Physiotherapy</span><span class="y">2018</span></li>
+      <li><span class="n">03</span><span class="t">Musculoskeletal Association of Chartered Physiotherapists</span><span class="y">2019</span></li>
+      <li><span class="n">04</span><span class="t">International Society of Electrophysiology and Kinesiology</span><span class="y">2020</span></li>
+      <li><span class="n">05</span><span class="t">Association of Chartered Physiotherapists in Occupational Health and Ergonomics</span><span class="y">2026</span></li>
+      <li><span class="n">06</span><span class="t">Panhellenic Association of Physiotherapists</span><span class="y">2016</span></li>
+    </ol>
 
     <h3>Certification and training</h3>
-    <p class="inline-list rise">Vehicle Ergonomics, ACPOHE, 2026 · Office Ergonomics (DSE), ACPOHE, 2026 ·
-    Supervised Machine Learning: Regression and Classification, DeepLearning.AI and Stanford Online, 2025 ·
-    R Programming, Johns Hopkins University, 2024 · The Data Scientist's Toolbox, Johns Hopkins University, 2023 ·
-    Certified Peer Reviewer Course, Elsevier, 2021 · Introduction to Programming with MATLAB,
-    Vanderbilt University, 2019 · Otago Exercise Programme Leader Award, Later Life Training, 2015</p>
+    <ol class="numbered numbered-wide rise">
+      <li><span class="n">01</span><span class="t">Vehicle Ergonomics<span class="sub">ACPOHE</span></span><span class="y">2026</span></li>
+      <li><span class="n">02</span><span class="t">Office Ergonomics (DSE)<span class="sub">ACPOHE</span></span><span class="y">2026</span></li>
+      <li><span class="n">03</span><span class="t">Supervised Machine Learning: Regression and Classification<span class="sub">DeepLearning.AI and Stanford Online</span></span><span class="y">2025</span></li>
+      <li><span class="n">04</span><span class="t">R Programming<span class="sub">Johns Hopkins University</span></span><span class="y">2024</span></li>
+      <li><span class="n">05</span><span class="t">The Data Scientist's Toolbox<span class="sub">Johns Hopkins University</span></span><span class="y">2023</span></li>
+      <li><span class="n">06</span><span class="t">Certified Peer Reviewer Course<span class="sub">Elsevier</span></span><span class="y">2021</span></li>
+      <li><span class="n">07</span><span class="t">Introduction to Programming with MATLAB<span class="sub">Vanderbilt University</span></span><span class="y">2019</span></li>
+      <li><span class="n">08</span><span class="t">Otago Exercise Programme Leader Award<span class="sub">Later Life Training</span></span><span class="y">2015</span></li>
+    </ol>
   </section>
 
   <footer>
