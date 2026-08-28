@@ -710,6 +710,11 @@ footer {
   h2 { gap: .45rem; margin-bottom: 1.6rem; }
   #research { grid-template-columns: 1fr; gap: 1rem; }
   .figs-3 { grid-template-columns: 1fr 1fr; }
+  /* the odd one out sits centred under the pair instead of hanging left */
+  .figs-3 > figure:last-child {
+    grid-column: 1 / -1; justify-self: center;
+    width: calc(50% - .55rem);
+  }
   .figs-2, .figs-1 { grid-template-columns: 1fr; }
   .numbered { grid-template-columns: 1fr; gap: 0; }
   .tags { grid-template-columns: 1fr; }
