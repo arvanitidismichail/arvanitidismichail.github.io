@@ -88,6 +88,22 @@ def render_confs():
 
 
 
+WEBSITE_LD = """<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Michail Arvanitidis",
+  "alternateName": [
+    "Dr Michail Arvanitidis",
+    "\u039c\u03b9\u03c7\u03b1\u03ae\u03bb \u0391\u03c1\u03b2\u03b1\u03bd\u03b9\u03c4\u03af\u03b4\u03b7\u03c2"
+  ],
+  "url": "https://arvanitidismichail.com/"
+}
+</script>
+
+"""
+
+
 LANG = {
     "en": {
         "href": "./el/", "code": "el", "label": "Ελληνικά", "short": "EL",
@@ -102,6 +118,8 @@ LANG = {
 
 def fill(doc, lang):
     cfg = LANG[lang]
+    # Google supports one site name per domain: declare WebSite on the root only
+    doc = doc.replace("__WEBSITE_LD__", WEBSITE_LD if lang == "en" else "")
     doc = doc.replace("__LANG_HREF__", cfg["href"])
     doc = doc.replace("__LANG_CODE__", cfg["code"])
     doc = doc.replace("__LANG_LABEL__", cfg["label"])
