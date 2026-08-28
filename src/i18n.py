@@ -45,7 +45,7 @@ STRINGS = [
     ('<div class="post">Postdoctoral Research Fellow</div>',
      '<div class="post">Μεταδιδακτορικός Ερευνητής</div>', 1),
     (">Centre of Precision Rehabilitation for Spinal Pain</a><br>",
-     ">Centre of Precision Rehabilitation for Spinal Pain</a><br>", 1),
+     ">Κέντρο Εξατομικευμένης Αποκατάστασης για τον Πόνο της Σπονδυλικής Στήλης (CPR Spine)</a><br>", 1),
     ("          School of Sport, Exercise and Rehabilitation Sciences<br>\n"
      "          University of Birmingham, United Kingdom",
      "          Σχολή Αθλητισμού, Άσκησης και Επιστημών Αποκατάστασης<br>\n"
@@ -53,13 +53,14 @@ STRINGS = [
     ('alt="Michail Arvanitidis" class="portrait"', 'alt="Μιχαήλ Αρβανιτίδης" class="portrait"', 1),
 
     # ---------- header links ----------
-    (">Curriculum vitae (PDF)</a>", ">Αναλυτικό βιογραφικό (PDF, στα αγγλικά)</a>", 2),
+    (">Curriculum vitae (PDF)</a>", ">Αναλυτικό βιογραφικό (PDF)</a>", 2),
+    ('href="./CV_Michail_Arvanitidis.pdf"', 'href="./CV_Michail_Arvanitidis_EL.pdf"', 2),
     ("        University profile</a>", "        Προφίλ πανεπιστημίου</a>", 1),
 
     # ---------- tally ----------
     ('<div class="t">Peer-reviewed papers</div>', '<div class="t">Δημοσιεύσεις με κριτές</div>', 1),
     ('<div class="t">As first author</div>', '<div class="t">Ως πρώτος συγγραφέας</div>', 1),
-    ('<div class="t">Funding, co-applicant</div>', '<div class="t">Χρηματοδότηση, ως συν-αιτών</div>', 1),
+    ('<div class="t">Funding, co-applicant</div>', '<div class="t">Χρηματοδότηση, ως συνεργαζόμενος αιτών</div>', 1),
     ('<div class="t">Journals reviewed for</div>', '<div class="t">Περιοδικά ως κριτής</div>', 1),
 
     # ---------- research ----------
@@ -83,7 +84,7 @@ STRINGS = [
     (">High-density surface electromyography</span>", ">Ηλεκτρομυογραφία επιφανείας υψηλής πυκνότητας</span>", 1),
     (">Motor unit decomposition</span>", ">Αποσύνθεση κινητικών μονάδων</span>", 1),
     (">Analysis of B-mode ultrasound data</span>", ">Ανάλυση δεδομένων υπερηχογραφίας B-mode</span>", 1),
-    (">Isokinetic dynamometry</span>", ">Ισοκινητική δυναμομετρία</span>", 1),
+    (">Isokinetic dynamometry</span>", ">Ισοκινητική δυναμομέτρηση</span>", 1),
     (">Signal processing</span>", ">Επεξεργασία σήματος</span>", 1),
     (">Augmented reality biofeedback systems</span>", ">Συστήματα βιοανάδρασης επαυξημένης πραγματικότητας</span>", 1),
     (">Systematic review &amp; meta-analysis</span>", ">Συστηματική ανασκόπηση και μετα-ανάλυση</span>", 1),
@@ -125,11 +126,12 @@ STRINGS = [
     ('<div class="org">The Birmingham Back Pain Clinic, United Kingdom</div>',
      '<div class="org">The Birmingham Back Pain Clinic, Ηνωμένο Βασίλειο</div>', 1),
     ('<div class="org">Private Physiotherapy Centre, Drama, Greece</div>',
-     '<div class="org">Ιδιωτικό κέντρο φυσικοθεραπείας, Δράμα</div>', 1),
+     '<div class="org">Ιδιωτικό Κέντρο Φυσικοθεραπείας, Δράμα, Ελλάδα</div>', 1),
     ("Project: <em>Cervical in Space</em> — cervical spine and muscle adaptation after\n"
      "          spaceflight and relationship to herniation risk. Mentor: Prof. Deborah Falla.",
-     "Έργο: <em>Cervical in Space</em> — προσαρμογές της αυχενικής μοίρας και των μυών της\n"
-     "          μετά από διαστημική πτήση και σχέση με τον κίνδυνο δισκοκήλης. Επιβλέπουσα: Καθ. Deborah Falla.", 1),
+     "Έργο: <em>Cervical in Space</em> — προσαρμογές της αυχενικής μοίρας της σπονδυλικής στήλης\n"
+     "          και των μυών μετά από διαστημική πτήση και σχέση με τον κίνδυνο δισκοκήλης.\n"
+     "          Επιβλέπουσα: Καθ. Deborah Falla.", 1),
     ("Data collection, analysis and dissemination for the <em>Cervical in Space</em> programme\n"
      "          alongside doctoral studies.",
      "Συλλογή, ανάλυση και διάχυση δεδομένων για το πρόγραμμα <em>Cervical in Space</em>,\n"
@@ -137,7 +139,7 @@ STRINGS = [
     ("Astronaut neck strength and neuromuscular assessment protocols; HD-sEMG and\n"
      "          dynamometry pipeline development.",
      "Πρωτόκολλα αξιολόγησης δύναμης αυχένα και νευρομυϊκής λειτουργίας αστροναυτών· ανάπτυξη\n"
-     "          ροής ανάλυσης HD-sEMG και δυναμομετρίας.", 1),
+     "          ροής ανάλυσης HD-sEMG και δυναμομέτρησης.", 1),
     ("Part-time clinical practice. Assessment and management of complex spinal and\n"
      "          musculoskeletal presentations. Employer: Dr David W. Evans.",
      "Κλινική άσκηση μερικής απασχόλησης. Αξιολόγηση και αντιμετώπιση σύνθετων περιστατικών\n"
@@ -148,20 +150,20 @@ STRINGS = [
     # ---------- education ----------
     ("<h3>Education</h3>", "<h3>Σπουδές</h3>", 1),
     ('<div class="role">PhD, Sport, Exercise and Rehabilitation Sciences</div>',
-     '<div class="role">Διδακτορικό, Αθλητισμός, Άσκηση και Επιστήμες Αποκατάστασης</div>', 1),
+     '<div class="role">Διδακτορικό (PhD), Επιστήμες Αθλητισμού, Άσκησης και Αποκατάστασης</div>', 1),
     ('<div class="role">MSc Advanced Manipulative Physiotherapy</div>',
-     '<div class="role">MSc Προηγμένη Χειροθεραπευτική Φυσικοθεραπεία</div>', 1),
+     '<div class="role">Μεταπτυχιακό Δίπλωμα Ειδίκευσης (MSc Advanced Manipulative Physiotherapy)</div>', 1),
     ('<div class="role">BSc Physiotherapy, First Class Honours</div>',
-     '<div class="role">Πτυχίο Φυσικοθεραπείας, Άριστα</div>', 1),
+     '<div class="role">Πτυχίο Φυσικοθεραπείας (BSc), Άριστα</div>', 1),
     ('<div class="org">University of Birmingham</div>',
      '<div class="org">Πανεπιστήμιο του Μπέρμιγχαμ</div>', 2),
     ('<div class="org">University of Thessaly, Lamia, Greece</div>',
-     '<div class="org">Πανεπιστήμιο Θεσσαλίας, Λαμία</div>', 1),
+     '<div class="org">Τμήμα Φυσικοθεραπείας, Πανεπιστήμιο Θεσσαλίας, Λαμία, Ελλάδα</div>', 1),
     ("Control of trunk muscle force in chronic low back pain, using high-density\n"
      "          surface EMG and isokinetic dynamometry. Supervisors: Dr Eduardo Martinez-Valdes,\n"
      "          Prof. Deborah Falla.",
      "Έλεγχος της δύναμης των μυών του κορμού στη χρόνια οσφυαλγία, με ηλεκτρομυογραφία\n"
-     "          επιφανείας υψηλής πυκνότητας και ισοκινητική δυναμομετρία. Επιβλέποντες:\n"
+     "          επιφανείας υψηλής πυκνότητας και ισοκινητική δυναμομέτρηση. Επιβλέποντες:\n"
      "          Δρ Eduardo Martinez-Valdes, Καθ. Deborah Falla.", 1),
     ("MMACP-accredited programme. Supervisors: Dr Eduardo Martinez-Valdes,\n"
      "          Prof. Deborah Falla.",
@@ -203,13 +205,13 @@ STRINGS = [
      "<b>Seal of Excellence, Ευρωπαϊκή Επιτροπή</b>", 1),
     ('Horizon Europe MSCA Postdoctoral Fellowships 2025, for the proposal PRO-AGE (101274439), scored <span class="sum">91.8 / 100</span>. Host: Aristotle University of Thessaloniki.',
      'Horizon Europe MSCA Postdoctoral Fellowships 2025, για την πρόταση PRO-AGE (101274439), με βαθμολογία <span class="sum">91,8 / 100</span>. Ίδρυμα υποδοχής: Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης.', 1),
-    ("<b>Level 2 CPD Award</b>", "<b>Βραβείο CPD Επιπέδου 2</b>", 1),
-    ("<b>Level 2 Research Award</b>", "<b>Ερευνητικό Βραβείο Επιπέδου 2</b>", 1),
+    ("<b>Level 2 CPD Award</b>", "<b>Level 2 CPD Award</b>", 1),
+    ("<b>Level 2 Research Award</b>", "<b>Level 2 Research Award</b>", 1),
     ("<b>Shortlisted, Oral Student Presentation Award</b>",
-     "<b>Στη βραχεία λίστα, Βραβείο Προφορικής Φοιτητικής Παρουσίασης</b>", 1),
+     "<b>Υποψήφιος για τα Βραβεία Προφορικής Παρουσίασης Φοιτητών</b>", 1),
     ("<span class=\"sub\">Musculoskeletal Association of Chartered Physiotherapists</span>",
      "<span class=\"sub\">Musculoskeletal Association of Chartered Physiotherapists</span>", 3),
-    ("<b>IFOMPT Travel Bursary</b>", "<b>Υποτροφία μετακίνησης IFOMPT</b>", 1),
+    ("<b>IFOMPT Travel Bursary</b>", "<b>IFOMPT Travel Bursary Award</b>", 1),
     ("<b>Honorary fellowship for distinction in undergraduate studies</b>",
      "<b>Τιμητική υποτροφία για διάκριση στις προπτυχιακές σπουδές</b>", 1),
     ("National Scholarships Foundation, University of Thessaly",
@@ -219,14 +221,14 @@ STRINGS = [
     ("<h3>Funding</h3>", "<h3>Χρηματοδότηση</h3>", 1),
     ("Cervical spine and muscle adaptation after spaceflight and\n"
      "          relationship to herniation risk.",
-     "Προσαρμογές της αυχενικής μοίρας και των μυών της μετά από διαστημική πτήση\n"
-     "          και σχέση με τον κίνδυνο δισκοκήλης.", 1),
+     "Προσαρμογές της αυχενικής μοίρας της σπονδυλικής στήλης και των μυών μετά από\n"
+     "          διαστημική πτήση και σχέση με τον κίνδυνο δισκοκήλης.", 1),
     ("Real-time augmented reality feedback of muscle activity to\n"
      "          enhance human performance.",
-     "Ανάδραση μυϊκής δραστηριότητας σε πραγματικό χρόνο με επαυξημένη πραγματικότητα\n"
-     "          για τη βελτίωση της ανθρώπινης απόδοσης.", 1),
-    ("Co-applicant.", "Συν-αιτών.", 1),
-    ("Co-applicant,", "Συν-αιτών,", 1),
+     "Ανατροφοδότηση επαυξημένης πραγματικότητας σε πραγματικό χρόνο για τη μυϊκή\n"
+     "          δραστηριότητα, με σκοπό τη βελτίωση της ανθρώπινης απόδοσης.", 1),
+    ("Co-applicant.", "Συνεργαζόμενος αιτών.", 1),
+    ("Co-applicant,", "Συνεργαζόμενος αιτών,", 1),
     (". Contributed to the writing of the application.", ". Συμμετοχή στη συγγραφή της πρότασης.", 1),
 
     # ---------- conferences ----------
@@ -244,17 +246,17 @@ STRINGS = [
     ("<h2>Teaching and mentoring</h2>", "<h2>Διδασκαλία και καθοδήγηση</h2>", 1),
     ("<b>Neuromuscular Adaptations to Training</b> — postgraduate practical laboratories in\n"
      "          isokinetic dynamometry and high-density EMG.",
-     "<b>Neuromuscular Adaptations to Training</b> — μεταπτυχιακά εργαστήρια σε ισοκινητική\n"
-     "          δυναμομετρία και ηλεκτρομυογραφία υψηλής πυκνότητας.", 1),
+     "<b>Νευρομυϊκές Προσαρμογές στην Προπόνηση</b> — μεταπτυχιακά εργαστήρια σε ισοκινητική\n"
+     "          δυναμομέτρηση και ηλεκτρομυογραφία υψηλής πυκνότητας.", 1),
     ("<b>Analysis of Motor Performance</b> — undergraduate practical laboratories in isokinetic\n"
      "          dynamometry and high-density EMG.",
-     "<b>Analysis of Motor Performance</b> — προπτυχιακά εργαστήρια σε ισοκινητική\n"
-     "          δυναμομετρία και ηλεκτρομυογραφία υψηλής πυκνότητας.", 1),
+     "<b>Ανάλυση Κινητικής Απόδοσης</b> — προπτυχιακά εργαστήρια σε ισοκινητική\n"
+     "          δυναμομέτρηση και ηλεκτρομυογραφία υψηλής πυκνότητας.", 1),
     ("<b>Invited lecturer</b>, MSc Advanced Physiotherapy — “The role of high-density\n"
      "          surface EMG in the assessment and treatment of musculoskeletal disorders: clinical applications”.",
-     "<b>Προσκεκλημένος διδάσκων</b>, MSc Προηγμένη Φυσικοθεραπεία — «Ο ρόλος της\n"
-     "          ηλεκτρομυογραφίας επιφανείας υψηλής πυκνότητας στην αξιολόγηση και θεραπεία μυοσκελετικών\n"
-     "          παθήσεων: κλινικές εφαρμογές».", 1),
+     "<b>Προσκεκλημένη διάλεξη</b>, ΠΜΣ «Προηγμένη Φυσικοθεραπεία» — «Ο ρόλος της\n"
+     "          επιφανειακής ηλεκτρομυογραφίας υψηλής πυκνότητας στην αξιολόγηση και τη θεραπεία των\n"
+     "          μυοσκελετικών παθήσεων: κλινικές εφαρμογές».", 1),
     ("<b>Doctoral and Master's supervision</b> — co-supervision of more than twenty PhD,\n"
      "          MSc and BSc research projects spanning trunk and neck neuromuscular control,\n"
      "          tendinopathy, AR biofeedback and systematic review methodology.",
@@ -284,21 +286,21 @@ STRINGS = [
     ("<b>Patient and Public Involvement</b> — presentations and discussions with people\n"
      "          living with chronic spinal pain through the CPR Spine PPI panel, feeding public\n"
      "          input into study design.",
-     "<b>Συμμετοχή ασθενών και κοινού</b> — παρουσιάσεις και συζητήσεις με ανθρώπους που ζουν\n"
-     "          με χρόνιο πόνο στη σπονδυλική στήλη, μέσω του PPI panel του CPR Spine, ώστε η φωνή τους\n"
-     "          να μπαίνει στον σχεδιασμό των μελετών.", 1),
+     "<b>Συναντήσεις Συμμετοχής Ασθενών και Κοινού (PPI)</b> — παρουσιάσεις και διαδραστικές\n"
+     "          συζητήσεις με άτομα που ζουν με χρόνιο πόνο στη σπονδυλική στήλη, από το μητρώο του\n"
+     "          CPR Spine, με ενσωμάτωση της ανατροφοδότησής τους στον σχεδιασμό νέων μελετών.", 1),
     ("<h3>Journal peer review</h3>", "<h3>Κριτής σε περιοδικά</h3>", 1),
     ('aria-label="Journals reviewed for"', 'aria-label="Περιοδικά ως κριτής"', 1),
     ("<h3>Registration and membership</h3>", "<h3>Εγγραφές και μέλη</h3>", 1),
     ("<h3>Certification and training</h3>", "<h3>Πιστοποιήσεις και κατάρτιση</h3>", 1),
     (">Panhellenic Association of Physiotherapists<", ">Πανελλήνιος Σύλλογος Φυσικοθεραπευτών<", 1),
-    (">Vehicle Ergonomics<", ">Εργονομία οχημάτων<", 1),
-    (">Office Ergonomics (DSE)<", ">Εργονομία γραφείου (DSE)<", 1),
+    (">Vehicle Ergonomics<", ">Vehicle Ergonomics<", 1),
+    (">Office Ergonomics (DSE)<", ">Office Ergonomics (DSE)<", 1),
     (">Supervised Machine Learning: Regression and Classification<",
      ">Supervised Machine Learning: Regression and Classification<", 1),
-    (">R Programming<", ">Προγραμματισμός σε R<", 1),
+    (">R Programming<", ">R Programming<", 1),
     (">Certified Peer Reviewer Course<", ">Certified Peer Reviewer Course<", 1),
-    (">Introduction to Programming with MATLAB<", ">Εισαγωγή στον προγραμματισμό με MATLAB<", 1),
+    (">Introduction to Programming with MATLAB<", ">Introduction to Programming with MATLAB<", 1),
     (">Otago Exercise Programme Leader Award<", ">Otago Exercise Programme Leader Award<", 1),
 
     # ---------- footer ----------

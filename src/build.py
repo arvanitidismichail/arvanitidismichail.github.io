@@ -90,11 +90,11 @@ def render_confs():
 
 LANG = {
     "en": {
-        "href": "./el/", "code": "el", "label": "Ελληνικά",
+        "href": "./el/", "code": "el", "label": "Ελληνικά", "short": "EL",
         "canonical": "https://arvanitidismichail.com/",
     },
     "el": {
-        "href": "../", "code": "en", "label": "English",
+        "href": "../", "code": "en", "label": "English", "short": "EN",
         "canonical": "https://arvanitidismichail.com/el/",
     },
 }
@@ -105,6 +105,7 @@ def fill(doc, lang):
     doc = doc.replace("__LANG_HREF__", cfg["href"])
     doc = doc.replace("__LANG_CODE__", cfg["code"])
     doc = doc.replace("__LANG_LABEL__", cfg["label"])
+    doc = doc.replace("__LANG_SHORT__", cfg["short"])
     doc = doc.replace("__CANONICAL__", cfg["canonical"])
     if lang == "el":
         doc = doc.replace('<html lang="en" data-theme="dark">', '<html lang="el" data-theme="dark">', 1)

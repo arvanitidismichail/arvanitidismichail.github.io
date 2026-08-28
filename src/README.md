@@ -19,7 +19,8 @@ That writes both pages. Then `git add -A && git commit && git push`.
 | `conferences.py` | The 22 conference presentations |
 | `i18n.py` | The Greek translation — one line per phrase |
 | `build.py` | Puts it together and writes both language versions |
-| `cvpdf.py` | Builds `CV_Michail_Arvanitidis.pdf` (needs Playwright) |
+| `cvpdf.py` | Builds `CV_Michail_Arvanitidis.pdf` (needs headless Chromium) |
+| `cvpdf_el.py` | Builds the Greek CV PDF by translating the English one |
 
 ## Adding a publication
 
