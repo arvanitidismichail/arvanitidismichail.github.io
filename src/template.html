@@ -599,7 +599,7 @@ main > section:nth-of-type(odd) .tags .tag { background: var(--paper); }
 }
 .figs figcaption b { color: var(--ink-2); font-weight: 600; }
 /* deliberately uneven columns — a row of equal tiles reads as a template */
-.figs-4 { grid-template-columns: repeat(4, 1fr); }
+.figs-3 { grid-template-columns: repeat(3, 1fr); }
 .figs-2 { grid-template-columns: repeat(2, 1fr); }
 .figs-1 { grid-template-columns: minmax(0, 32rem); justify-content: center; }
 
@@ -709,7 +709,7 @@ footer {
   main > section { padding: 3.1rem 0; }
   h2 { gap: .45rem; margin-bottom: 1.6rem; }
   #research { grid-template-columns: 1fr; gap: 1rem; }
-  .figs-4 { grid-template-columns: 1fr 1fr; }
+  .figs-3 { grid-template-columns: 1fr 1fr; }
   .figs-2, .figs-1 { grid-template-columns: 1fr; }
   .numbered { grid-template-columns: 1fr; gap: 0; }
   .tags { grid-template-columns: 1fr; }
@@ -904,20 +904,20 @@ footer {
       <span class="tag"><svg class="ti"><use href="#i-dyn"/></svg>Isokinetic dynamometry</span>
       <span class="tag"><svg class="ti"><use href="#i-signal"/></svg>Signal processing</span>
       <span class="tag"><svg class="ti"><use href="#i-matlab"/></svg>MATLAB</span>
-      <span class="tag"><svg class="ti"><use href="#i-r"/></svg>R</span>
+      <span class="tag"><svg class="ti"><use href="#i-r"/></svg>R language</span>
       <span class="tag"><svg class="ti"><use href="#i-ar"/></svg>Augmented reality biofeedback systems</span>
       <span class="tag"><svg class="ti"><use href="#i-review"/></svg>Systematic review &amp; meta-analysis</span>
     </div>
     <div class="figs figs-2 rise">
       <figure>
         <img src="./photo-nasa-jsc.jpg" srcset="./photo-nasa-jsc@sm.jpg 640w, ./photo-nasa-jsc.jpg 1280w"
-             sizes="(max-width: 820px) 46vw, 24vw" width="1280" height="960"
+             sizes="(max-width: 820px) 46vw, 31vw" width="1280" height="960"
              loading="lazy" decoding="async" alt="Michail Arvanitidis outside the NASA Lyndon B. Johnson Space Center sign, Houston">
         <figcaption><b>NASA Lyndon B. Johnson Space Center</b><br>Houston, Texas</figcaption>
       </figure>
       <figure>
         <img src="./photo-nasa-shuttle.jpg" srcset="./photo-nasa-shuttle@sm.jpg 640w, ./photo-nasa-shuttle.jpg 1280w"
-             sizes="(max-width: 820px) 46vw, 24vw" width="1280" height="960"
+             sizes="(max-width: 820px) 46vw, 31vw" width="1280" height="960"
              loading="lazy" decoding="async" alt="Michail Arvanitidis in front of the Shuttle Carrier Aircraft at Space Center Houston">
         <figcaption><b>Space Center Houston</b><br>Houston, Texas</figcaption>
       </figure>
@@ -1113,25 +1113,20 @@ footer {
   <section id="talks" aria-labelledby="talks-t">
     <h2 id="talks-t">Conference presentations <span class="label aside">13 oral · 9 poster</span></h2>
     <p class="asterisk-note rise">Refereed conference proceedings. An asterisk marks the presenter.</p>
-    <div class="figs figs-4 rise">
-      <figure>
-        <img src="./photo-talk-1.jpg" srcset="./photo-talk-1@sm.jpg 640w, ./photo-talk-1.jpg 1280w"
-             sizes="(max-width: 820px) 46vw, 24vw" width="1280" height="960"
-             loading="lazy" decoding="async" alt="Michail Arvanitidis presenting at a lectern beside a projected slide">
-      </figure>
+    <div class="figs figs-3 rise">
       <figure>
         <img src="./photo-talk-2.jpg" srcset="./photo-talk-2@sm.jpg 640w, ./photo-talk-2.jpg 1280w"
-             sizes="(max-width: 820px) 46vw, 24vw" width="1280" height="960"
+             sizes="(max-width: 820px) 46vw, 31vw" width="1280" height="960"
              loading="lazy" decoding="async" alt="Michail Arvanitidis presenting beside a projected acknowledgements slide">
       </figure>
       <figure>
         <img src="./photo-poster-1.jpg" srcset="./photo-poster-1@sm.jpg 640w, ./photo-poster-1.jpg 1280w"
-             sizes="(max-width: 820px) 46vw, 24vw" width="1280" height="960"
+             sizes="(max-width: 820px) 46vw, 31vw" width="1280" height="960"
              loading="lazy" decoding="async" alt="Michail Arvanitidis beside his poster on neck force control in astronauts">
       </figure>
       <figure>
         <img src="./photo-poster-2.jpg" srcset="./photo-poster-2@sm.jpg 640w, ./photo-poster-2.jpg 1280w"
-             sizes="(max-width: 820px) 46vw, 24vw" width="1280" height="960"
+             sizes="(max-width: 820px) 46vw, 31vw" width="1280" height="960"
              loading="lazy" decoding="async" alt="Michail Arvanitidis beside his poster on motor unit behaviour in patellofemoral pain">
       </figure>
     </div>
@@ -1210,7 +1205,7 @@ footer {
     <div class="figs figs-1 rise">
       <figure>
         <img src="./photo-ppi.jpg" srcset="./photo-ppi@sm.jpg 640w, ./photo-ppi.jpg 1280w"
-             sizes="(max-width: 820px) 46vw, 24vw" width="1280" height="960"
+             sizes="(max-width: 820px) 46vw, 31vw" width="1280" height="960"
              loading="lazy" decoding="async" alt="Michail Arvanitidis presenting low back pain research to a Patient and Public Involvement audience">
         <figcaption><b>Patient and Public Involvement session</b><br>CPR Spine, University of Birmingham</figcaption>
       </figure>

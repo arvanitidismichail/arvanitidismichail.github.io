@@ -599,7 +599,7 @@ main > section:nth-of-type(odd) .tags .tag { background: var(--paper); }
 }
 .figs figcaption b { color: var(--ink-2); font-weight: 600; }
 /* deliberately uneven columns — a row of equal tiles reads as a template */
-.figs-4 { grid-template-columns: repeat(4, 1fr); }
+.figs-3 { grid-template-columns: repeat(3, 1fr); }
 .figs-2 { grid-template-columns: repeat(2, 1fr); }
 .figs-1 { grid-template-columns: minmax(0, 32rem); justify-content: center; }
 
@@ -709,7 +709,7 @@ footer {
   main > section { padding: 3.1rem 0; }
   h2 { gap: .45rem; margin-bottom: 1.6rem; }
   #research { grid-template-columns: 1fr; gap: 1rem; }
-  .figs-4 { grid-template-columns: 1fr 1fr; }
+  .figs-3 { grid-template-columns: 1fr 1fr; }
   .figs-2, .figs-1 { grid-template-columns: 1fr; }
   .numbered { grid-template-columns: 1fr; gap: 0; }
   .tags { grid-template-columns: 1fr; }
@@ -905,20 +905,20 @@ footer {
       <span class="tag"><svg class="ti"><use href="#i-dyn"/></svg>Ισοκινητική δυναμομέτρηση</span>
       <span class="tag"><svg class="ti"><use href="#i-signal"/></svg>Επεξεργασία σήματος</span>
       <span class="tag"><svg class="ti"><use href="#i-matlab"/></svg>MATLAB</span>
-      <span class="tag"><svg class="ti"><use href="#i-r"/></svg>R</span>
+      <span class="tag"><svg class="ti"><use href="#i-r"/></svg>R language</span>
       <span class="tag"><svg class="ti"><use href="#i-ar"/></svg>Συστήματα βιοανάδρασης επαυξημένης πραγματικότητας</span>
       <span class="tag"><svg class="ti"><use href="#i-review"/></svg>Συστηματική ανασκόπηση και μετα-ανάλυση</span>
     </div>
     <div class="figs figs-2 rise">
       <figure>
         <img src="../photo-nasa-jsc.jpg" srcset="../photo-nasa-jsc@sm.jpg 640w, ../photo-nasa-jsc.jpg 1280w"
-             sizes="(max-width: 820px) 46vw, 24vw" width="1280" height="960"
+             sizes="(max-width: 820px) 46vw, 31vw" width="1280" height="960"
              loading="lazy" decoding="async" alt="Ο Μιχαήλ Αρβανιτίδης έξω από την πινακίδα του NASA Lyndon B. Johnson Space Center, Χιούστον">
         <figcaption><b>NASA Lyndon B. Johnson Space Center</b><br>Χιούστον, Τέξας</figcaption>
       </figure>
       <figure>
         <img src="../photo-nasa-shuttle.jpg" srcset="../photo-nasa-shuttle@sm.jpg 640w, ../photo-nasa-shuttle.jpg 1280w"
-             sizes="(max-width: 820px) 46vw, 24vw" width="1280" height="960"
+             sizes="(max-width: 820px) 46vw, 31vw" width="1280" height="960"
              loading="lazy" decoding="async" alt="Ο Μιχαήλ Αρβανιτίδης μπροστά από το Shuttle Carrier Aircraft στο Space Center Houston">
         <figcaption><b>Space Center Houston</b><br>Χιούστον, Τέξας</figcaption>
       </figure>
@@ -1356,25 +1356,20 @@ footer {
   <section id="talks" aria-labelledby="talks-t">
     <h2 id="talks-t">Ανακοινώσεις σε συνέδρια  <span class="label aside">13 προφορικές · 9 αναρτημένες</span></h2>
     <p class="asterisk-note rise">Ανακοινώσεις με κρίση. Ο αστερίσκος σημειώνει τον παρουσιαστή.</p>
-    <div class="figs figs-4 rise">
-      <figure>
-        <img src="../photo-talk-1.jpg" srcset="../photo-talk-1@sm.jpg 640w, ../photo-talk-1.jpg 1280w"
-             sizes="(max-width: 820px) 46vw, 24vw" width="1280" height="960"
-             loading="lazy" decoding="async" alt="Ο Μιχαήλ Αρβανιτίδης παρουσιάζει σε βήμα δίπλα σε προβαλλόμενη διαφάνεια">
-      </figure>
+    <div class="figs figs-3 rise">
       <figure>
         <img src="../photo-talk-2.jpg" srcset="../photo-talk-2@sm.jpg 640w, ../photo-talk-2.jpg 1280w"
-             sizes="(max-width: 820px) 46vw, 24vw" width="1280" height="960"
+             sizes="(max-width: 820px) 46vw, 31vw" width="1280" height="960"
              loading="lazy" decoding="async" alt="Ο Μιχαήλ Αρβανιτίδης παρουσιάζει δίπλα σε προβαλλόμενη διαφάνεια ευχαριστιών">
       </figure>
       <figure>
         <img src="../photo-poster-1.jpg" srcset="../photo-poster-1@sm.jpg 640w, ../photo-poster-1.jpg 1280w"
-             sizes="(max-width: 820px) 46vw, 24vw" width="1280" height="960"
+             sizes="(max-width: 820px) 46vw, 31vw" width="1280" height="960"
              loading="lazy" decoding="async" alt="Ο Μιχαήλ Αρβανιτίδης δίπλα στο poster του για τον έλεγχο δύναμης του αυχένα σε αστροναύτες">
       </figure>
       <figure>
         <img src="../photo-poster-2.jpg" srcset="../photo-poster-2@sm.jpg 640w, ../photo-poster-2.jpg 1280w"
-             sizes="(max-width: 820px) 46vw, 24vw" width="1280" height="960"
+             sizes="(max-width: 820px) 46vw, 31vw" width="1280" height="960"
              loading="lazy" decoding="async" alt="Ο Μιχαήλ Αρβανιτίδης δίπλα στο poster του για τη συμπεριφορά κινητικών μονάδων στο επιγονατιδομηριαίο πόνο">
       </figure>
     </div>
@@ -1637,7 +1632,7 @@ footer {
     <div class="figs figs-1 rise">
       <figure>
         <img src="../photo-ppi.jpg" srcset="../photo-ppi@sm.jpg 640w, ../photo-ppi.jpg 1280w"
-             sizes="(max-width: 820px) 46vw, 24vw" width="1280" height="960"
+             sizes="(max-width: 820px) 46vw, 31vw" width="1280" height="960"
              loading="lazy" decoding="async" alt="Ο Μιχαήλ Αρβανιτίδης παρουσιάζει έρευνα για την οσφυαλγία σε κοινό ασθενών">
         <figcaption><b>Συνάντηση συμμετοχής ασθενών και κοινού</b><br>CPR Spine, Πανεπιστήμιο του Μπέρμιγχαμ</figcaption>
       </figure>
