@@ -20,7 +20,7 @@ STRINGS = [
     ('<li><a href="#publications">Publications</a></li>', '<li><a href="#publications">Δημοσιεύσεις</a></li>', 1),
     ('<li><a href="#awards">Awards</a></li>', '<li><a href="#awards">Διακρίσεις</a></li>', 1),
     ('<li><a href="#talks">Conferences</a></li>', '<li><a href="#talks">Συνέδρια</a></li>', 1),
-    ('<li><a href="#teaching">Teaching</a></li>', '<li><a href="#teaching">Διδασκαλία &amp; επίβλεψη</a></li>', 1),
+    ('<li><a href="#teaching">Teaching</a></li>', '<li><a href="#teaching">Διδασκαλία</a></li>', 1),
     ('<li><a href="#service">Service</a></li>', '<li><a href="#service">Ακαδημαϊκή προσφορά</a></li>', 1),
 
     ('<a class="nav-cta" href="#contact">', '<a class="nav-cta" href="#contact">', 1),
