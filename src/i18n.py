@@ -23,6 +23,10 @@ STRINGS = [
     ('<li><a href="#teaching">Teaching</a></li>', '<li><a href="#teaching">Διδασκαλία &amp; επίβλεψη</a></li>', 1),
     ('<li><a href="#service">Service</a></li>', '<li><a href="#service">Ακαδημαϊκή προσφορά</a></li>', 1),
 
+    ('<a class="nav-cta" href="#contact">', '<a class="nav-cta" href="#contact">', 1),
+    ("<span>Contact</span>", "<span>Επικοινωνία</span>", 1),
+    ('<div class="foot-col" id="contact">', '<div class="foot-col" id="contact">', 1),
+
     # ---------- head ----------
     ("<title>Michail Arvanitidis — Postdoctoral Research Fellow, University of Birmingham</title>",
      "<title>Μιχαήλ Αρβανιτίδης — Μεταδιδακτορικός Ερευνητής, Πανεπιστήμιο του Μπέρμιγχαμ</title>", 1),
