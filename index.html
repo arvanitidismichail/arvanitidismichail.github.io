@@ -199,6 +199,9 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
   -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 22px), transparent);
           mask-image: linear-gradient(to right, #000 calc(100% - 22px), transparent);
 }
+/* a trailing spacer, so at the end of the scroll the last link clears the
+   fade and the buttons beside it instead of sitting half under them */
+.nav-list.is-scrollable::after { content: ""; flex: none; width: 26px; }
 .nav-list::-webkit-scrollbar { display: none; }
 .nav-list a {
   font-family: var(--sans);
@@ -1795,11 +1798,11 @@ footer {
 
     <h3>Registration and membership</h3>
     <ol class="numbered  rise">
-      <li><span class="n">01</span><span class="t">Health and Care Professions Council (HCPC)</span><span class="y">2018</span></li>
-      <li><span class="n">02</span><span class="t">Chartered Society of Physiotherapy</span><span class="y">2018</span></li>
+      <li><span class="n">01</span><span class="t">Association of Chartered Physiotherapists in Occupational Health and Ergonomics</span><span class="y">2026</span></li>
+      <li><span class="n">02</span><span class="t">International Society of Electrophysiology and Kinesiology</span><span class="y">2020</span></li>
       <li><span class="n">03</span><span class="t">Musculoskeletal Association of Chartered Physiotherapists</span><span class="y">2019</span></li>
-      <li><span class="n">04</span><span class="t">International Society of Electrophysiology and Kinesiology</span><span class="y">2020</span></li>
-      <li><span class="n">05</span><span class="t">Association of Chartered Physiotherapists in Occupational Health and Ergonomics</span><span class="y">2026</span></li>
+      <li><span class="n">04</span><span class="t">Health and Care Professions Council (HCPC)</span><span class="y">2018</span></li>
+      <li><span class="n">05</span><span class="t">Chartered Society of Physiotherapy</span><span class="y">2018</span></li>
       <li><span class="n">06</span><span class="t">Panhellenic Association of Physiotherapists</span><span class="y">2016</span></li>
     </ol>
 

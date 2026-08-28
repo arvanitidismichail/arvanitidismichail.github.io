@@ -288,10 +288,10 @@ proposal PRO-AGE (91.8/100).</p>
 
 <h2>Registrations, Memberships &amp; Certifications</h2>
 <div class="subhd">Registration &amp; membership</div>
-<div class="tag-line">Health and Care Professions Council (HCPC), 2018 &middot; Chartered Society of Physiotherapy (CSP), 2018 &middot;
-Musculoskeletal Association of Chartered Physiotherapists (MACP), 2019 &middot;
+<div class="tag-line">Association of Chartered Physiotherapists in Occupational Health and Ergonomics (ACPOHE), 2026 &middot;
 International Society of Electrophysiology and Kinesiology (ISEK), 2020 &middot;
-Association of Chartered Physiotherapists in Occupational Health and Ergonomics (ACPOHE), 2026 &middot;
+Musculoskeletal Association of Chartered Physiotherapists (MACP), 2019 &middot;
+Health and Care Professions Council (HCPC), 2018 &middot; Chartered Society of Physiotherapy (CSP), 2018 &middot;
 Panhellenic Association of Physiotherapists, 2016.</div>
 <div class="subhd">Certifications &amp; continuing training</div>
 <div class="tag-line">Vehicle Ergonomics Online Training, ACPOHE, 2026 &middot; Office Ergonomics (DSE), ACPOHE, 2026 &middot;
