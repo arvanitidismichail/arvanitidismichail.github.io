@@ -188,7 +188,11 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
   flex: 1 1 auto; min-width: 0;
   display: flex; align-items: center; gap: 1.1rem;
   list-style: none; margin: 0; padding: 0;
-  overflow-x: auto; scrollbar-width: none;
+  overflow-x: auto; overflow-y: hidden; scrollbar-width: none;
+  /* a swipe on the bar pans the bar, never the page behind it */
+  touch-action: pan-x;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
 }
 /* fade only when the list really overflows, so a list that fits is never dimmed */
 .nav-list.is-scrollable {
