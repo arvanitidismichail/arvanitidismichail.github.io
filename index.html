@@ -486,16 +486,16 @@ footer {
   text-transform: uppercase; color: var(--ink-3);
   margin: 0 0 1rem; padding: 0; border: 0;
 }
-.foot-col > a:not(.mail-pill) {
+.foot-col > a {
   display: block; font-size: 0.875rem; line-height: 1.5;
   color: var(--ink-2); text-decoration: none;
   padding: .3rem 0; border: 0;
   transition: color .16s ease;
 }
-.foot-col > a:not(.mail-pill):hover { color: var(--mark); }
+.foot-col > a:hover { color: var(--mark); }
 
 /* social icon buttons, round and quiet until hovered */
-.soc-row { display: flex; gap: .6rem; margin-bottom: 1.25rem; }
+.soc-row { display: flex; flex-wrap: wrap; gap: .6rem; }
 .soc {
   width: 40px; height: 40px; border-radius: 50%;
   display: inline-flex; align-items: center; justify-content: center;
@@ -505,25 +505,12 @@ footer {
   transition: color .18s ease, border-color .18s ease, transform .18s ease, background .18s ease;
 }
 .soc svg { width: 17px; height: 17px; fill: currentColor; display: block; }
+.soc-mail svg { width: 19px; height: 19px; }
 .soc:hover {
   color: var(--mark); border-color: var(--mark);
   background: var(--mark-soft); transform: translateY(-2px);
 }
 .soc:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-
-/* e-mail pill */
-.mail-pill {
-  display: inline-flex; align-items: center; gap: .6rem;
-  padding: .55rem .9rem .55rem .62rem;
-  border: 1px solid var(--rule); border-radius: 999px;
-  background: var(--surface);
-  font-size: 0.80rem; color: var(--ink-2); text-decoration: none;
-  max-width: 100%;
-  transition: border-color .18s ease, color .18s ease, transform .18s ease;
-}
-.mail-pill svg { width: 19px; height: 19px; display: block; flex: none; }
-.mail-pill:hover { border-color: var(--mark); color: var(--ink); transform: translateY(-2px); }
-.mail-pill:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
 .foot-bar {
   border-top: 1px solid var(--rule-soft);
@@ -1482,11 +1469,10 @@ footer {
         <a class="soc" href="https://www.facebook.com/profile.php?id=100013534754050" target="_blank" rel="noopener me" aria-label="Facebook">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg>
         </a>
-        </div>
-        <a class="mail-pill" href="mailto:arvanitidismichail@gmail.com">
+        <a class="soc soc-mail" href="mailto:arvanitidismichail@gmail.com" aria-label="E-mail">
           <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#4caf50" d="M45,16.2l-5,2.75l-5,4.75V40h7c1.657,0,3-1.343,3-3V16.2z"/><path fill="#1e88e5" d="M3,16.2l3.614,1.71L13,23.7V40H6c-1.657,0-3-1.343-3-3V16.2z"/><polygon fill="#e53935" points="35,11.2 24,19.45 13,11.2 12,17 13,23.7 24,31.95 35,23.7 36,17"/><path fill="#c62828" d="M3,12.298V16.2l10,7.5V11.2L9.876,8.859C9.132,8.301,8.228,8,7.298,8h0C4.924,8,3,9.924,3,12.298z"/><path fill="#fbc02d" d="M45,12.298V16.2l-10,7.5V11.2l3.124-2.341C38.868,8.301,39.772,8,40.702,8h0C43.076,8,45,9.924,45,12.298z"/></svg>
-          arvanitidismichail@gmail.com
         </a>
+        </div>
       </div>
 
     </div>
