@@ -14,6 +14,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 import cvpdf  # noqa: E402
+from i18n import STRINGS as SITE_STRINGS  # noqa: E402
 
 OUT_HTML = Path(__file__).parent / "cv_print_el.html"
 OUT_PDF = Path(__file__).parent.parent / "CV_Michail_Arvanitidis_EL.pdf"
@@ -25,7 +26,7 @@ CV_EL = [
      "<title>Βιογραφικό — Δρ Μιχαήλ Αρβανιτίδης</title>", 1),
     ("<h1>Dr Michail Arvanitidis</h1>", "<h1>Δρ Μιχαήλ Αρβανιτίδης</h1>", 1),
     ("Postdoctoral Research Fellow &middot; Centre of Precision Rehabilitation for Spinal Pain (CPR Spine)",
-     "Μεταδιδακτορικός Ερευνητής &middot; Κέντρο Εξατομικευμένης Αποκατάστασης για τον Πόνο της Σπονδυλικής Στήλης (CPR Spine)", 1),
+     "Μεταδιδακτορικός Ερευνητής &middot; Κέντρο Αποκατάστασης Ακριβείας για τον Πόνο στη Σπονδυλική Στήλη (CPR Spine)", 1),
     ("CPR Spine, School of Sport, Exercise and Rehabilitation Sciences, University of Birmingham, UK",
      "CPR Spine, Σχολή Αθλητισμού, Άσκησης και Επιστημών Αποκατάστασης, Πανεπιστήμιο του Μπέρμιγχαμ, Ηνωμένο Βασίλειο", None),
     ("CPR Spine, University of Birmingham, UK", "CPR Spine, Πανεπιστήμιο του Μπέρμιγχαμ, Ηνωμένο Βασίλειο", None),
@@ -56,9 +57,9 @@ proposal PRO-AGE (91.8/100).""",
 για την πρόταση MSCA Postdoctoral Fellowship PRO-AGE (91,8/100).""", 1),
 
     # ---- experience ----
-    ("<h2>Professional Experience</h2>", "<h2>Ερευνητική και Επαγγελματική Εμπειρία</h2>", 1),
-    ("Post-doctoral Research Fellow", "Μεταδιδακτορική ερευνητική θέση (Post-doctoral Fellowship)", 1),
-    ("Pre-doctoral Research Fellow", "Προδιδακτορική ερευνητική θέση (Pre-doctoral Fellowship)", 2),
+    ("<h2>Professional Experience</h2>", "<h2>Επαγγελματική πορεία</h2>", 1),
+    ("Post-doctoral Research Fellow", "Μεταδιδακτορικός Ερευνητής", 1),
+    ("Pre-doctoral Research Fellow", "Προδιδακτορικός Ερευνητής", 2),
     ("Specialist Musculoskeletal Physiotherapist (part-time)",
      "Εξειδικευμένος Μυοσκελετικός Φυσικοθεραπευτής (μερική απασχόληση)", 1),
     ("Musculoskeletal Physiotherapist</span>", "Μυοσκελετικός Φυσικοθεραπευτής</span>", 1),
@@ -66,7 +67,7 @@ proposal PRO-AGE (91.8/100).""",
      "The Birmingham Back Pain Clinic, Μπέρμιγχαμ, Ηνωμένο Βασίλειο", 1),
     ("Private Physiotherapy Centre, Drama, Greece",
      "Ιδιωτικό Κέντρο Φυσικοθεραπείας, Δράμα, Ελλάδα", 1),
-    ("Mentor: Prof. Deborah Falla. Project:", "Επιβλέπουσα: Καθ. Deborah Falla. Έργο:", None),
+    ("Mentor: Prof. Deborah Falla. Project:", "Επιστημονική επόπτρια: Καθ. Deborah Falla. Έργο:", None),
     ("— cervical spine and muscle adaptation after spaceflight and relationship to herniation risk.",
      "— προσαρμογές της αυχενικής μοίρας της σπονδυλικής στήλης και των μυών μετά από διαστημική πτήση και σχέση με τον κίνδυνο δισκοκήλης.", None),
     ("Employer: Dr David W. Evans.", "Εργοδότης: Δρ David W. Evans.", 1),
@@ -75,7 +76,7 @@ proposal PRO-AGE (91.8/100).""",
     # ---- education ----
     ("<h2>Education</h2>", "<h2>Εκπαίδευση</h2>", 1),
     ("PhD, Sport, Exercise and Rehabilitation Sciences",
-     "Διδακτορικό Δίπλωμα (PhD), Επιστήμες Αθλητισμού, Άσκησης και Αποκατάστασης", 1),
+     "Διδακτορικό (PhD), Επιστήμες Αθλητισμού, Άσκησης και Αποκατάστασης", 1),
     ("MSc Advanced Manipulative Physiotherapy",
      "Μεταπτυχιακό Δίπλωμα Ειδίκευσης (MSc Advanced Manipulative Physiotherapy)", 1),
     ("BSc Physiotherapy (First Class Honours)", "Πτυχίο Φυσικοθεραπείας (BSc), Άριστα", 1),
@@ -88,41 +89,41 @@ proposal PRO-AGE (91.8/100).""",
     ("Supervisor: Prof. Georgios Gioftsos.", "Επιβλέπων: Καθ. Γεώργιος Γιόφτσος.", 1),
 
     # ---- awards ----
-    ("<h2>Awards &amp; Distinctions</h2>", "<h2>Βραβεία και Διακρίσεις</h2>", 1),
+    ("<h2>Awards &amp; Distinctions</h2>", "<h2>Βραβεία και διακρίσεις</h2>", 1),
     ("<b>Seal of Excellence</b>, European Commission — Horizon Europe MSCA Postdoctoral Fellowships 2025, proposal PRO-AGE (101274439), score 91.8/100; host: Aristotle University of Thessaloniki.",
-     "<b>Seal of Excellence</b>, Ευρωπαϊκή Επιτροπή — Horizon Europe MSCA Postdoctoral Fellowships 2025, πρόταση PRO-AGE (101274439), βαθμολογία 91,8/100· ίδρυμα υποδοχής: Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης.", 1),
+     "<b>Seal of Excellence</b> — Ευρωπαϊκή Επιτροπή, Horizon Europe, MSCA Postdoctoral Fellowships 2025, για την πρόταση PRO-AGE (101274439), βαθμολογία 91,8/100· ίδρυμα υποδοχής: Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης.", 1),
     ("Shortlisted, Oral Student Presentation Awards, XXIV Congress of the International Society of Electrophysiology and Kinesiology.",
-     "Υποψήφιος για τα Βραβεία Προφορικής Παρουσίασης Φοιτητών, XXIV Congress of the International Society of Electrophysiology and Kinesiology.", 1),
+     "Επιλογή στη βραχεία λίστα για το Oral Student Presentation Award, XXIV Congress of the International Society of Electrophysiology and Kinesiology.", 1),
     ("Honorary fellowship for distinction in BSc studies, National Scholarships Foundation, University of Thessaly.",
      "Τιμητική υποτροφία για διάκριση στις προπτυχιακές σπουδές, Ίδρυμα Κρατικών Υποτροφιών, Πανεπιστήμιο Θεσσαλίας.", 1),
 
     # ---- funding ----
-    ("<h2>Research Funding</h2>", "<h2>Χρηματοδότηση Έρευνας</h2>", 1),
+    ("<h2>Research Funding</h2>", "<h2>Χρηματοδότηση έρευνας</h2>", 1),
     ("<b>UK Space Agency</b> (co-applicant) — <i>Cervical spine and muscle adaptation after spaceflight and relationship to herniation risk.</i>",
-     "<b>UK Space Agency</b> (συνεργαζόμενος αιτών) — <i>Προσαρμογές της αυχενικής μοίρας της σπονδυλικής στήλης και των μυών μετά από διαστημική πτήση και σχέση με τον κίνδυνο δισκοκήλης.</i>", 1),
+     "<b>UK Space Agency</b> (συναιτών) — <i>Προσαρμογές της αυχενικής μοίρας της σπονδυλικής στήλης και των μυών μετά από διαστημική πτήση και σχέση με τον κίνδυνο δισκοκήλης.</i>", 1),
     ("<b>The Royal Society</b> (co-applicant) — <i>Real-time augmented reality feedback of muscle activity to enhance human performance.</i>",
-     "<b>The Royal Society</b> (συνεργαζόμενος αιτών) — <i>Ανατροφοδότηση επαυξημένης πραγματικότητας σε πραγματικό χρόνο για τη μυϊκή δραστηριότητα, με σκοπό τη βελτίωση της ανθρώπινης απόδοσης.</i>", 1),
+     "<b>The Royal Society</b> (συναιτών) — <i>Ανατροφοδότηση επαυξημένης πραγματικότητας σε πραγματικό χρόνο για τη μυϊκή δραστηριότητα, με σκοπό τη βελτίωση της ανθρώπινης απόδοσης.</i>", 1),
     ("Contributed to the writing of the application.", "Συμμετοχή στη συγγραφή της πρότασης.", 1),
 
     # ---- publications ----
     ("<h2>Publications — Under Review &amp; In Preparation</h2>",
-     "<h2>Δημοσιεύσεις — Υπό Κρίση και Υπό Προετοιμασία</h2>", 1),
-    ("<h2>Peer-Reviewed Publications</h2>", "<h2>Δημοσιεύσεις σε Περιοδικά με Κριτές</h2>", 1),
+     "<h2>Δημοσιεύσεις — υπό κρίση και υπό προετοιμασία</h2>", 1),
+    ("<h2>Peer-Reviewed Publications</h2>", "<h2>Δημοσιεύσεις σε περιοδικά με κριτές</h2>", 1),
     ("Under review", "Υπό κρίση", None),
     ("In preparation", "Υπό προετοιμασία", None),
 
     # ---- conferences ----
-    ("<h2>Refereed Conference Proceedings</h2>", "<h2>Ανακοινώσεις σε Συνέδρια με Κριτές</h2>", 1),
-    ("An asterisk (*) signifies the presenter.", "Ο αστερίσκος (*) υποδηλώνει τον παρουσιαστή.", 1),
-    ("Oral &mdash; 13 presentations", "Προφορικές &mdash; 13 ανακοινώσεις", 1),
-    ("Poster &mdash; 9 presentations", "Αναρτημένες &mdash; 9 ανακοινώσεις", 1),
+    ("<h2>Refereed Conference Proceedings</h2>", "<h2>Παρουσιάσεις σε συνέδρια κατόπιν αξιολόγησης</h2>", 1),
+    ("An asterisk (*) signifies the presenter.", "Ο αστερίσκος (*) δηλώνει τον παρουσιαστή.", 1),
+    ("Oral &mdash; 13 presentations", "Προφορικές &mdash; 13 παρουσιάσεις", 1),
+    ("Poster &mdash; 9 presentations", "Αναρτημένες (posters) &mdash; 9 παρουσιάσεις", 1),
 
     # ---- teaching ----
-    ("<h2>Teaching &amp; Mentoring</h2>", "<h2>Διδακτικό Έργο, Επίβλεψη και Καθοδήγηση</h2>", 1),
+    ("<h2>Teaching &amp; Mentoring</h2>", "<h2>Διδασκαλία και επίβλεψη</h2>", 1),
     ("<b>Neuromuscular Adaptations to Training</b> — postgraduate practical laboratories in isokinetic dynamometry and high-density EMG, University of Birmingham.",
-     "<b>Νευρομυϊκές Προσαρμογές στην Προπόνηση</b> — μεταπτυχιακά εργαστήρια σε ισοκινητική δυναμομέτρηση και ηλεκτρομυογραφία υψηλής πυκνότητας, Πανεπιστήμιο του Μπέρμιγχαμ.", 1),
+     "<b>Νευρομυϊκές προσαρμογές στην προπόνηση</b> — μεταπτυχιακά εργαστήρια σε ισοκινητική δυναμομέτρηση και ηλεκτρομυογραφία υψηλής πυκνότητας, Πανεπιστήμιο του Μπέρμιγχαμ.", 1),
     ("<b>Analysis of Motor Performance</b> — undergraduate practical laboratories in isokinetic dynamometry and high-density EMG, University of Birmingham.",
-     "<b>Ανάλυση Κινητικής Απόδοσης</b> — προπτυχιακά εργαστήρια σε ισοκινητική δυναμομέτρηση και ηλεκτρομυογραφία υψηλής πυκνότητας, Πανεπιστήμιο του Μπέρμιγχαμ.", 1),
+     "<b>Ανάλυση κινητικής απόδοσης</b> — προπτυχιακά εργαστήρια σε ισοκινητική δυναμομέτρηση και ηλεκτρομυογραφία υψηλής πυκνότητας, Πανεπιστήμιο του Μπέρμιγχαμ.", 1),
     ("<b>Invited lecturer</b>, MSc Advanced Physiotherapy, University of Thessaly, Greece — “The role of high-density surface EMG in the assessment and treatment of musculoskeletal disorders: clinical applications”.",
      "<b>Προσκεκλημένη διάλεξη</b>, ΠΜΣ «Προηγμένη Φυσικοθεραπεία», Πανεπιστήμιο Θεσσαλίας — «Ο ρόλος της επιφανειακής ηλεκτρομυογραφίας υψηλής πυκνότητας στην αξιολόγηση και τη θεραπεία των μυοσκελετικών παθήσεων: κλινικές εφαρμογές».", 1),
     ("Annually", "Ετησίως", None),
@@ -130,7 +131,7 @@ proposal PRO-AGE (91.8/100).""",
     ("Mentoring &mdash; visiting doctoral and Master's researchers from Europe",
      "Καθοδήγηση &mdash; επισκέπτες διδακτορικοί και μεταπτυχιακοί ερευνητές από την Ευρώπη", 1),
     ("Co-supervision &mdash; doctoral theses and Master's / Bachelor's dissertations",
-     "Συνεπίβλεψη &mdash; διδακτορικές διατριβές και μεταπτυχιακές / προπτυχιακές εργασίες", 1),
+     "Συνεπίβλεψη &mdash; διδακτορικές διατριβές και μεταπτυχιακές/προπτυχιακές εργασίες", 1),
     ("Research placement supervision", "Επίβλεψη ερευνητικής πρακτικής άσκησης", 1),
     ("&ndash;present", "&ndash;σήμερα", None),
     ("trunk muscle function in ageing.", "λειτουργία των μυών του κορμού κατά τη γήρανση.", 1),
@@ -168,20 +169,20 @@ proposal PRO-AGE (91.8/100).""",
      "εκπαίδευση στη μεθοδολογία των συστηματικών ανασκοπήσεων.", 2),
 
     # ---- service ----
-    ("<h2>Professional Service</h2>", "<h2>Επαγγελματική Προσφορά και Υπηρεσία</h2>", 1),
+    ("<h2>Professional Service</h2>", "<h2>Ακαδημαϊκή προσφορά</h2>", 1),
     ("<b>External examiner</b>, postgraduate research degrees — MSc by Research thesis examination of Mr Harry Clutterbuck, Manchester Metropolitan University, UK.",
-     "<b>Εξωτερικός εξεταστής</b> μεταπτυχιακών διατριβών — εξέταση μεταπτυχιακής ερευνητικής διατριβής (MSc by Research) του κ. Harry Clutterbuck, Manchester Metropolitan University, Ηνωμένο Βασίλειο.", 1),
-    ("<b>Journal peer reviewer</b>", "<b>Κριτής (peer reviewer) σε επιστημονικά περιοδικά</b>", 1),
+     "<b>Εξωτερικός εξεταστής</b> σε πρόγραμμα MSc by Research — αξιολόγηση της μεταπτυχιακής ερευνητικής διατριβής του κ. Harry Clutterbuck, Manchester Metropolitan University, Ηνωμένο Βασίλειο.", 1),
+    ("<b>Journal peer reviewer</b>", "<b>Κριτής επιστημονικών περιοδικών</b>", 1),
     ("<b>Patient and Public Involvement</b> — presentations and interactive discussions with people living with chronic spinal pain via the CPR Spine PPI panel, integrating public feedback into study design, University of Birmingham.",
-     "<b>Συναντήσεις Συμμετοχής Ασθενών και Κοινού (PPI)</b> — παρουσιάσεις και διαδραστικές συζητήσεις με άτομα που ζουν με χρόνιο πόνο στη σπονδυλική στήλη, μέσω του μητρώου του CPR Spine, με ενσωμάτωση της ανατροφοδότησης του κοινού στον σχεδιασμό των μελετών, Πανεπιστήμιο του Μπέρμιγχαμ.", 1),
+     "<b>Συναντήσεις συμμετοχής ασθενών και κοινού (PPI)</b> — παρουσιάσεις και διαδραστικές συζητήσεις με άτομα που ζουν με χρόνιο πόνο στη σπονδυλική στήλη, μέσω του μητρώου του CPR Spine, με ενσωμάτωση της ανατροφοδότησης του κοινού στον σχεδιασμό των μελετών, Πανεπιστήμιο του Μπέρμιγχαμ.", 1),
 
     # ---- registrations ----
     ("<h2>Registrations, Memberships &amp; Certifications</h2>",
-     "<h2>Εγγραφές, Επαγγελματικές Ενώσεις και Πιστοποιήσεις</h2>", 1),
-    ("Registration &amp; membership", "Εγγραφές και επαγγελματικές ενώσεις", 1),
+     "<h2>Επαγγελματικές εγγραφές και πιστοποιήσεις</h2>", 1),
+    ("Registration &amp; membership", "Επαγγελματικές εγγραφές και επιστημονικές εταιρείες", 1),
     ("Panhellenic Association of Physiotherapists, 2016.",
      "Πανελλήνιος Σύλλογος Φυσικοθεραπευτών (ΠΣΦ), 2016.", 1),
-    ("Certifications &amp; continuing training", "Πιστοποιήσεις και συνεχιζόμενη κατάρτιση", 1),
+    ("Certifications &amp; continuing training", "Πιστοποιήσεις και κατάρτιση", 1),
 ]
 
 MONTHS = {
@@ -190,6 +191,11 @@ MONTHS = {
     "Present": "Σήμερα",
 }
 
+
+# the key-finding sentences are shared with the website
+from pubs import PUBS  # noqa: E402
+_NOTE_TEXTS = {p['note'] for p in PUBS if p.get('note')}
+NOTES = [(a, b, None) for a, b, _ in SITE_STRINGS if a in _NOTE_TEXTS]
 
 def translate(doc):
     for src, dst, expected in CV_EL:
@@ -200,6 +206,11 @@ def translate(doc):
                 raise SystemExit(f"cv-i18n: never found {src[:70]!r}")
         elif n != expected:
             raise SystemExit(f"cv-i18n: expected {expected}x, found {n}x for {src[:70]!r}")
+        doc = pattern.sub(lambda m, d=dst: d, doc)
+
+    # key findings appear only if the CV template prints them; optional
+    for src, dst, _ in NOTES:
+        pattern = re.compile(r"\s+".join(re.escape(w) for w in src.split()))
         doc = pattern.sub(lambda m, d=dst: d, doc)
 
     def month(m):

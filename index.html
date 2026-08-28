@@ -226,13 +226,22 @@ main > section:nth-of-type(odd) {
   clip-path: inset(0 -100vmax);
 }
 
+main { counter-reset: sec; }
 h2 {
   font-size: clamp(1.95rem, 3.5vw, 2.5rem); font-weight: 500; color: var(--ink);
   margin: 0 0 2.2rem; padding-bottom: 0; border-bottom: 0;
   letter-spacing: -.028em; line-height: 1.06;
-  display: flex; align-items: baseline; justify-content: space-between;
-  gap: 1.5rem; flex-wrap: wrap;
+  display: grid; grid-template-columns: 11.5rem 1fr auto;
+  gap: 1.75rem; align-items: baseline;
 }
+main > section > h2::before {
+  counter-increment: sec;
+  content: counter(sec, decimal-leading-zero);
+  font-family: var(--sans);
+  font-size: 0.78rem; font-weight: 700; letter-spacing: .2em;
+  color: var(--mark);
+}
+.foot-col h2::before { content: none; }
 h2 .aside { flex: none; }
 
 h3 {
@@ -306,16 +315,22 @@ h1 {
 
 /* Quiet metrics line */
 .tally {
-  display: flex; flex-wrap: wrap; gap: 0 3.2rem;
-  margin-top: 1.9rem; padding-top: 1.6rem;
+  display: flex; flex-wrap: wrap; gap: 0;
+  margin-top: 1.9rem; padding-top: 1.7rem;
   border-top: 2px solid var(--ink);
 }
-.tally div { padding: .2rem 0; }
-.tally .n { font-size: 2.3rem; font-weight: 500; letter-spacing: -.03em; color: var(--ink); line-height: 1.2; font-variant-numeric: lining-nums; }
+.tally div {
+  flex: 1 1 0; min-width: 8.5rem;
+  padding: .1rem 1.6rem;
+  border-left: 1px solid var(--rule);
+}
+.tally div:first-child { padding-left: 0; border-left: 0; }
+.tally .n { font-size: 3rem; font-weight: 400; letter-spacing: -.045em; color: var(--ink); line-height: 1.2; font-variant-numeric: lining-nums; }
 .tally .t {
   font-family: var(--sans);
-  font-size: 0.742rem; font-weight: 500; letter-spacing: .075em;
+  font-size: 0.655rem; font-weight: 600; letter-spacing: .14em;
   text-transform: uppercase; color: var(--ink-3);
+  margin-top: .4rem; hyphens: none;
 }
 
 /* ============================================================
@@ -351,9 +366,13 @@ main > section:nth-of-type(odd) .strand { background: var(--paper); }
   font-size: 0.93rem; font-weight: 500; color: var(--ink-2);
   border: 1px solid var(--rule); border-radius: 10px;
   padding: .72rem 1rem .72rem .85rem; background: var(--surface);
-  transition: border-color .18s, color .18s;
+  transition: border-color .17s ease, color .17s ease, background .17s ease, transform .17s ease;
 }
-.tags .tag:hover { border-color: var(--accent); color: var(--ink); }
+.tags .tag:hover {
+  border-color: var(--mark); color: var(--ink);
+  background: var(--mark-soft); transform: translateY(-2px);
+}
+.tags .tag:hover .ti { stroke: var(--mark); }
 .tags .ti {
   width: 16px; height: 16px; flex: none;
   fill: none; stroke: var(--accent); stroke-width: 1.6;
@@ -534,9 +553,11 @@ main > section:nth-of-type(odd) .more-btn { background: var(--paper); }
 }
 .marquee-row { overflow: hidden; }
 .marquee-track {
-  display: flex; gap: .7rem; width: max-content;
+  display: flex; gap: 0; width: max-content;
   animation: mq-left 52s linear infinite;
 }
+/* the second half is a visual duplicate only — hidden from screen readers */
+.marquee-half { display: flex; gap: .7rem; padding-right: .7rem; flex: none; }
 .marquee-row[data-dir="r"] .marquee-track { animation-name: mq-right; animation-duration: 58s; }
 @keyframes mq-left  { from { transform: translateX(0); }     to { transform: translateX(-50%); } }
 @keyframes mq-right { from { transform: translateX(-50%); }  to { transform: translateX(0); } }
@@ -579,6 +600,40 @@ main > section:nth-of-type(odd) .tags .tag { background: var(--paper); }
   .marquee-row { overflow-x: auto; }
   .marquee-track { animation: none; }
 }
+
+/* A hairline down the gutter of the dated entries, with a node per row */
+#positions .entries { position: relative; }
+#positions .entries::before {
+  content: ''; position: absolute; left: 12.375rem; top: .9rem; bottom: .9rem;
+  width: 1px; background: var(--rule);
+}
+#positions .entry { position: relative; }
+#positions .entry::before {
+  content: ''; position: absolute; left: calc(12.375rem - 3.5px); top: 1.5rem;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--paper); border: 1.5px solid var(--mark);
+}
+
+/* ============================================================
+   Signature line — an EMG burst that settles into an orbit
+   ============================================================ */
+.sig {
+  display: block; width: 100%; height: 3.2rem; margin: 2.6rem 0 1.4rem;
+  fill: none; stroke: var(--mark); stroke-width: 1.15;
+  stroke-linecap: round; stroke-linejoin: round;
+  opacity: .55;
+  vector-effect: non-scaling-stroke;
+}
+.sig-div {
+  position: absolute; top: -14px; left: 0;
+  width: 340px; height: 28px; pointer-events: none;
+  fill: none; stroke: var(--mark); stroke-width: 1.15;
+  stroke-linecap: round; stroke-linejoin: round;
+  opacity: .3;
+  -webkit-mask-image: linear-gradient(to right, #000 55%, transparent);
+          mask-image: linear-gradient(to right, #000 55%, transparent);
+}
+main > section { position: relative; }
 
 /* ============================================================
    Photographs
@@ -710,7 +765,8 @@ footer {
    ============================================================ */
 @media (max-width: 820px) {
   main > section { padding: 3.1rem 0; }
-  h2 { gap: .45rem; margin-bottom: 1.6rem; }
+  h2 { grid-template-columns: 1fr; gap: .45rem; margin-bottom: 1.6rem; }
+  main > section > h2::before { font-size: .72rem; }
   #research { grid-template-columns: 1fr; gap: 1rem; }
   .figs-3 { grid-template-columns: 1fr 1fr; }
   /* the odd one out sits centred under the pair instead of hanging left */
@@ -730,14 +786,20 @@ footer {
   .page { padding-top: 3rem; }
   .entry, .row { grid-template-columns: 1fr; gap: .3rem; }
   .entry .when, .row .when { padding-top: 0; order: -1; }
-  .tally { gap: 0 1.9rem; }
+  #positions .entries::before, #positions .entry::before { display: none; }
+  /* two by two beats three plus an orphan */
+  .tally { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem 0; }
+  .tally div { min-width: 0; padding: .1rem 1.1rem; }
+  .tally div:nth-child(odd) { padding-left: 0; border-left: 0; }
+  .tally .n { font-size: 2.2rem; }
   section { margin-top: 3.5rem; }
   h2 { flex-wrap: wrap; row-gap: .35rem; }
   h2 .aside { flex: 1 0 100%; font-size: 0.688rem; letter-spacing: .1em; }
 }
 @media (max-width: 480px) {
   body { font-size: 1.097rem; }
-  .tally { gap: 0 1.4rem; }
+  .tally div { padding: .1rem .8rem; }
+  .tally .n { font-size: 2rem; }
   .tally .n { font-size: 1.344rem; }
 }
 
@@ -762,11 +824,15 @@ footer {
   .strand { background: none !important; border: 0 !important; border-radius: 0 !important;
     padding: 0 !important; margin-bottom: 10pt !important; }
   .tally { border-top: 1pt solid #000; }
+  main > section > h2::before { content: none; }
+  h2 { display: block; }
+  .sig, .sig-div { display: none; }
   .figs { display: none; }
   .lang-btn { display: none; }
   .more-wrap { display: none; }
   .marquee { -webkit-mask-image: none; mask-image: none; }
   .marquee-track { animation: none; flex-wrap: wrap; width: auto; }
+  .marquee-half[aria-hidden] { display: none; }
   .numbered { grid-template-columns: 1fr; }
   .publication-item, .entry, .row, .strand { break-inside: avoid; }
   .hidden { display: block !important; }
@@ -819,6 +885,12 @@ footer {
     <path d="M8.6 11h8.8"/><path d="M14 9.7v2.6"/>
     <path d="M6.6 15.4h8"/><path d="M10 14.1v2.6"/>
     <path d="M8.6 20.4l3.4-2.1 3.4 2.1-3.4 2.1z"/>
+  </symbol>
+  <symbol id="sig-long" viewBox="0 0 1200 60">
+    <path d="M0 30 H86 l6-17 l6 32 l6-27 l6 23 l6-19 l6 15 l7-25 l6 35 l6-29 l6 21 l6-13 l7 17 l6-9 l6 4 H246 C 366 30 424 7 562 7 C 722 7 800 53 958 53 C 1076 53 1138 34 1200 30"/>
+  </symbol>
+  <symbol id="sig-short" viewBox="0 0 340 28">
+    <path d="M0 14 H34 l3.5-9 l3.5 17 l3.5-15 l3.5 13 l3.5-10 l3.5 8 l4-13 l3.5 19 l3.5-16 l3.5 11 l3.5-7 l3.5 9 l3.5-4 H128 C 182 14 214 4 268 4 C 306 4 328 10 340 14"/>
   </symbol>
 </defs></svg>
 
@@ -888,6 +960,8 @@ footer {
       <div><div class="n">£711k</div><div class="t">Funding, co-applicant</div></div>
       <div><div class="n">14</div><div class="t">Journals reviewed for</div></div>
     </div>
+
+    <svg class="sig" aria-hidden="true"><use href="#sig-long"/></svg>
   </header>
 
   <!-- ===================== RESEARCH ===================== -->
@@ -1017,6 +1091,7 @@ footer {
 
   <!-- ===================== PUBLICATIONS ===================== -->
   <section id="publications">
+    <svg class="sig-div" aria-hidden="true"><use href="#sig-short"/></svg>
     <h2>Publications <span class="label aside">29 published · 7 in progress</span></h2>
 
     <div class="tools rise">
@@ -1361,6 +1436,7 @@ footer {
 
   <!-- ===================== CONFERENCES ===================== -->
   <section id="talks" aria-labelledby="talks-t">
+    <svg class="sig-div" aria-hidden="true"><use href="#sig-short"/></svg>
     <h2 id="talks-t">Conference presentations <span class="label aside">13 oral · 9 poster</span></h2>
     <p class="asterisk-note rise">Refereed conference proceedings. An asterisk marks the presenter.</p>
     <div class="figs figs-3 rise">
@@ -1614,6 +1690,7 @@ footer {
 
   <!-- ===================== SERVICE ===================== -->
   <section id="service">
+    <svg class="sig-div" aria-hidden="true"><use href="#sig-short"/></svg>
     <h2>Service</h2>
     <div class="rows rise">
       <div class="row">
@@ -1643,12 +1720,12 @@ footer {
     </div>
 
     <h3>Journal peer review</h3>
-    <div class="marquee rise" role="list" aria-label="Journals reviewed for">
+    <div class="marquee rise" aria-label="Journals reviewed for">
       <div class="marquee-row">
-        <div class="marquee-track"><span class="jpill">Applied Psychophysiology and Biofeedback</span><span class="jpill">BMC Musculoskeletal Disorders</span><span class="jpill">Clinical Biomechanics</span><span class="jpill">European Journal of Applied Physiology</span><span class="jpill">European Spine Journal</span><span class="jpill">Journal of Applied Biomechanics</span><span class="jpill">Journal of Applied Physiology</span><span class="jpill">Applied Psychophysiology and Biofeedback</span><span class="jpill">BMC Musculoskeletal Disorders</span><span class="jpill">Clinical Biomechanics</span><span class="jpill">European Journal of Applied Physiology</span><span class="jpill">European Spine Journal</span><span class="jpill">Journal of Applied Biomechanics</span><span class="jpill">Journal of Applied Physiology</span></div>
+        <div class="marquee-track"><div class="marquee-half"><span class="jpill">Applied Psychophysiology and Biofeedback</span><span class="jpill">BMC Musculoskeletal Disorders</span><span class="jpill">Clinical Biomechanics</span><span class="jpill">European Journal of Applied Physiology</span><span class="jpill">European Spine Journal</span><span class="jpill">Journal of Applied Biomechanics</span><span class="jpill">Journal of Applied Physiology</span></div><div class="marquee-half" aria-hidden="true"><span class="jpill">Applied Psychophysiology and Biofeedback</span><span class="jpill">BMC Musculoskeletal Disorders</span><span class="jpill">Clinical Biomechanics</span><span class="jpill">European Journal of Applied Physiology</span><span class="jpill">European Spine Journal</span><span class="jpill">Journal of Applied Biomechanics</span><span class="jpill">Journal of Applied Physiology</span></div></div>
       </div>
       <div class="marquee-row" data-dir="r">
-        <div class="marquee-track"><span class="jpill">Journal of Biomechanics</span><span class="jpill">Journal of Electromyography and Kinesiology</span><span class="jpill">Journal of Sports Sciences</span><span class="jpill">Musculoskeletal Science and Practice</span><span class="jpill">Occupational and Environmental Medicine</span><span class="jpill">PLOS ONE</span><span class="jpill">Scientific Reports</span><span class="jpill">Journal of Biomechanics</span><span class="jpill">Journal of Electromyography and Kinesiology</span><span class="jpill">Journal of Sports Sciences</span><span class="jpill">Musculoskeletal Science and Practice</span><span class="jpill">Occupational and Environmental Medicine</span><span class="jpill">PLOS ONE</span><span class="jpill">Scientific Reports</span></div>
+        <div class="marquee-track"><div class="marquee-half"><span class="jpill">Journal of Biomechanics</span><span class="jpill">Journal of Electromyography and Kinesiology</span><span class="jpill">Journal of Sports Sciences</span><span class="jpill">Musculoskeletal Science and Practice</span><span class="jpill">Occupational and Environmental Medicine</span><span class="jpill">PLOS ONE</span><span class="jpill">Scientific Reports</span></div><div class="marquee-half" aria-hidden="true"><span class="jpill">Journal of Biomechanics</span><span class="jpill">Journal of Electromyography and Kinesiology</span><span class="jpill">Journal of Sports Sciences</span><span class="jpill">Musculoskeletal Science and Practice</span><span class="jpill">Occupational and Environmental Medicine</span><span class="jpill">PLOS ONE</span><span class="jpill">Scientific Reports</span></div></div>
       </div>
     </div>
 

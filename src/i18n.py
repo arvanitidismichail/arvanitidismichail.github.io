@@ -16,18 +16,18 @@ STRINGS = [
     # ---------- chrome ----------
     ("Skip to content", "Μετάβαση στο περιεχόμενο", 1),
     ('<li><a href="#research">Research</a></li>', '<li><a href="#research">Έρευνα</a></li>', 1),
-    ('<li><a href="#positions">Positions</a></li>', '<li><a href="#positions">Θέσεις</a></li>', 1),
+    ('<li><a href="#positions">Positions</a></li>', '<li><a href="#positions">Επαγγελματική πορεία</a></li>', 1),
     ('<li><a href="#publications">Publications</a></li>', '<li><a href="#publications">Δημοσιεύσεις</a></li>', 1),
     ('<li><a href="#awards">Awards</a></li>', '<li><a href="#awards">Διακρίσεις</a></li>', 1),
     ('<li><a href="#talks">Conferences</a></li>', '<li><a href="#talks">Συνέδρια</a></li>', 1),
-    ('<li><a href="#teaching">Teaching</a></li>', '<li><a href="#teaching">Διδασκαλία</a></li>', 1),
-    ('<li><a href="#service">Service</a></li>', '<li><a href="#service">Προσφορά</a></li>', 1),
+    ('<li><a href="#teaching">Teaching</a></li>', '<li><a href="#teaching">Διδασκαλία &amp; επίβλεψη</a></li>', 1),
+    ('<li><a href="#service">Service</a></li>', '<li><a href="#service">Ακαδημαϊκή προσφορά</a></li>', 1),
 
     # ---------- head ----------
     ("<title>Michail Arvanitidis — Postdoctoral Research Fellow, University of Birmingham</title>",
      "<title>Μιχαήλ Αρβανιτίδης — Μεταδιδακτορικός Ερευνητής, Πανεπιστήμιο του Μπέρμιγχαμ</title>", 1),
     ('content="Dr Michail Arvanitidis (PT, PhD, MSc, MMACP) is a Postdoctoral Research Fellow at the Centre of Precision Rehabilitation for Spinal Pain, University of Birmingham. Research on cervical adaptations in astronauts after spaceflight and motor adaptations in pain-affected populations."',
-     'content="Ο Δρ Μιχαήλ Αρβανιτίδης (PT, PhD, MSc, MMACP) είναι Μεταδιδακτορικός Ερευνητής στο Centre of Precision Rehabilitation for Spinal Pain του Πανεπιστημίου του Μπέρμιγχαμ. Έρευνα στις προσαρμογές της αυχενικής μοίρας αστροναυτών μετά από διαστημική πτήση και στις κινητικές προσαρμογές σε πληθυσμούς με πόνο."', 1),
+     'content="Ο Δρ Μιχαήλ Αρβανιτίδης (PT, PhD, MSc, MMACP) είναι Μεταδιδακτορικός Ερευνητής στο Κέντρο Αποκατάστασης Ακριβείας για τον Πόνο στη Σπονδυλική Στήλη (CPR Spine) του Πανεπιστημίου του Μπέρμιγχαμ. Έρευνα στις προσαρμογές της αυχενικής μοίρας αστροναυτών μετά από διαστημική πτήση και στις κινητικές προσαρμογές σε πληθυσμούς με πόνο."', 1),
     ('<meta property="og:title" content="Michail Arvanitidis — Postdoctoral Research Fellow">',
      '<meta property="og:title" content="Μιχαήλ Αρβανιτίδης — Μεταδιδακτορικός Ερευνητής">', 1),
     ('<meta name="twitter:title" content="Michail Arvanitidis — Postdoctoral Research Fellow">',
@@ -40,12 +40,12 @@ STRINGS = [
      '<a href="#top" class="nav-name">Μιχαήλ Αρβανιτίδης</a>', 1),
     ('<nav class="nav" aria-label="Sections">', '<nav class="nav" aria-label="Ενότητες">', 1),
     ('<div class="eyebrow">Curriculum Vitae</div>',
-     '<div class="eyebrow">Βιογραφικό σημείωμα</div>', 1),
+     '<div class="eyebrow">Ακαδημαϊκό προφίλ</div>', 1),
     ("<h1>Dr Michail Arvanitidis</h1>", "<h1>Δρ Μιχαήλ Αρβανιτίδης</h1>", 1),
     ('<div class="post">Postdoctoral Research Fellow</div>',
      '<div class="post">Μεταδιδακτορικός Ερευνητής</div>', 1),
     (">Centre of Precision Rehabilitation for Spinal Pain</a><br>",
-     ">Κέντρο Εξατομικευμένης Αποκατάστασης για τον Πόνο της Σπονδυλικής Στήλης (CPR Spine)</a><br>", 1),
+     ">Κέντρο Αποκατάστασης Ακριβείας για τον Πόνο στη Σπονδυλική Στήλη (CPR Spine)</a><br>", 1),
     ("          School of Sport, Exercise and Rehabilitation Sciences<br>\n"
      "          University of Birmingham, United Kingdom",
      "          Σχολή Αθλητισμού, Άσκησης και Επιστημών Αποκατάστασης<br>\n"
@@ -58,14 +58,14 @@ STRINGS = [
     ("        University profile</a>", "        Προφίλ πανεπιστημίου</a>", 1),
 
     # ---------- tally ----------
-    ('<div class="t">Peer-reviewed papers</div>', '<div class="t">Δημοσιεύσεις με κριτές</div>', 1),
+    ('<div class="t">Peer-reviewed papers</div>', '<div class="t">Δημοσιεύσεις σε περιοδικά με κριτές</div>', 1),
     ('<div class="t">As first author</div>', '<div class="t">Ως πρώτος συγγραφέας</div>', 1),
-    ('<div class="t">Funding, co-applicant</div>', '<div class="t">Χρηματοδότηση, ως συνεργαζόμενος αιτών</div>', 1),
+    ('<div class="t">Funding, co-applicant</div>', '<div class="t">Χρηματοδότηση ως συναιτών</div>', 1),
     ('<div class="t">Journals reviewed for</div>', '<div class="t">Περιοδικά ως κριτής</div>', 1),
 
     # ---------- research ----------
     ("<h2>Research</h2>", "<h2>Έρευνα</h2>", 1),
-    ('<span class="k">About</span>', '<span class="k">Ποιος είμαι</span>', 1),
+    ('<span class="k">About</span>', '<span class="k">Ερευνητικό προφίλ</span>', 1),
     ("Dr Michail Arvanitidis (PT, PhD, MSc, MMACP) is a Postdoctoral Research Fellow at the\n"
      "      Centre of Precision Rehabilitation for Spinal Pain (CPR Spine), School of Sport, Exercise\n"
      "      and Rehabilitation Sciences, University of Birmingham, United Kingdom. His current research\n"
@@ -73,12 +73,13 @@ STRINGS = [
      "      astronaut health for future missions. His main interests involve studying motor adaptations\n"
      "      in pain-affected or vulnerable populations.",
      "Ο Δρ Μιχαήλ Αρβανιτίδης (PT, PhD, MSc, MMACP) είναι Μεταδιδακτορικός Ερευνητής στο\n"
-     "      Centre of Precision Rehabilitation for Spinal Pain (CPR Spine), Σχολή Αθλητισμού, Άσκησης\n"
-     "      και Επιστημών Αποκατάστασης, Πανεπιστήμιο του Μπέρμιγχαμ, Ηνωμένο Βασίλειο. Η τρέχουσα\n"
-     "      έρευνά του εξετάζει τις προσαρμογές της αυχενικής μοίρας σε αστροναύτες της NASA μετά από\n"
-     "      διαστημική πτήση, με στόχο τη βελτίωση της υγείας τους σε μελλοντικές αποστολές. Τα κύρια\n"
-     "      ερευνητικά του ενδιαφέροντα αφορούν τις κινητικές προσαρμογές σε πληθυσμούς με πόνο ή\n"
-     "      αυξημένη ευαλωτότητα.", 1),
+     "      Κέντρο Αποκατάστασης Ακριβείας για τον Πόνο στη Σπονδυλική Στήλη (CPR Spine), Σχολή\n"
+     "      Αθλητισμού, Άσκησης και Επιστημών Αποκατάστασης, Πανεπιστήμιο του Μπέρμιγχαμ, Ηνωμένο\n"
+     "      Βασίλειο. Η τρέχουσα έρευνά του εξετάζει τις προσαρμογές της αυχενικής μοίρας της\n"
+     "      σπονδυλικής στήλης και των αυχενικών μυών σε αστροναύτες της NASA μετά από διαστημική\n"
+     "      πτήση, με στόχο τη βελτίωση της υγείας των αστροναυτών σε μελλοντικές αποστολές. Τα\n"
+     "      κύρια ερευνητικά του ενδιαφέροντα αφορούν τις κινητικές προσαρμογές σε πληθυσμούς με\n"
+     "      πόνο ή αυξημένη ευαλωτότητα.", 1),
     ("<h3>Methods and tools</h3>", "<h3>Μέθοδοι και εργαλεία</h3>", 1),
     ('aria-label="Methods and tools"', 'aria-label="Μέθοδοι και εργαλεία"', 1),
     (">High-density surface electromyography</span>", ">Ηλεκτρομυογραφία επιφανείας υψηλής πυκνότητας</span>", 1),
@@ -110,7 +111,7 @@ STRINGS = [
      'alt="Ο Μιχαήλ Αρβανιτίδης παρουσιάζει έρευνα για την οσφυαλγία σε κοινό ασθενών"', 1),
 
     # ---------- positions ----------
-    ("<h2>Positions</h2>", "<h2>Θέσεις</h2>", 1),
+    ("<h2>Positions</h2>", "<h2>Επαγγελματική πορεία</h2>", 1),
     ('<div class="role">Postdoctoral Research Fellow</div>',
      '<div class="role">Μεταδιδακτορικός Ερευνητής</div>', 1),
     ('<div class="role">Pre-doctoral Research Fellow</div>',
@@ -129,7 +130,7 @@ STRINGS = [
      "          spaceflight and relationship to herniation risk. Mentor: Prof. Deborah Falla.",
      "Έργο: <em>Cervical in Space</em> — προσαρμογές της αυχενικής μοίρας της σπονδυλικής στήλης\n"
      "          και των μυών μετά από διαστημική πτήση και σχέση με τον κίνδυνο δισκοκήλης.\n"
-     "          Επιβλέπουσα: Καθ. Deborah Falla.", 1),
+     "          Επιστημονική επόπτρια: Καθ. Deborah Falla.", 1),
     ("Data collection, analysis and dissemination for the <em>Cervical in Space</em> programme\n"
      "          alongside doctoral studies.",
      "Συλλογή, ανάλυση και διάχυση δεδομένων για το πρόγραμμα <em>Cervical in Space</em>,\n"
@@ -140,10 +141,10 @@ STRINGS = [
      "          ροής ανάλυσης HD-sEMG και δυναμομέτρησης.", 1),
     ("Part-time clinical practice. Assessment and management of complex spinal and\n"
      "          musculoskeletal presentations. Employer: Dr David W. Evans.",
-     "Κλινική άσκηση μερικής απασχόλησης. Αξιολόγηση και αντιμετώπιση σύνθετων περιστατικών\n"
+     "Κλινική πρακτική μερικής απασχόλησης. Αξιολόγηση και αντιμετώπιση σύνθετων περιστατικών\n"
      "          σπονδυλικής στήλης και μυοσκελετικού συστήματος. Εργοδότης: Δρ David W. Evans.", 1),
     ("Outpatient musculoskeletal and post-surgical rehabilitation.",
-     "Εξωτερική μυοσκελετική και μετεγχειρητική αποκατάσταση.", 1),
+     "Μυοσκελετική και μετεγχειρητική αποκατάσταση σε εξωτερικούς ασθενείς.", 1),
 
     # ---------- education ----------
     ("<h3>Education</h3>", "<h3>Σπουδές</h3>", 1),
@@ -192,7 +193,7 @@ STRINGS = [
      '<span class="badge badge-review">Υπό προετοιμασία</span>', None),
     ('<span class="badge badge-first">First author</span>',
      '<span class="badge badge-first">Πρώτος συγγραφέας</span>', None),
-    ("· Under review · preprint on medRxiv", "· Υπό κρίση · preprint στο medRxiv", None),
+    ("· Under review · preprint on medRxiv", "· Υπό κρίση · προδημοσίευση στο medRxiv", None),
     ("· Under review", "· Υπό κρίση", None),
     ("· In preparation", "· Υπό προετοιμασία", None),
     (">Show all publications<", ">Όλες οι δημοσιεύσεις<", 1),
@@ -200,16 +201,16 @@ STRINGS = [
     # ---------- awards ----------
     ("<h2>Awards</h2>", "<h2>Διακρίσεις</h2>", 1),
     ("<b>Seal of Excellence, European Commission</b>",
-     "<b>Seal of Excellence, Ευρωπαϊκή Επιτροπή</b>", 1),
+     "<b>Seal of Excellence — Ευρωπαϊκή Επιτροπή</b>", 1),
     ('Horizon Europe MSCA Postdoctoral Fellowships 2025, for the proposal PRO-AGE (101274439), scored <span class="sum">91.8 / 100</span>. Host: Aristotle University of Thessaloniki.',
-     'Horizon Europe MSCA Postdoctoral Fellowships 2025, για την πρόταση PRO-AGE (101274439), με βαθμολογία <span class="sum">91,8 / 100</span>. Ίδρυμα υποδοχής: Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης.', 1),
+     'Horizon Europe, MSCA Postdoctoral Fellowships 2025, για την πρόταση PRO-AGE (101274439), με βαθμολογία <span class="sum">91,8 / 100</span>· ίδρυμα υποδοχής: Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης.', 1),
     ("<b>Level 2 CPD Award</b>", "<b>Level 2 CPD Award</b>", 1),
     ("<b>Level 2 Research Award</b>", "<b>Level 2 Research Award</b>", 1),
     ("<b>Shortlisted, Oral Student Presentation Award</b>",
-     "<b>Υποψήφιος για τα Βραβεία Προφορικής Παρουσίασης Φοιτητών</b>", 1),
+     "<b>Επιλογή στη βραχεία λίστα για το Oral Student Presentation Award</b>", 1),
     ("<span class=\"sub\">Musculoskeletal Association of Chartered Physiotherapists</span>",
      "<span class=\"sub\">Musculoskeletal Association of Chartered Physiotherapists</span>", 3),
-    ("<b>IFOMPT Travel Bursary</b>", "<b>IFOMPT Travel Bursary Award</b>", 1),
+    ("<b>IFOMPT Travel Bursary</b>", "<b>IFOMPT Travel Bursary</b>", 1),
     ("<b>Honorary fellowship for distinction in undergraduate studies</b>",
      "<b>Τιμητική υποτροφία για διάκριση στις προπτυχιακές σπουδές</b>", 1),
     ("National Scholarships Foundation, University of Thessaly",
@@ -225,30 +226,30 @@ STRINGS = [
      "          enhance human performance.",
      "Ανατροφοδότηση επαυξημένης πραγματικότητας σε πραγματικό χρόνο για τη μυϊκή\n"
      "          δραστηριότητα, με σκοπό τη βελτίωση της ανθρώπινης απόδοσης.", 1),
-    ("Co-applicant.", "Συνεργαζόμενος αιτών.", 1),
-    ("Co-applicant,", "Συνεργαζόμενος αιτών,", 1),
+    ("Co-applicant.", "Συναιτών.", 1),
+    ("Co-applicant,", "Συναιτών,", 1),
     (". Contributed to the writing of the application.", ". Συμμετοχή στη συγγραφή της πρότασης.", 1),
 
     # ---------- conferences ----------
-    ("<h2 id=\"talks-t\">Conference presentations ", "<h2 id=\"talks-t\">Ανακοινώσεις σε συνέδρια ", 1),
-    (">13 oral · 9 poster<", ">13 προφορικές · 9 αναρτημένες<", 1),
+    ("<h2 id=\"talks-t\">Conference presentations ", "<h2 id=\"talks-t\">Παρουσιάσεις σε συνέδρια ", 1),
+    (">13 oral · 9 poster<", ">13 προφορικές · 9 αναρτημένες παρουσιάσεις<", 1),
     ("Refereed conference proceedings. An asterisk marks the presenter.",
-     "Ανακοινώσεις με κρίση. Ο αστερίσκος σημειώνει τον παρουσιαστή.", 1),
-    ("<h3>Oral &mdash; 13 presentations</h3>", "<h3>Προφορικές &mdash; 13 ανακοινώσεις</h3>", 1),
-    ("<h3>Poster &mdash; 9 presentations</h3>", "<h3>Αναρτημένες &mdash; 9 ανακοινώσεις</h3>", 1),
-    ('data-fold-noun="oral presentations"', 'data-fold-noun="προφορικές ανακοινώσεις"', 1),
-    ('data-fold-noun="poster presentations"', 'data-fold-noun="αναρτημένες ανακοινώσεις"', 1),
+     "Παρουσιάσεις κατόπιν αξιολόγησης. Ο αστερίσκος (*) δηλώνει τον παρουσιαστή.", 1),
+    ("<h3>Oral &mdash; 13 presentations</h3>", "<h3>Προφορικές &mdash; 13 παρουσιάσεις</h3>", 1),
+    ("<h3>Poster &mdash; 9 presentations</h3>", "<h3>Αναρτημένες (posters) &mdash; 9 παρουσιάσεις</h3>", 1),
+    ('data-fold-noun="oral presentations"', 'data-fold-noun="προφορικές παρουσιάσεις"', 1),
+    ('data-fold-noun="poster presentations"', 'data-fold-noun="αναρτημένες παρουσιάσεις"', 1),
     ("<b>Invited talk.</b>", "<b>Προσκεκλημένη ομιλία.</b>", None),
 
     # ---------- teaching ----------
-    ("<h2>Teaching and mentoring</h2>", "<h2>Διδασκαλία και καθοδήγηση</h2>", 1),
+    ("<h2>Teaching and mentoring</h2>", "<h2>Διδασκαλία και επίβλεψη</h2>", 1),
     ("<b>Neuromuscular Adaptations to Training</b> — postgraduate practical laboratories in\n"
      "          isokinetic dynamometry and high-density EMG.",
-     "<b>Νευρομυϊκές Προσαρμογές στην Προπόνηση</b> — μεταπτυχιακά εργαστήρια σε ισοκινητική\n"
+     "<b>Νευρομυϊκές προσαρμογές στην προπόνηση</b> — μεταπτυχιακά εργαστήρια σε ισοκινητική\n"
      "          δυναμομέτρηση και ηλεκτρομυογραφία υψηλής πυκνότητας.", 1),
     ("<b>Analysis of Motor Performance</b> — undergraduate practical laboratories in isokinetic\n"
      "          dynamometry and high-density EMG.",
-     "<b>Ανάλυση Κινητικής Απόδοσης</b> — προπτυχιακά εργαστήρια σε ισοκινητική\n"
+     "<b>Ανάλυση κινητικής απόδοσης</b> — προπτυχιακά εργαστήρια σε ισοκινητική\n"
      "          δυναμομέτρηση και ηλεκτρομυογραφία υψηλής πυκνότητας.", 1),
     ("<b>Invited lecturer</b>, MSc Advanced Physiotherapy — “The role of high-density\n"
      "          surface EMG in the assessment and treatment of musculoskeletal disorders: clinical applications”.",
@@ -258,7 +259,7 @@ STRINGS = [
     ("<b>Doctoral and Master's supervision</b> — co-supervision of more than twenty PhD,\n"
      "          MSc and BSc research projects spanning trunk and neck neuromuscular control,\n"
      "          tendinopathy, AR biofeedback and systematic review methodology.",
-     "<b>Επίβλεψη διδακτορικών και μεταπτυχιακών</b> — συν-επίβλεψη περισσότερων από είκοσι\n"
+     "<b>Επίβλεψη διδακτορικών και μεταπτυχιακών</b> — συνεπίβλεψη περισσότερων από είκοσι\n"
      "          ερευνητικών εργασιών διδακτορικού, μεταπτυχιακού και προπτυχιακού επιπέδου, σε νευρομυϊκό\n"
      "          έλεγχο κορμού και αυχένα, τενοντοπάθειες, βιοανάδραση επαυξημένης πραγματικότητας και\n"
      "          μεθοδολογία συστηματικών ανασκοπήσεων.", 1),
@@ -278,18 +279,18 @@ STRINGS = [
     # ---------- service ----------
     ("<h2>Service</h2>", "<h2>Ακαδημαϊκή προσφορά</h2>", 1),
     ("<b>External examiner</b>, postgraduate research degrees — MSc by Research thesis examination.",
-     "<b>Εξωτερικός εξεταστής</b>, μεταπτυχιακά ερευνητικά προγράμματα — εξέταση διπλωματικής MSc by Research.", 1),
+     "<b>Εξωτερικός εξεταστής</b> σε πρόγραμμα MSc by Research — αξιολόγηση μεταπτυχιακής ερευνητικής διατριβής.", 1),
     ("Manchester Metropolitan University, United Kingdom",
      "Manchester Metropolitan University, Ηνωμένο Βασίλειο", 1),
     ("<b>Patient and Public Involvement</b> — presentations and discussions with people\n"
      "          living with chronic spinal pain through the CPR Spine PPI panel, feeding public\n"
      "          input into study design.",
-     "<b>Συναντήσεις Συμμετοχής Ασθενών και Κοινού (PPI)</b> — παρουσιάσεις και διαδραστικές\n"
+     "<b>Συναντήσεις συμμετοχής ασθενών και κοινού (PPI)</b> — παρουσιάσεις και διαδραστικές\n"
      "          συζητήσεις με άτομα που ζουν με χρόνιο πόνο στη σπονδυλική στήλη, από το μητρώο του\n"
      "          CPR Spine, με ενσωμάτωση της ανατροφοδότησής τους στον σχεδιασμό νέων μελετών.", 1),
-    ("<h3>Journal peer review</h3>", "<h3>Κριτής σε περιοδικά</h3>", 1),
+    ("<h3>Journal peer review</h3>", "<h3>Κριτής επιστημονικών περιοδικών</h3>", 1),
     ('aria-label="Journals reviewed for"', 'aria-label="Περιοδικά ως κριτής"', 1),
-    ("<h3>Registration and membership</h3>", "<h3>Εγγραφές και μέλη</h3>", 1),
+    ("<h3>Registration and membership</h3>", "<h3>Επαγγελματικές εγγραφές και επιστημονικές εταιρείες</h3>", 1),
     ("<h3>Certification and training</h3>", "<h3>Πιστοποιήσεις και κατάρτιση</h3>", 1),
     (">Panhellenic Association of Physiotherapists<", ">Πανελλήνιος Σύλλογος Φυσικοθεραπευτών<", 1),
     (">Vehicle Ergonomics<", ">Vehicle Ergonomics<", 1),
@@ -307,18 +308,18 @@ STRINGS = [
     ("<p class=\"foot-blurb\">Postdoctoral Research Fellow, Centre of Precision Rehabilitation\n"
      "        for Spinal Pain, School of Sport, Exercise and Rehabilitation Sciences,\n"
      "        University of Birmingham.</p>",
-     "<p class=\"foot-blurb\">Μεταδιδακτορικός Ερευνητής, Centre of Precision Rehabilitation\n"
-     "        for Spinal Pain, Σχολή Αθλητισμού, Άσκησης και Επιστημών Αποκατάστασης,\n"
+     "<p class=\"foot-blurb\">Μεταδιδακτορικός Ερευνητής, Κέντρο Αποκατάστασης Ακριβείας για τον Πόνο στη Σπονδυλική Στήλη\n"
+     "        (CPR Spine), Σχολή Αθλητισμού, Άσκησης και Επιστημών Αποκατάστασης,\n"
      "        Πανεπιστήμιο του Μπέρμιγχαμ.</p>", 1),
-    ("<h2>Site</h2>", "<h2>Σελίδα</h2>", 1),
-    ("<h2>Profiles</h2>", "<h2>Προφίλ</h2>", 1),
-    ("<h2>Contact me on social</h2>", "<h2>Βρείτε με στα social</h2>", 1),
-    ('<div class="or">or e-mail me</div>', '<div class="or">ή στείλτε e-mail</div>', 1),
+    ("<h2>Site</h2>", "<h2>Πλοήγηση</h2>", 1),
+    ("<h2>Profiles</h2>", "<h2>Ακαδημαϊκά προφίλ</h2>", 1),
+    ("<h2>Contact me on social</h2>", "<h2>Επικοινωνία</h2>", 1),
+    ('<div class="or">or e-mail me</div>', '<div class="or">ή επικοινωνήστε μέσω e-mail</div>', 1),
     ('aria-label="Sections of this site"', 'aria-label="Ενότητες της σελίδας"', 1),
     ('aria-label="Academic profiles"', 'aria-label="Ακαδημαϊκά προφίλ"', 1),
     ('<a href="#research">Research</a>', '<a href="#research">Έρευνα</a>', 1),
     ('<a href="#publications">Publications</a>', '<a href="#publications">Δημοσιεύσεις</a>', 1),
-    ('<a href="#teaching">Teaching</a>', '<a href="#teaching">Διδασκαλία</a>', 1),
+    ('<a href="#teaching">Teaching</a>', '<a href="#teaching">Διδασκαλία και επίβλεψη</a>', 1),
     (">University of Birmingham</a>", ">Πανεπιστήμιο του Μπέρμιγχαμ</a>", 1),
     ("<span>&copy; 2026 Dr Michail Arvanitidis. All rights reserved.</span>",
      "<span>&copy; 2026 Δρ Μιχαήλ Αρβανιτίδης. Με επιφύλαξη παντός δικαιώματος.</span>", 1),
@@ -329,6 +330,71 @@ STRINGS = [
 
     # ---------- theme toggle ----------
     ('aria-label="Switch colour theme"', 'aria-label="Εναλλαγή θέματος"', 1),
+
+    # ---------- localisation pass ----------
+    (">R language</span>", ">R</span>", 1),
+    ('<span class="sub">University of Birmingham</span>',
+     '<span class="sub">Πανεπιστήμιο του Μπέρμιγχαμ</span>', 2),
+
+    # ---------- key findings under each publication ----------
+    ('First synthesis showing neck-specific exercise may induce structural cervical muscle adaptation.',
+     'Πρώτη σύνθεση δεδομένων που δείχνει ότι η ειδική άσκηση αυχένα μπορεί να επιφέρει δομικές προσαρμογές στους αυχενικούς μυς.', 1),
+    ('Greater dynamic trunk extensor fatigue resistance in older adults despite poorer torque steadiness.',
+     'Μεγαλύτερη αντοχή στην κόπωση των εκτεινόντων του κορμού σε ηλικιωμένους, παρά τη χαμηλότερη σταθερότητα ροπής.', 1),
+    ('Load-dependent impairments in fibularis longus neural drive and motor unit rate coding.',
+     'Διαταραχές εξαρτώμενες από το φορτίο στη νευρική ώση του μακρού περονιαίου και στην κωδικοποίηση συχνότητας των κινητικών μονάδων.', 1),
+    ('Non-invasive HD-sEMG approach to estimate erector spinae muscle fibre size.',
+     'Μη επεμβατική προσέγγιση με HD-sEMG για την εκτίμηση του μεγέθους των μυϊκών ινών του ορθωτήρα της ράχης.', 1),
+    ('Similar clinical improvements but distinct neuromechanical adaptations between training modes.',
+     'Παρόμοια κλινική βελτίωση, αλλά διακριτές νευρομηχανικές προσαρμογές μεταξύ των δύο μορφών προπόνησης.', 1),
+    ('AR HD-sEMG biofeedback modified spatial muscle activation and improved knee extensor endurance by 27%.',
+     'Η βιοανάδραση HD-sEMG με επαυξημένη πραγματικότητα μετέβαλε τη χωρική ενεργοποίηση του μυός και βελτίωσε την αντοχή των εκτεινόντων του γόνατος κατά 27%.', 1),
+    ('Simultaneous HD-sEMG and ultrasound via transparent electrodes revealed contraction-dependent neuromechanical coupling.',
+     'Η ταυτόχρονη καταγραφή HD-sEMG και υπερηχογραφίας με διαφανή ηλεκτρόδια ανέδειξε νευρομηχανική σύζευξη εξαρτώμενη από το είδος της σύσπασης.', 1),
+    ('Adaptive redistribution of neck muscle activity during experimentally induced soreness.',
+     'Προσαρμοστική ανακατανομή της δραστηριότητας των αυχενικών μυών κατά τον πειραματικά προκλητό μυϊκό πόνο.', 1),
+    ('Age-related impairments in trunk force control with distinct HD-sEMG patterns.',
+     'Διαταραχές του ελέγχου δύναμης του κορμού με την ηλικία, με διακριτά πρότυπα HD-sEMG.', 1),
+    ('Updated diagnostic accuracy evidence informing evidence-based clinical decision-making.',
+     'Επικαιροποιημένα δεδομένα διαγνωστικής ακρίβειας, χρήσιμα για τεκμηριωμένη κλινική λήψη αποφάσεων.', 1),
+    ('First demonstration of load- and muscle-dependent motor unit changes in Achilles tendinopathy.',
+     'Πρώτη τεκμηρίωση μεταβολών των κινητικών μονάδων ανάλογα με το φορτίο και τον μυ στην τενοντοπάθεια του Αχιλλείου.', 1),
+    ('Revealed regional differences in lumbar erector spinae activity in people with spinal pain.',
+     'Ανέδειξε τοπικές διαφορές στη δραστηριότητα του οσφυϊκού ορθωτήρα σε άτομα με πόνο στη σπονδυλική στήλη.', 1),
+    ('Novel insight into neuromuscular impairments in patellofemoral pain during single-joint exercise.',
+     'Νέα δεδομένα για τις νευρομυϊκές διαταραχές στον επιγονατιδομηριαίο πόνο κατά την άσκηση μίας άρθρωσης.', 1),
+    ('First evidence of age-related differences in spatial lumbar activation under fatigue.',
+     'Πρώτα δεδομένα για διαφορές της χωρικής ενεργοποίησης των οσφυϊκών μυών με την ηλικία υπό συνθήκες κόπωσης.', 1),
+    ('First meta-analysis showing reduced trunk muscle endurance in older adults.',
+     'Πρώτη μετα-ανάλυση που δείχνει μειωμένη αντοχή των μυών του κορμού σε ηλικιωμένους.', 1),
+    ('The NOD is a valid, reliable, portable alternative to laboratory dynamometry.',
+     'Το NOD αποτελεί έγκυρη, αξιόπιστη και φορητή εναλλακτική της εργαστηριακής δυναμομέτρησης.', 1),
+    ('Will inform countermeasures to reduce spinal pain and injury risk in astronauts.',
+     'Θα καθοδηγήσει τον σχεδιασμό αντίμετρων για τη μείωση του πόνου και του κινδύνου τραυματισμού της σπονδυλικής στήλης σε αστροναύτες.', 1),
+    ('First trial of torque-based visual feedback training for patellar tendinopathy.',
+     'Πρώτη δοκιμή προπόνησης με οπτική ανατροφοδότηση βάσει ροπής στην τενοντοπάθεια του επιγονατιδικού τένοντα.', 1),
+    ('Force steadiness is impaired in musculoskeletal pain — a candidate rehabilitation target.',
+     'Η σταθερότητα της δύναμης διαταράσσεται στον μυοσκελετικό πόνο — πιθανός στόχος αποκατάστασης.', 1),
+    ('Novel link between motor unit firing behaviour and Achilles tendon mechanical properties.',
+     'Νέα σύνδεση μεταξύ της πυροδότησης των κινητικών μονάδων και των μηχανικών ιδιοτήτων του Αχιλλείου τένοντα.', 1),
+    ('New HD-sEMG spatial metrics that characterise fatigue and predict muscle endurance.',
+     'Νέοι χωρικοί δείκτες HD-sEMG που χαρακτηρίζουν την κόπωση και προβλέπουν τη μυϊκή αντοχή.', 1),
+    ('First study of how DOMS influences trunk HD-sEMG–torque relationships and lumbar kinematics.',
+     'Πρώτη μελέτη για την επίδραση του καθυστερημένου μυϊκού πόνου στις σχέσεις HD-sEMG–ροπής του κορμού και στην οσφυϊκή κινηματική.', 1),
+    ('First evidence of impaired torque steadiness and altered HD-sEMG–torque relationships in dynamic trunk contractions in CLBP.',
+     'Πρώτα δεδομένα για μειωμένη σταθερότητα ροπής και μεταβολή των σχέσεων HD-sEMG–ροπής σε δυναμικές συσπάσεις του κορμού στη χρόνια οσφυαλγία.', 1),
+    ('Novel HD-sEMG approach overcoming decomposition challenges in the lumbar erector spinae.',
+     'Νέα προσέγγιση HD-sEMG που ξεπερνά τις δυσκολίες αποσύνθεσης στον οσφυϊκό ορθωτήρα.', 1),
+    ('International project on cervical spine adaptation after spaceflight and preventive strategies for astronauts.',
+     'Διεθνές ερευνητικό έργο για τις προσαρμογές της αυχενικής μοίρας μετά από διαστημική πτήση και τις στρατηγικές πρόληψης για αστροναύτες.', 1),
+    ('Pain affects motor unit behaviour differently across contraction speeds.',
+     'Ο πόνος επηρεάζει διαφορετικά τη συμπεριφορά των κινητικών μονάδων ανάλογα με την ταχύτητα σύσπασης.', 1),
+    ('HD-sEMG discriminates biomechanical risk earlier and more accurately than traditional sEMG.',
+     'Η HD-sEMG διακρίνει τον βιομηχανικό κίνδυνο νωρίτερα και με μεγαλύτερη ακρίβεια από τη συμβατική sEMG.', 1),
+    ('Altered, potentially less efficient lumbar erector spinae activation during dynamic fatigue in CLBP.',
+     'Μεταβολή —πιθανώς λιγότερο αποδοτική— της ενεργοποίησης του οσφυϊκού ορθωτήρα κατά τη δυναμική κόπωση στη χρόνια οσφυαλγία.', 1),
+    ('First study to test whether humans can selectively modify trapezius activity using HD-sEMG visual feedback.',
+     'Πρώτη μελέτη που εξέτασε αν είναι δυνατή η επιλεκτική τροποποίηση της δραστηριότητας του τραπεζοειδούς με οπτική ανατροφοδότηση HD-sEMG.', 1),
 
     # ---------- javascript strings ----------
     ("'Show fewer'", "'Λιγότερα'", 2),
