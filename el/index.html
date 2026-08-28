@@ -161,7 +161,7 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
 }
 .nav-in {
   max-width: 76rem; height: 100%; margin: 0 auto; padding: 0 2.5rem;
-  display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
+  display: flex; align-items: center; gap: 1.4rem;
 }
 .nav-name {
   font-size: 1.097rem; font-weight: 500; color: var(--ink);
@@ -172,6 +172,7 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
    for the section links and the contact button */
 .nav-name { display: none; }
 .nav-list {
+  flex: 1 1 auto; min-width: 0;
   display: flex; align-items: center; gap: 1.1rem;
   list-style: none; margin: 0; padding: 0;
   overflow-x: auto; scrollbar-width: none;
@@ -193,11 +194,13 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
 .nav-list a.on { color: var(--ink); border-bottom-color: var(--accent); }
 
 .crest { width: 22px; height: auto; flex: none; }
-.flag {
+.flag-icon {
   width: 21px; height: 14px; flex: none;
   border-radius: 2px; overflow: hidden;
   box-shadow: 0 0 0 1px rgba(128, 128, 128, .35);
 }
+
+.nav-tools { flex: none; display: flex; align-items: center; gap: .5rem; }
 
 .nav-cta {
   flex: none; display: inline-flex; align-items: center; gap: .38rem;
@@ -224,8 +227,7 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
 }
 .nav-lang:hover { color: var(--mark); border-color: var(--mark); text-decoration: none; }
 .nav-lang:focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; }
-.nav-lang svg { width: 13px; height: 13px; flex: none;
-  fill: none; stroke: currentColor; stroke-width: 1.6; }
+.nav-lang .flag-icon { width: 18px; height: 12px; }
 
 .theme-btn {
   flex: none; width: 30px; height: 30px;
@@ -951,18 +953,20 @@ footer {
       <li><a href="#teaching">Διδασκαλία</a></li>
       <li><a href="#service">Ακαδημαϊκή προσφορά</a></li>
     </ul>
-    <a class="nav-cta" href="#contact">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2"/><path d="M3 6l9 6 9-6"/></svg>
-      <span>Επικοινωνία</span>
-    </a>
-    <a class="nav-lang" href="../" hreflang="en" lang="en" title="English">
-      <svg class="flag"><use href="#flag-gb"/></svg>
-      <span>EN</span>
-    </a>
-    <button class="theme-btn" id="theme-btn" type="button" aria-label="Εναλλαγή θέματος">
-      <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
-      <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
-    </button>
+    <div class="nav-tools">
+      <a class="nav-cta" href="#contact">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2"/><path d="M3 6l9 6 9-6"/></svg>
+        <span>Επικοινωνία</span>
+      </a>
+      <a class="nav-lang" href="../" hreflang="en" lang="en" title="English">
+        <svg class="flag-icon"><use href="#flag-gb"/></svg>
+        <span>EN</span>
+      </a>
+      <button class="theme-btn" id="theme-btn" type="button" aria-label="Εναλλαγή θέματος">
+        <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+    </div>
   </div>
 </nav>
 
@@ -1856,9 +1860,9 @@ footer {
 
     <div class="foot-bar">
       <div class="lang-pick">
-        <span class="lang-cur"><svg class="flag"><use href="#flag-gr"/></svg>Ελληνικά</span>
+        <span class="lang-cur"><svg class="flag-icon"><use href="#flag-gr"/></svg>Ελληνικά</span>
         <a class="lang-alt" href="../" hreflang="en" lang="en">
-          <svg class="flag"><use href="#flag-gb"/></svg>English
+          <svg class="flag-icon"><use href="#flag-gb"/></svg>English
         </a>
       </div>
       <span>&copy; 2026 Δρ Μιχαήλ Αρβανιτίδης. Με επιφύλαξη παντός δικαιώματος.</span>
