@@ -1,9 +1,9 @@
-# arvanitidismichail.github.io
+# arvanitidismichail.com
 
 Academic homepage and CV for **Dr Michail Arvanitidis** — Postdoctoral Research Fellow,
 Centre of Precision Rehabilitation for Spinal Pain (CPR Spine), University of Birmingham.
 
-Live at <https://arvanitidismichail.github.io>
+Live at <https://arvanitidismichail.com>
 
 ## Files
 
