@@ -42,8 +42,8 @@ STRINGS = [
     ('<div class="eyebrow">Curriculum Vitae</div>',
      '<div class="eyebrow">Ακαδημαϊκό προφίλ</div>', 1),
     ("<h1>Dr Michail Arvanitidis</h1>", "<h1>Δρ Μιχαήλ Αρβανιτίδης</h1>", 1),
-    ('<div class="post">Postdoctoral Research Fellow</div>',
-     '<div class="post">Μεταδιδακτορικός Ερευνητής</div>', 1),
+    ('<span>Postdoctoral Research Fellow</span>',
+     '<span>Μεταδιδακτορικός Ερευνητής</span>', 1),
     (">Centre of Precision Rehabilitation for Spinal Pain</a><br>",
      ">Κέντρο Αποκατάστασης Ακριβείας για τον Πόνο στη Σπονδυλική Στήλη (CPR Spine)</a><br>", 1),
     ("          School of Sport, Exercise and Rehabilitation Sciences<br>\n"

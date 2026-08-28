@@ -197,6 +197,13 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
 .nav-list a:hover { color: var(--ink); text-decoration: none; }
 .nav-list a.on { color: var(--ink); border-bottom-color: var(--accent); }
 
+.crest { width: 22px; height: auto; flex: none; }
+.flag {
+  width: 21px; height: 14px; flex: none;
+  border-radius: 2px; overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(128, 128, 128, .35);
+}
+
 .nav-lang {
   flex: none; display: inline-flex; align-items: center; gap: .3rem;
   font-family: var(--sans); font-size: 0.76rem; font-weight: 700;
@@ -284,6 +291,7 @@ h1 {
   color: var(--ink); margin: 0 0 .55rem;
 }
 .post {
+  display: flex; align-items: center; gap: .6rem;
   font-family: var(--sans);
   font-size: 0.839rem; font-weight: 600; letter-spacing: .12em;
   text-transform: uppercase; color: var(--accent);
@@ -722,6 +730,20 @@ footer {
 }
 .or::before { max-width: 0; }
 
+.lang-pick { display: inline-flex; align-items: center; gap: .5rem; }
+.lang-cur, .lang-alt {
+  display: inline-flex; align-items: center; gap: .45rem;
+  font-family: var(--sans); font-size: 0.8rem; font-weight: 600; letter-spacing: .02em;
+  border: 1px solid var(--rule); border-radius: 999px;
+  padding: .36rem .8rem .36rem .55rem;
+  text-decoration: none;
+  transition: border-color .18s ease, color .18s ease, transform .18s ease;
+}
+.lang-cur { color: var(--ink); border-color: var(--ink-3); cursor: default; }
+.lang-alt { color: var(--ink-3); }
+.lang-alt:hover { color: var(--mark); border-color: var(--mark); transform: translateY(-1px); text-decoration: none; }
+.lang-alt:focus-visible { outline: 2px solid var(--mark); outline-offset: 3px; }
+
 .lang-btn {
   display: inline-flex; align-items: center; gap: .45rem;
   font-family: var(--sans); font-size: 0.8rem; font-weight: 600; letter-spacing: .02em;
@@ -825,7 +847,7 @@ footer {
   main > section > h2::before { content: none; }
   h2 { display: block; }
   .figs { display: none; }
-  .lang-btn { display: none; }
+  .lang-btn, .lang-pick { display: none; }
   .more-wrap { display: none; }
   .marquee { -webkit-mask-image: none; mask-image: none; }
   .marquee-track { animation: none; flex-wrap: wrap; width: auto; }
@@ -883,6 +905,25 @@ footer {
     <path d="M6.6 15.4h8"/><path d="M10 14.1v2.6"/>
     <path d="M8.6 20.4l3.4-2.1 3.4 2.1-3.4 2.1z"/>
   </symbol>
+  <symbol id="flag-gb" viewBox="0 0 60 40">
+    <rect width="60" height="40" fill="#012169"/>
+    <path d="M0 0 60 40M60 0 0 40" stroke="#fff" stroke-width="8"/>
+    <path d="M0 0 60 40M60 0 0 40" stroke="#c8102e" stroke-width="4"/>
+    <path d="M30 0V40M0 20H60" stroke="#fff" stroke-width="13"/>
+    <path d="M30 0V40M0 20H60" stroke="#c8102e" stroke-width="8"/>
+  </symbol>
+  <symbol id="flag-gr" viewBox="0 0 60 40">
+    <rect width="60" height="40" fill="#fff"/>
+    <g fill="#0d5eaf">
+      <rect y="0" width="60" height="4.444"/>
+      <rect y="8.889" width="60" height="4.444"/>
+      <rect y="17.778" width="60" height="4.444"/>
+      <rect y="26.667" width="60" height="4.444"/>
+      <rect y="35.556" width="60" height="4.444"/>
+      <rect width="22.222" height="22.222"/>
+    </g>
+    <path d="M11.111 0V22.222M0 11.111H22.222" stroke="#fff" stroke-width="4.444"/>
+  </symbol>
 </defs></svg>
 
 
@@ -899,11 +940,7 @@ footer {
       <li><a href="#service">Service</a></li>
     </ul>
     <a class="nav-lang" href="./el/" hreflang="el" lang="el" title="Ελληνικά">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <circle cx="12" cy="12" r="9"/>
-        <path d="M3.2 9.5h17.6M3.2 14.5h17.6"/>
-        <path d="M12 3c-2.6 2.4-4 5.6-4 9s1.4 6.6 4 9c2.6-2.4 4-5.6 4-9s-1.4-6.6-4-9z"/>
-      </svg>
+      <svg class="flag"><use href="#flag-gr"/></svg>
       <span>EL</span>
     </a>
     <button class="theme-btn" id="theme-btn" type="button" aria-label="Switch colour theme">
@@ -921,7 +958,10 @@ footer {
       <div>
         <div class="eyebrow">Curriculum Vitae</div>
         <h1>Dr Michail Arvanitidis</h1>
-        <div class="post">Postdoctoral Research Fellow</div>
+        <div class="post">
+          <img class="crest" src="./uob-crest.svg" alt="" width="22" height="23" decoding="async">
+          <span>Postdoctoral Research Fellow</span>
+        </div>
         <p class="where">
           <a href="https://www.birmingham.ac.uk/research/centres-institutes/precision-rehabilitation-for-spinal-pain" target="_blank" rel="noopener">Centre of Precision Rehabilitation for Spinal Pain</a><br>
           School of Sport, Exercise and Rehabilitation Sciences<br>
@@ -1794,15 +1834,12 @@ footer {
     </div>
 
     <div class="foot-bar">
-      <a class="lang-btn" href="./el/" hreflang="el" lang="el">
-        <svg class="globe" viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="9"/>
-          <path d="M3.2 9.5h17.6M3.2 14.5h17.6"/>
-          <path d="M12 3c-2.6 2.4-4 5.6-4 9s1.4 6.6 4 9c2.6-2.4 4-5.6 4-9s-1.4-6.6-4-9z"/>
-        </svg>
-        Ελληνικά
-        <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
-      </a>
+      <div class="lang-pick">
+        <span class="lang-cur"><svg class="flag"><use href="#flag-gb"/></svg>English</span>
+        <a class="lang-alt" href="./el/" hreflang="el" lang="el">
+          <svg class="flag"><use href="#flag-gr"/></svg>Ελληνικά
+        </a>
+      </div>
       <span>&copy; 2026 Dr Michail Arvanitidis. All rights reserved.</span>
       <span>Last update: August 2026</span>
     </div>

@@ -107,10 +107,12 @@ WEBSITE_LD = """<script type="application/ld+json">
 LANG = {
     "en": {
         "href": "./el/", "code": "el", "label": "Ελληνικά", "short": "EL",
+        "cur_flag": "gb", "cur_label": "English", "alt_flag": "gr",
         "canonical": "https://arvanitidismichail.com/",
     },
     "el": {
         "href": "../", "code": "en", "label": "English", "short": "EN",
+        "cur_flag": "gr", "cur_label": "Ελληνικά", "alt_flag": "gb",
         "canonical": "https://arvanitidismichail.com/el/",
     },
 }
@@ -124,6 +126,9 @@ def fill(doc, lang):
     doc = doc.replace("__LANG_CODE__", cfg["code"])
     doc = doc.replace("__LANG_LABEL__", cfg["label"])
     doc = doc.replace("__LANG_SHORT__", cfg["short"])
+    doc = doc.replace("__CUR_FLAG__", cfg["cur_flag"])
+    doc = doc.replace("__CUR_LABEL__", cfg["cur_label"])
+    doc = doc.replace("__ALT_FLAG__", cfg["alt_flag"])
     doc = doc.replace("__CANONICAL__", cfg["canonical"])
     if lang == "el":
         doc = doc.replace('<html lang="en" data-theme="dark">', '<html lang="el" data-theme="dark">', 1)
