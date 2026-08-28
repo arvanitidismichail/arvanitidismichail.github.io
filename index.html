@@ -696,10 +696,13 @@ footer {
 
 @media (max-width: 900px) {
   .foot-grid { grid-template-columns: 1fr 1fr; gap: 2.25rem 2rem; }
-  .foot-id { grid-column: 1 / -1; }
+  /* the identity and the icon row read better full width; the two link
+     lists stay side by side so the footer does not run on forever */
+  .foot-id, .foot-col:last-child { grid-column: 1 / -1; }
 }
 @media (max-width: 520px) {
-  .foot-grid { grid-template-columns: 1fr; }
+  .foot-grid { grid-template-columns: 1fr 1fr; gap: 1.9rem 1.25rem; }
+  .foot-col > a { font-size: 0.83rem; }
 }
 
 /* ============================================================
