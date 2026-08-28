@@ -330,18 +330,22 @@ main > section:nth-of-type(odd) .strand { background: var(--paper); }
 }
 .strand p { margin: 0; font-size: 1.097rem; }
 
-.tags { display: flex; flex-wrap: wrap; gap: .45rem; max-width: 44rem; }
+.tags {
+  display: grid; gap: .6rem;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  max-width: none;
+}
 .tags .tag {
   display: inline-flex; align-items: center; gap: .45rem;
   font-family: var(--sans);
-  font-size: 0.822rem; font-weight: 500; color: var(--ink-2);
-  border: 1px solid var(--rule); border-radius: 2px;
-  padding: .34rem .7rem .34rem .58rem; background: var(--surface);
+  font-size: 0.93rem; font-weight: 500; color: var(--ink-2);
+  border: 1px solid var(--rule); border-radius: 10px;
+  padding: .72rem 1rem .72rem .85rem; background: var(--surface);
   transition: border-color .18s, color .18s;
 }
 .tags .tag:hover { border-color: var(--accent); color: var(--ink); }
 .tags .ti {
-  width: 15px; height: 15px; flex: none;
+  width: 16px; height: 16px; flex: none;
   fill: none; stroke: var(--accent); stroke-width: 1.6;
   stroke-linecap: round; stroke-linejoin: round;
 }
@@ -511,7 +515,8 @@ a.pub-title .ext svg { width: 10px; height: 10px; fill: none; stroke: currentCol
   border: 1px solid var(--rule); border-radius: 999px;
   padding: .45rem .95rem; background: var(--surface);
 }
-main > section:nth-of-type(odd) .jpill { background: var(--paper); }
+main > section:nth-of-type(odd) .jpill,
+main > section:nth-of-type(odd) .tags .tag { background: var(--paper); }
 
 .numbered {
   list-style: none; margin: .2rem 0 0; padding: 0;
@@ -657,6 +662,7 @@ footer {
   .figs-4 { grid-template-columns: 1fr 1fr; }
   .figs-2, .figs-1 { grid-template-columns: 1fr; }
   .numbered { grid-template-columns: 1fr; gap: 0; }
+  .tags { grid-template-columns: 1fr; }
   .tally .n { font-size: 1.85rem; }
   .nav-in, .page { padding-left: 1.5rem; padding-right: 1.5rem; }
   .nav-name { display: none; }
