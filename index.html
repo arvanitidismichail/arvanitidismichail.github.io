@@ -484,6 +484,30 @@ a.pub-title .ext svg { width: 10px; height: 10px; fill: none; stroke: currentCol
 
 
 /* ============================================================
+   "Show more" for the long lists
+   ============================================================ */
+.more-wrap { margin-top: 1.5rem; display: flex; justify-content: center; }
+.more-btn {
+  font-family: var(--sans);
+  font-size: 0.875rem; font-weight: 600; letter-spacing: .01em;
+  color: var(--accent); background: var(--surface);
+  border: 1px solid var(--rule); border-radius: 999px;
+  padding: .68rem 1.6rem; cursor: pointer;
+  display: inline-flex; align-items: center; gap: .5rem;
+  transition: border-color .18s ease, color .18s ease, background .18s ease, transform .18s ease;
+}
+main > section:nth-of-type(odd) .more-btn { background: var(--paper); }
+.more-btn:hover { border-color: var(--accent); transform: translateY(-1px); }
+.more-btn:focus-visible { outline: 2px solid var(--mark); outline-offset: 3px; }
+.more-btn .chev {
+  width: 14px; height: 14px; flex: none;
+  fill: none; stroke: currentColor; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+  transition: transform .22s ease;
+}
+.more-btn[aria-expanded="true"] .chev { transform: rotate(180deg); }
+
+/* ============================================================
    Journals ticker + numbered credentials
    ============================================================ */
 .marquee {
@@ -697,6 +721,7 @@ footer {
     padding: 0 !important; margin-bottom: 10pt !important; }
   .tally { border-top: 1pt solid #000; }
   .figs { display: none; }
+  .more-wrap { display: none; }
   .marquee { -webkit-mask-image: none; mask-image: none; }
   .marquee-track { animation: none; flex-wrap: wrap; width: auto; }
   .numbered { grid-template-columns: 1fr; }
@@ -794,9 +819,6 @@ footer {
 
     <div class="links">
       <a class="cv" href="./CV_Michail_Arvanitidis.pdf" target="_blank" rel="noopener">Curriculum vitae (PDF)</a>
-      <a href="mailto:m.arvanitidis@bham.ac.uk">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2"/><path d="M3 6l9 6 9-6"/></svg>
-        m.arvanitidis@bham.ac.uk</a>
       <a href="https://www.birmingham.ac.uk/staff/profiles/sportex/arvanitidis-michail.aspx" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10l9-5 9 5-9 5-9-5z"/><path d="M7 12.5V17c0 1.4 2.2 2.5 5 2.5s5-1.1 5-2.5v-4.5"/></svg>
         University profile</a>
@@ -807,7 +829,6 @@ footer {
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><path d="M9 9v7M9 6.8v.2M12.5 16V9h2a3.5 3.5 0 0 1 0 7h-2z"/></svg>
         ORCID</a>
       <a href="https://www.researchgate.net/profile/Michail-Arvanitidis" target="_blank" rel="noopener">ResearchGate</a>
-      <a href="https://www.linkedin.com/in/michail-arvanitidis-67848a130" target="_blank" rel="noopener">LinkedIn</a>
     </div>
 
     <div class="tally">
@@ -963,7 +984,7 @@ footer {
       <p class="tally-line" id="pub-status" role="status" aria-live="polite"></p>
     </div>
 
-    <div id="pub-list">
+    <div id="pub-list" class="foldable">
       <div class="year-group">
         <h3 class="year-label pending">Under review &amp; in preparation</h3>
       <article class="publication-item" data-year="2026" data-status="review" data-first="0" data-search="mendez-rebolledo g, arvanitidis m, martinez-valdes e altered neural drive to the fibularis longus during progressive loading in chronic ankle instability journal of applied physiology motor unit 2026 load-dependent impairments in fibularis longus neural drive and motor unit rate coding. under review preprint">
@@ -1209,6 +1230,11 @@ footer {
       </div>
       <p class="none hidden" id="pub-empty">No publications match that search.</p>
     </div>
+    <div class="more-wrap hidden" id="pub-more-wrap">
+      <button type="button" class="more-btn" id="pub-more" aria-expanded="false" aria-controls="pub-list">
+        <span id="pub-more-label">Show all publications</span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+    </div>
   </section>
 
   <!-- ===================== AWARDS & FUNDING ===================== -->
@@ -1309,7 +1335,7 @@ footer {
       </figure>
     </div>
     <h3>Oral &mdash; 13 presentations</h3>
-    <div class="rows rise">
+    <div class="rows rise foldable" data-fold="5" data-fold-noun="oral presentations">
       <div class="row">
         <div class="when">Nov 2026</div>
         <div class="what"> Spaceflight-Associated Changes in Cervical Spine Structure, Muscle Function, and Disc Health in Astronauts.
@@ -1416,7 +1442,7 @@ footer {
       </div>
     </div>
     <h3>Poster &mdash; 9 presentations</h3>
-    <div class="rows rise">
+    <div class="rows rise foldable" data-fold="5" data-fold-noun="poster presentations">
       <div class="row">
         <div class="when">Jun 2026</div>
         <div class="what"> Augmented Reality EMG Biofeedback for Optimizing Upper-to-Middle Trapezius Activation During Seated Row Training: A Pilot Comparison with Conventional Coaching.
@@ -1715,6 +1741,40 @@ footer {
     secs.forEach(function (s) { spy.observe(s); });
   }
 
+
+  /* ---------- Generic fold for long lists ---------- */
+  var CHEV = '<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+
+  Array.prototype.slice.call(document.querySelectorAll('[data-fold]')).forEach(function (box) {
+    var limit = parseInt(box.dataset.fold, 10) || 6;
+    var noun = box.dataset.foldNoun || 'items';
+    var items = Array.prototype.slice.call(box.children);
+    if (items.length <= limit) return;
+
+    var wrap = document.createElement('div');
+    wrap.className = 'more-wrap';
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'more-btn';
+    btn.setAttribute('aria-expanded', 'false');
+    wrap.appendChild(btn);
+    box.parentNode.insertBefore(wrap, box.nextSibling);
+
+    var open = false;
+    function draw() {
+      items.forEach(function (el, i) { el.classList.toggle('hidden', !open && i >= limit); });
+      box.classList.toggle('is-folded', !open);
+      btn.setAttribute('aria-expanded', String(open));
+      btn.innerHTML = (open ? 'Show fewer' : 'Show all ' + items.length + ' ' + noun) + CHEV;
+    }
+    btn.addEventListener('click', function () {
+      open = !open;
+      draw();
+      if (!open) box.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    });
+    draw();
+  });
+
   /* ---------- Publication filter ---------- */
   var items = Array.prototype.slice.call(document.querySelectorAll('.publication-item'));
   var groups = Array.prototype.slice.call(document.querySelectorAll('.year-group'));
@@ -1735,33 +1795,58 @@ footer {
     return true;
   }
 
+  var PUB_LIMIT = 6;
+  var pubOpen = false;
+  var list = document.getElementById('pub-list');
+  var moreWrap = document.getElementById('pub-more-wrap');
+  var moreBtn = document.getElementById('pub-more');
+  var moreLabel = document.getElementById('pub-more-label');
+
   function apply() {
     var q = search.value.trim().toLowerCase();
-    var n = 0;
+    var shown = 0, n = 0;
     items.forEach(function (el) {
       var ok = keep(el) && (!q || el.dataset.search.indexOf(q) !== -1);
+      if (ok) {
+        n++;
+        // the cap applies to whatever the filter left behind
+        if (!pubOpen && shown >= PUB_LIMIT) { ok = false; } else { shown++; }
+      }
       el.classList.toggle('hidden', !ok);
-      if (ok) n++;
     });
     groups.forEach(function (g) {
       g.classList.toggle('hidden', !g.querySelector('.publication-item:not(.hidden)'));
     });
     empty.classList.toggle('hidden', n !== 0);
-    status.textContent = n === total
+
+    var capped = n > PUB_LIMIT;
+    moreWrap.classList.toggle('hidden', !capped);
+    list.classList.toggle('is-folded', capped && !pubOpen);
+    moreBtn.setAttribute('aria-expanded', String(pubOpen));
+    moreLabel.textContent = pubOpen ? 'Show fewer' : 'Show all ' + n + ' publications';
+
+    status.textContent = n === total && pubOpen
       ? 'Showing all ' + total + ' publications'
-      : 'Showing ' + n + ' of ' + total + ' publications';
+      : 'Showing ' + shown + ' of ' + n + (n === total ? ' publications' : ' matching publications');
   }
+
+  moreBtn.addEventListener('click', function () {
+    pubOpen = !pubOpen;
+    apply();
+    if (!pubOpen) list.scrollIntoView({ block: 'start', behavior: 'smooth' });
+  });
 
   chips.forEach(function (c) {
     c.addEventListener('click', function () {
       mode = c.dataset.filter;
       chips.forEach(function (o) { o.setAttribute('aria-pressed', String(o === c)); });
+      pubOpen = false;
       apply();
     });
   });
 
   var t;
-  search.addEventListener('input', function () { clearTimeout(t); t = setTimeout(apply, 110); });
+  search.addEventListener('input', function () { clearTimeout(t); t = setTimeout(function () { pubOpen = false; apply(); }, 110); });
 
   apply();
 })();
