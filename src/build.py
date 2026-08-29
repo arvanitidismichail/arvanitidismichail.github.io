@@ -5,6 +5,7 @@ import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, "/home/claude")
 from pubs import PUBS  # noqa: E402
 from conferences import CONFS  # noqa: E402
 from i18n import STRINGS, MONTHS  # noqa: E402
@@ -33,13 +34,16 @@ def render_item(p):
     cls = "publication-item" + (" is-first-author" if p["first"] else "")
     doi = p.get("doi")
     link = f"https://doi.org/{doi}" if doi else p.get("url")
-    badges = ""
+    tags = []
     if p["status"] == "review":
-        badges += '<span class="badge badge-review">Under review</span>'
+        tags.append('<span class="badge badge-review">Under review</span>')
     elif p["status"] == "prep":
-        badges += '<span class="badge badge-review">In preparation</span>'
+        tags.append('<span class="badge badge-review">In preparation</span>')
     if p["first"]:
-        badges += '<span class="badge badge-first">First author</span>'
+        tags.append('<span class="badge badge-first">First author</span>')
+    # <wbr> so two badges can fall on separate lines on a narrow phone;
+    # without it they are one unbreakable run and push the page sideways
+    badges = "<wbr>".join(tags)
 
     title = html.escape(p["title"])
     if link:
@@ -209,13 +213,13 @@ def main():
     result = result.replace("<!--CONFERENCES-->", render_confs())
 
     en = fill(result, "en")
-    dest = HERE.parent / "index.html"
+    dest = Path("/home/claude/out/index.html")
     dest.write_text(en, encoding="utf-8")
     print(f"wrote {dest} — {len(en):,} bytes")
 
     el = fill(to_greek(result), "el")
     el = to_subdir(el)
-    el_dest = HERE.parent / "el" / "index.html"
+    el_dest = Path("/home/claude/out/el/index.html")
     el_dest.parent.mkdir(parents=True, exist_ok=True)
     el_dest.write_text(el, encoding="utf-8")
     print(f"wrote {el_dest} — {len(el):,} bytes")

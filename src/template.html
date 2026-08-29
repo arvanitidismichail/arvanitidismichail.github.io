@@ -115,6 +115,11 @@ html[data-theme="dark"] {
 
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-h) + 20px); }
+/* nothing may push the page sideways: a long unbreakable word on a narrow
+   phone would otherwise slide the whole layout out from under the bands.
+   `clip` rather than `hidden` so the sticky bar keeps working. */
+html, body { overflow-x: clip; }
+@supports not (overflow-x: clip) { html { overflow-x: hidden; } }
 
 body {
   margin: 0;
@@ -155,6 +160,7 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
 .nav {
   position: sticky; top: 0; z-index: 50;
   height: var(--nav-h);
+  background: var(--paper);   /* fallback where color-mix is unsupported */
   background: color-mix(in srgb, var(--paper) 93%, transparent);
   backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--rule);
@@ -260,12 +266,17 @@ html[data-theme="dark"] .theme-btn .i-moon { display: none; }
 /* the header needs room before the first band changes colour beneath it */
 header#top { padding-bottom: 3.6rem; }
 main > section { margin-top: 0; padding: 4.6rem 0; }
-main > section:nth-of-type(odd) {
+/* The band is painted by a pseudo-element stretched past both edges rather
+   than by a huge box-shadow clipped with a negative clip-path inset: some
+   mobile browsers clamp a negative inset() to zero, which left the band
+   sitting inside the text column instead of running edge to edge. */
+main > section:nth-of-type(odd)::after {
+  content: "";
+  position: absolute; z-index: -1;
+  top: 0; bottom: 0; left: -100vmax; right: -100vmax;
   background: var(--band);
   border-top: 1px solid var(--band-line);
   border-bottom: 1px solid var(--band-line);
-  box-shadow: 0 0 0 100vmax var(--band);
-  clip-path: inset(0 -100vmax);
 }
 
 main { counter-reset: sec; }
@@ -486,7 +497,8 @@ h2 + .entries, h2 + .rows { border-top: none; }
 .publication-item { padding: 1rem 0; border-bottom: 1px solid var(--rule-soft); }
 .publication-item:last-child { border-bottom: none; }
 
-.pub-title { display: block; font-size: 1.123rem; line-height: 1.45; color: var(--ink); margin-bottom: .25rem; }
+.pub-title { display: block; font-size: 1.123rem; line-height: 1.45; color: var(--ink);
+             margin-bottom: .25rem; overflow-wrap: anywhere; }
 a.pub-title:hover { color: var(--accent); text-decoration: none; }
 a.pub-title .ext {
   display: inline-block; width: 10px; height: 10px; margin-left: .32rem;
@@ -861,6 +873,7 @@ footer {
   main > section { margin-top: 18pt; padding: 0;
     background: none !important; box-shadow: none !important;
     clip-path: none !important; border: 0 !important; }
+  main > section::after { display: none !important; }
   #research { display: block; }
   .strand { background: none !important; border: 0 !important; border-radius: 0 !important;
     padding: 0 !important; margin-bottom: 10pt !important; }
@@ -986,7 +999,7 @@ footer {
         <div class="eyebrow">Curriculum Vitae</div>
         <h1>Dr Michail Arvanitidis</h1>
         <div class="post">
-          <img class="crest" src="./uob-crest.svg" alt="" width="22" height="23" decoding="async">
+          <img class="crest" src="./uob-crest.svg" alt="" width="22" height="26" decoding="async">
           <span>Postdoctoral Research Fellow</span>
         </div>
         <p class="where">
