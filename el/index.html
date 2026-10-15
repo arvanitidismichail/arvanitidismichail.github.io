@@ -871,6 +871,29 @@ footer {
   .rise { opacity: 1 !important; transform: none !important; transition: none; }
 }
 
+/* Google Scholar metrics, a quiet line under the figures */
+.scholar {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: .35rem 1.4rem;
+  margin: 1.3rem 0 0; font-size: .8rem; color: var(--ink-3);
+}
+.scholar a {
+  font-size: .66rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--accent);
+  text-decoration: underline; text-decoration-color: var(--accent-soft);
+  text-underline-offset: 4px;
+}
+.scholar a:hover { text-decoration: underline; text-decoration-color: var(--accent); }
+.scholar .sn {
+  font-size: 1.15rem; font-weight: 500; color: var(--ink);
+  font-variant-numeric: tabular-nums lining-nums; letter-spacing: -.02em;
+}
+.scholar .sk { letter-spacing: .02em; }
+.scholar .scholar-d { font-size: .72rem; }
+@media (max-width: 560px) {
+  .scholar { column-gap: 1rem; }
+  .scholar a, .scholar .scholar-d { flex-basis: 100%; }
+}
+
 /* ============================================================
    Motion — hero entrance, spine rail, theme wipe
    ============================================================ */
@@ -893,7 +916,8 @@ h1 .c { display: inline-block; }
   html.js .head .post,
   html.js .head .where,
   html.js header .links,
-  html.js header .tally {
+  html.js header .tally,
+  html.js header .scholar {
     opacity: 0; animation: lift .7s var(--ease-out) forwards;
   }
   html.js .head .eyebrow { animation-delay: 0ms; }
@@ -901,6 +925,7 @@ h1 .c { display: inline-block; }
   html.js .head .where   { animation-delay: 500ms; }
   html.js header .links  { animation-delay: 580ms; }
   html.js header .tally  { animation-delay: 660ms; }
+  html.js header .scholar { animation-delay: 780ms; }
   html.js .portrait {
     opacity: 0; filter: saturate(.92) blur(10px); transform: scale(1.04);
     animation: focus-in 1.1s var(--ease-out) 150ms forwards;
@@ -1143,6 +1168,14 @@ h1 .c { display: inline-block; }
       <div><div class="n">14</div><div class="t">Περιοδικά ως κριτής</div></div>
     </div>
 
+    <p class="scholar">
+      <a href="https://scholar.google.com/citations?user=fHHpMb0AAAAJ&amp;hl=en" target="_blank" rel="noopener">Google Scholar</a>
+      <span class="sm"><span class="sn">378</span> <span class="sk">αναφορές</span></span>
+      <span class="sm"><span class="sn">11</span> <span class="sk">δείκτης h</span></span>
+      <span class="sm"><span class="sn">11</span> <span class="sk">δείκτης i10</span></span>
+      <span class="scholar-d">στις Οκτ 2026</span>
+    </p>
+
   </header>
 
   <!-- ===================== RESEARCH ===================== -->
@@ -1344,20 +1377,32 @@ h1 .c { display: inline-block; }
       <article class="publication-item is-first-author" data-year="2026" data-status="published" data-first="1" data-search="arvanitidis m, pincheira pa, negro f, botter a, cerone gl, martinez-valdes e interactions between motor unit firing and fascicle dynamics during shortening and lengthening contractions journal of neurophysiology motor unit ultrasound 2026 simultaneous hd-semg and ultrasound via transparent electrodes revealed contraction-dependent neuromechanical coupling. first author arvanitidis">
         <a class="pub-title" href="https://doi.org/10.1152/jn.00188.2026" target="_blank" rel="noopener"><span class="badge badge-first">Πρώτος συγγραφέας</span>Interactions between motor unit firing and fascicle dynamics during shortening and lengthening contractions<span class="ext"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5L7 17"/></svg></span></a>
         <div class="pub-authors"><b>Arvanitidis M</b>, Pincheira PA, Negro F, Botter A, Cerone GL, Martinez-Valdes E</div>
-        <div class="pub-venue"><em>Journal of Neurophysiology</em> · 2026</div>
+        <div class="pub-venue"><em>Journal of Neurophysiology</em> · 2026;136(2):735–744</div>
         <p class="pub-note">Η ταυτόχρονη καταγραφή HD-sEMG και υπερηχογραφίας με διαφανή ηλεκτρόδια ανέδειξε νευρομηχανική σύζευξη εξαρτώμενη από το είδος της σύσπασης.</p>
+      </article>
+      <article class="publication-item is-first-author" data-year="2026" data-status="published" data-first="1" data-search="arvanitidis m, falla d, negro f, boccia g, rainoldi a, martinez-valdes e reduced knee extensor torque steadiness and increased motor unit discharge variability in young people with patellofemoral knee pain: a pilot study european journal of applied physiology knee pain motor unit 2026 novel insight into neuromuscular impairments in patellofemoral pain during single-joint exercise. first author arvanitidis">
+        <a class="pub-title" href="https://doi.org/10.1007/s00421-025-06083-8" target="_blank" rel="noopener"><span class="badge badge-first">Πρώτος συγγραφέας</span>Reduced knee extensor torque steadiness and increased motor unit discharge variability in young people with patellofemoral knee pain: a pilot study<span class="ext"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5L7 17"/></svg></span></a>
+        <div class="pub-authors"><b>Arvanitidis M</b>, Falla D, Negro F, Boccia G, Rainoldi A, Martinez-Valdes E</div>
+        <div class="pub-venue"><em>European Journal of Applied Physiology</em> · 2026;126(5):2595–2615</div>
+        <p class="pub-note">Νέα δεδομένα για τις νευρομυϊκές διαταραχές στον επιγονατιδομηριαίο πόνο κατά την άσκηση μίας άρθρωσης.</p>
       </article>
       <article class="publication-item" data-year="2026" data-status="published" data-first="0" data-search="parrella m, arvanitidis m, borzuola r, jiménez-grande d, macaluso a, falla d age-related alterations in trunk extensor force control during isometric and isokinetic contractions scientific reports trunk ageing 2026 age-related impairments in trunk force control with distinct hd-semg patterns.">
         <a class="pub-title" href="https://doi.org/10.1038/s41598-026-41572-6" target="_blank" rel="noopener">Age-related alterations in trunk extensor force control during isometric and isokinetic contractions<span class="ext"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5L7 17"/></svg></span></a>
         <div class="pub-authors">Parrella M, <b>Arvanitidis M</b>, Borzuola R, Jiménez-Grande D, Macaluso A, Falla D</div>
-        <div class="pub-venue"><em>Scientific Reports</em> · 2026</div>
+        <div class="pub-venue"><em>Scientific Reports</em> · 2026;16(1):13249</div>
         <p class="pub-note">Διαταραχές του ελέγχου δύναμης του κορμού με την ηλικία, με διακριτά πρότυπα HD-sEMG.</p>
       </article>
       <article class="publication-item" data-year="2026" data-status="published" data-first="0" data-search="thoomes ej, arvanitidis m, van geest s, van der windt da, verhagen ap, de graaf m, kuijper b, scholten-peeters ggm, vleggeert-lankamp cl, falla d diagnostic accuracy of physical examination tests for painful cervical radiculopathy: update of a systematic review and meta-analysis bmc musculoskeletal disorders neck diagnosis 2026 updated diagnostic accuracy evidence informing evidence-based clinical decision-making.">
         <a class="pub-title" href="https://doi.org/10.1186/s12891-026-09551-0" target="_blank" rel="noopener">Diagnostic accuracy of physical examination tests for painful cervical radiculopathy: update of a systematic review and meta-analysis<span class="ext"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5L7 17"/></svg></span></a>
         <div class="pub-authors">Thoomes EJ, <b>Arvanitidis M</b>, van Geest S, van der Windt DA, Verhagen AP, de Graaf M, Kuijper B, Scholten-Peeters GGM, Vleggeert-Lankamp CL, Falla D</div>
-        <div class="pub-venue"><em>BMC Musculoskeletal Disorders</em> · 2026</div>
+        <div class="pub-venue"><em>BMC Musculoskeletal Disorders</em> · 2026;27(1):338</div>
         <p class="pub-note">Επικαιροποιημένα δεδομένα διαγνωστικής ακρίβειας, χρήσιμα για τεκμηριωμένη κλινική λήψη αποφάσεων.</p>
+      </article>
+      <article class="publication-item" data-year="2026" data-status="published" data-first="0" data-search="sageshima h, parrella m, arvanitidis m, devecchi v, falla d does pain alter the spatial distribution of muscle activity in people experiencing spinal pain? a systematic review and meta-analysis journal of electromyography and kinesiology spinal pain review 2026 revealed regional differences in lumbar erector spinae activity in people with spinal pain.">
+        <a class="pub-title" href="https://doi.org/10.1016/j.jelekin.2026.103155" target="_blank" rel="noopener">Does pain alter the spatial distribution of muscle activity in people experiencing spinal pain? A systematic review and meta-analysis<span class="ext"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5L7 17"/></svg></span></a>
+        <div class="pub-authors">Sageshima H, Parrella M, <b>Arvanitidis M</b>, Devecchi V, Falla D</div>
+        <div class="pub-venue"><em>Journal of Electromyography and Kinesiology</em> · 2026;90:103155</div>
+        <p class="pub-note">Ανέδειξε τοπικές διαφορές στη δραστηριότητα του οσφυϊκού ορθωτήρα σε άτομα με πόνο στη σπονδυλική στήλη.</p>
       </article>
       <article class="publication-item" data-year="2026" data-status="published" data-first="0" data-search="contreras-hernandez i, falla d, arvanitidis m, negro f, jimenez-grande d, martinez-valdes e load and muscle-dependent changes in triceps surae motor unit firing properties in individuals with non-insertional achilles tendinopathy the journal of physiology tendinopathy motor unit 2026 first demonstration of load- and muscle-dependent motor unit changes in achilles tendinopathy.">
         <a class="pub-title" href="https://doi.org/10.1113/JP287588" target="_blank" rel="noopener">Load and muscle-dependent changes in triceps surae motor unit firing properties in individuals with non-insertional Achilles tendinopathy<span class="ext"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5L7 17"/></svg></span></a>
@@ -1368,8 +1413,14 @@ h1 .c { display: inline-block; }
       <article class="publication-item" data-year="2026" data-status="published" data-first="0" data-search="sageshima h, arvanitidis m, sidiropoulos g, river y, falla d the effect of eccentric exercise-induced delayed onset neck muscle soreness on force steadiness and the spatial distribution of neck extensor muscle activity scientific reports neck doms 2026 adaptive redistribution of neck muscle activity during experimentally induced soreness.">
         <a class="pub-title" href="https://doi.org/10.1038/s41598-026-49353-x" target="_blank" rel="noopener">The effect of eccentric exercise-induced delayed onset neck muscle soreness on force steadiness and the spatial distribution of neck extensor muscle activity<span class="ext"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5L7 17"/></svg></span></a>
         <div class="pub-authors">Sageshima H, <b>Arvanitidis M</b>, Sidiropoulos G, River Y, Falla D</div>
-        <div class="pub-venue"><em>Scientific Reports</em> · 2026</div>
+        <div class="pub-venue"><em>Scientific Reports</em> · 2026;16(1):20206</div>
         <p class="pub-note">Προσαρμοστική ανακατανομή της δραστηριότητας των αυχενικών μυών κατά τον πειραματικά προκλητό μυϊκό πόνο.</p>
+      </article>
+      <article class="publication-item" data-year="2026" data-status="published" data-first="0" data-search="parrella m, arvanitidis m, macaluso a, falla d the effects of ageing on fatigue and endurance of the spinal extensor muscles: a systematic review and meta-analysis geroscience trunk ageing review 2026 first meta-analysis showing reduced trunk muscle endurance in older adults.">
+        <a class="pub-title" href="https://doi.org/10.1007/s11357-025-01987-x" target="_blank" rel="noopener">The effects of ageing on fatigue and endurance of the spinal extensor muscles: a systematic review and meta-analysis<span class="ext"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5L7 17"/></svg></span></a>
+        <div class="pub-authors">Parrella M, <b>Arvanitidis M</b>, Macaluso A, Falla D</div>
+        <div class="pub-venue"><em>GeroScience</em> · 2026;48(4):5785–5809</div>
+        <p class="pub-note">Πρώτη μετα-ανάλυση που δείχνει μειωμένη αντοχή των μυών του κορμού σε ηλικιωμένους.</p>
       </article>
       </div>
       <div class="year-group">
@@ -1379,12 +1430,6 @@ h1 .c { display: inline-block; }
         <div class="pub-authors"><b>Arvanitidis M</b>, Falla D, Sanderson A, Martinez-Valdes E</div>
         <div class="pub-venue"><em>European Journal of Pain</em> · 2025;29(2):e4716</div>
         <p class="pub-note">Η σταθερότητα της δύναμης διαταράσσεται στον μυοσκελετικό πόνο — πιθανός στόχος αποκατάστασης.</p>
-      </article>
-      <article class="publication-item is-first-author" data-year="2025" data-status="published" data-first="1" data-search="arvanitidis m, falla d, negro f, boccia g, rainoldi a, martinez-valdes e reduced knee extensor torque steadiness and increased motor unit discharge variability in young people with patellofemoral knee pain: a pilot study european journal of applied physiology knee pain motor unit 2025 novel insight into neuromuscular impairments in patellofemoral pain during single-joint exercise. first author arvanitidis">
-        <a class="pub-title" href="https://doi.org/10.1007/s00421-025-06083-8" target="_blank" rel="noopener"><span class="badge badge-first">Πρώτος συγγραφέας</span>Reduced knee extensor torque steadiness and increased motor unit discharge variability in young people with patellofemoral knee pain: a pilot study<span class="ext"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5L7 17"/></svg></span></a>
-        <div class="pub-authors"><b>Arvanitidis M</b>, Falla D, Negro F, Boccia G, Rainoldi A, Martinez-Valdes E</div>
-        <div class="pub-venue"><em>European Journal of Applied Physiology</em> · 2025</div>
-        <p class="pub-note">Νέα δεδομένα για τις νευρομυϊκές διαταραχές στον επιγονατιδομηριαίο πόνο κατά την άσκηση μίας άρθρωσης.</p>
       </article>
       <article class="publication-item is-first-author" data-year="2025" data-status="published" data-first="1" data-search="arvanitidis m, mak hhk, martinez-valdes e, barbero m, falla d validation of a novel device for assessing neck muscle strength archives of physiotherapy neck measurement 2025 the nod is a valid, reliable, portable alternative to laboratory dynamometry. first author arvanitidis">
         <a class="pub-title" href="https://doi.org/10.33393/aop.2025.3476" target="_blank" rel="noopener"><span class="badge badge-first">Πρώτος συγγραφέας</span>Validation of a novel device for assessing neck muscle strength<span class="ext"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5L7 17"/></svg></span></a>
@@ -1398,12 +1443,6 @@ h1 .c { display: inline-block; }
         <div class="pub-venue"><em>Musculoskeletal Science and Practice</em> · 2025;80:103428</div>
 
       </article>
-      <article class="publication-item" data-year="2025" data-status="published" data-first="0" data-search="sageshima h, parrella m, arvanitidis m, devecchi v, falla d does pain alter the spatial distribution of muscle activity in people experiencing spinal pain? a systematic review and meta-analysis journal of electromyography and kinesiology spinal pain review 2025 revealed regional differences in lumbar erector spinae activity in people with spinal pain.">
-        <a class="pub-title" href="https://www.sciencedirect.com/science/article/pii/S1050641126000519" target="_blank" rel="noopener">Does pain alter the spatial distribution of muscle activity in people experiencing spinal pain? A systematic review and meta-analysis<span class="ext"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5L7 17"/></svg></span></a>
-        <div class="pub-authors">Sageshima H, Parrella M, <b>Arvanitidis M</b>, Devecchi V, Falla D</div>
-        <div class="pub-venue"><em>Journal of Electromyography and Kinesiology</em> · 2025</div>
-        <p class="pub-note">Ανέδειξε τοπικές διαφορές στη δραστηριότητα του οσφυϊκού ορθωτήρα σε άτομα με πόνο στη σπονδυλική στήλη.</p>
-      </article>
       <article class="publication-item" data-year="2025" data-status="published" data-first="0" data-search="devecchi v, arvanitidis m, falla d effects of microgravity on neuromuscular control of the spine: a protocol for a systematic review and meta-analysis bmj open spaceflight 2025 will inform countermeasures to reduce spinal pain and injury risk in astronauts.">
         <a class="pub-title" href="https://doi.org/10.1136/bmjopen-2024-098172" target="_blank" rel="noopener">Effects of microgravity on neuromuscular control of the spine: a protocol for a systematic review and meta-analysis<span class="ext"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5L7 17"/></svg></span></a>
         <div class="pub-authors">Devecchi V, <b>Arvanitidis M</b>, Falla D</div>
@@ -1415,12 +1454,6 @@ h1 .c { display: inline-block; }
         <div class="pub-authors">Parrella M, Borzuola R, Siciliano FP, <b>Arvanitidis M</b>, Nuccio S, Falla D, Piacentini MF, Macaluso A</div>
         <div class="pub-venue"><em>European Journal of Applied Physiology</em> · 2025;125(12):3663–3674</div>
         <p class="pub-note">Πρώτα δεδομένα για διαφορές της χωρικής ενεργοποίησης των οσφυϊκών μυών με την ηλικία υπό συνθήκες κόπωσης.</p>
-      </article>
-      <article class="publication-item" data-year="2025" data-status="published" data-first="0" data-search="parrella m, arvanitidis m, macaluso a, falla d the effects of ageing on fatigue and endurance of the spinal extensor muscles: a systematic review and meta-analysis geroscience trunk ageing review 2025 first meta-analysis showing reduced trunk muscle endurance in older adults.">
-        <a class="pub-title" href="https://doi.org/10.1007/s11357-025-01987-x" target="_blank" rel="noopener">The effects of ageing on fatigue and endurance of the spinal extensor muscles: a systematic review and meta-analysis<span class="ext"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5L7 17"/></svg></span></a>
-        <div class="pub-authors">Parrella M, <b>Arvanitidis M</b>, Macaluso A, Falla D</div>
-        <div class="pub-venue"><em>GeroScience</em> · 2025</div>
-        <p class="pub-note">Πρώτη μετα-ανάλυση που δείχνει μειωμένη αντοχή των μυών του κορμού σε ηλικιωμένους.</p>
       </article>
       <article class="publication-item" data-year="2025" data-status="published" data-first="0" data-search="selvamoorthy r, arvanitidis m, negro f, pincheira p, evans d, martinez-valdes e torque visuomotor feedback training versus standard eccentric exercise for the management of patellar tendinopathy: protocol for a randomised controlled trial bmj open tendinopathy biofeedback 2025 first trial of torque-based visual feedback training for patellar tendinopathy.">
         <a class="pub-title" href="https://doi.org/10.1136/bmjopen-2024-092104" target="_blank" rel="noopener">Torque visuomotor feedback training versus standard eccentric exercise for the management of patellar tendinopathy: protocol for a randomised controlled trial<span class="ext"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h10v10M19 5L7 17"/></svg></span></a>
@@ -2056,7 +2089,7 @@ h1 .c { display: inline-block; }
 
   /* ---------- Stat counters ---------- */
   // "29", "£711k": count the number, keep the prefix and suffix.
-  var figs = document.querySelectorAll('header .tally .n');
+  var figs = document.querySelectorAll('header .tally .n, header .scholar .sn');
   if (!reduce && window.requestAnimationFrame) {
     figs.forEach(function (el, k) {
       var m = el.textContent.match(/^(\D*)(\d+)(\D*)$/);

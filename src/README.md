@@ -28,6 +28,20 @@ Add a dict to the list in `pubs.py` and run `build.py`. The counts in the page
 ("29 published · 7 in progress"), the year filters and the search index all
 update themselves — they are computed, not typed.
 
+## Updating the Google Scholar figures
+
+The citations, h-index and i10-index under the header figures come from
+`scholar.py`. To refresh them from the live profile and rebuild:
+
+```
+cd src
+python3 update_scholar.py
+```
+
+Scholar has no API, so this reads the public profile page. It works from a home
+or office connection; if Scholar ever answers with a CAPTCHA, edit the three
+numbers and the date in `scholar.py` by hand and run `build.py`.
+
 ## How the Greek version works
 
 There is no translation service. `i18n.py` is a hand-written list of pairs:

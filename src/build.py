@@ -9,6 +9,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from pubs import PUBS  # noqa: E402
 from conferences import CONFS  # noqa: E402
 from i18n import STRINGS, MONTHS  # noqa: E402
+from scholar import SCHOLAR  # noqa: E402
 
 HERE = Path(__file__).parent
 
@@ -134,6 +135,10 @@ def fill(doc, lang):
     doc = doc.replace("__CUR_LABEL__", cfg["cur_label"])
     doc = doc.replace("__ALT_FLAG__", cfg["alt_flag"])
     doc = doc.replace("__CANONICAL__", cfg["canonical"])
+    # "Oct 2026", with the month in the page's language
+    y, m, _ = SCHOLAR["as_of"].split("-")
+    mon = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][int(m) - 1]
+    doc = doc.replace("__SCHOLAR_ASOF__", f'{MONTHS[mon] if lang == "el" else mon} {y}')
     if lang == "el":
         doc = doc.replace('<html lang="en" data-theme="dark">', '<html lang="el" data-theme="dark">', 1)
     return doc
@@ -211,6 +216,9 @@ def main():
     result = tpl.replace("<!--PUBLICATIONS-->", block)
     assert "<!--CONFERENCES-->" in result, "conference marker missing"
     result = result.replace("<!--CONFERENCES-->", render_confs())
+    result = (result.replace("__CITES__", str(SCHOLAR["citations"]))
+                    .replace("__H_INDEX__", str(SCHOLAR["h_index"]))
+                    .replace("__I10__", str(SCHOLAR["i10_index"])))
 
     en = fill(result, "en")
     dest = HERE.parent / "index.html"

@@ -66,6 +66,10 @@ STRINGS = [
     ('<div class="t">As first author</div>', '<div class="t">Ως πρώτος συγγραφέας</div>', 1),
     ('<div class="t">Funding, co-applicant</div>', '<div class="t">Χρηματοδότηση ως συναιτών</div>', 1),
     ('<div class="t">Journals reviewed for</div>', '<div class="t">Περιοδικά ως κριτής</div>', 1),
+    ('<span class="sk">citations</span>', '<span class="sk">αναφορές</span>', 1),
+    ('<span class="sk">h-index</span>', '<span class="sk">δείκτης h</span>', 1),
+    ('<span class="sk">i10-index</span>', '<span class="sk">δείκτης i10</span>', 1),
+    ('<span class="scholar-d">as of', '<span class="scholar-d">στις', 1),
 
     # ---------- research ----------
     ("<h2>Research</h2>", "<h2>Έρευνα</h2>", 1),
