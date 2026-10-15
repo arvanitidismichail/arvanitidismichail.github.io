@@ -49,6 +49,15 @@ Run workflow. To stop something being added (a conference abstract, say), put
 its DOI in `src/ignore_dois.txt`. The CV PDFs are not regenerated
 automatically.
 
+Google Scholar refuses GitHub's servers, so the Scholar figures are refreshed
+from the Mac instead: a launchd job
+(`~/Library/LaunchAgents/com.arvanitidismichail.scholar.plist`) runs
+`~/.site-scholar/update.sh` on Mondays at 09:00 (or on waking, if asleep).
+It works in its own copy of the site at `~/.site-scholar/site`, runs
+`update_scholar.py`, and pushes if the numbers changed. Log:
+`~/Library/Logs/site-scholar.log`. To stop it:
+`launchctl bootout gui/$(id -u)/com.arvanitidismichail.scholar`.
+
 ## Updating the Google Scholar figures
 
 The citations, h-index and i10-index under the header figures, the
