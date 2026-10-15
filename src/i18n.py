@@ -87,6 +87,43 @@ STRINGS = [
         προσαρμόζονται στον πόνο, και κεντρικό θέμα αυτής της έρευνας.</p>""", 1),
     ('<p class="emg-note">Simulated signal, for illustration.</p>', '<p class="emg-note">Προσομοιωμένο σήμα, για επεξήγηση.</p>', 1),
     ('<h3>Collaborations</h3>', '<h3>Συνεργασίες</h3>', 1),
+    ('<span class="mu-lbl">Force</span>', '<span class="mu-lbl">Δύναμη</span>', 1),
+    ('aria-label="Condition"', 'aria-label="Κατάσταση"', 1),
+    ('data-pain="0" aria-pressed="true">Pain-free</button>', 'data-pain="0" aria-pressed="true">Χωρίς πόνο</button>', 1),
+    ('data-pain="1" aria-pressed="false">With pain</button>', 'data-pain="1" aria-pressed="false">Με πόνο</button>', 1),
+    ('<span>Sound</span>', '<span>Ήχος</span>', 1),
+    ('<span class="k">Motor units, live</span>', '<span class="k">Κινητικές μονάδες, ζωντανά</span>', 1),
+    ("""<p>Each row is one motor unit: a nerve cell and the muscle fibres it drives, as identified from
+        high-density EMG. Raise the force to recruit more units and make them fire faster. Switch on pain to see
+        the pattern reported in people with pain: slower, less regular firing and a less steady force.</p>""",
+     """<p>Κάθε σειρά είναι μία κινητική μονάδα: ένα νευρικό κύτταρο και οι μυϊκές ίνες που ενεργοποιεί, όπως
+        ταυτοποιούνται με ηλεκτρομυογραφία υψηλής πυκνότητας. Αυξήστε τη δύναμη για να ενεργοποιηθούν περισσότερες
+        μονάδες και να πυροδοτούν ταχύτερα. Ενεργοποιήστε τον πόνο για να δείτε το μοτίβο που έχει καταγραφεί σε
+        άτομα με πόνο: πιο αργή, λιγότερο σταθερή πυροδότηση και λιγότερο σταθερή δύναμη.</p>""", 1),
+    ('<p class="emg-note">Simulated, for illustration. Sound plays each discharge as a note.</p>',
+     '<p class="emg-note">Προσομοίωση, για επεξήγηση. Ο ήχος παίζει κάθε εκφόρτιση ως νότα.</p>', 1),
+    ('<p class="neck-fallback">The 3D model needs WebGL, which this browser has turned off.</p>',
+     '<p class="neck-fallback">Το τρισδιάστατο μοντέλο χρειάζεται WebGL, το οποίο είναι απενεργοποιημένο σε αυτόν τον περιηγητή.</p>', 1),
+    ('<span class="k">The neck in space</span>', '<span class="k">Ο αυχένας στο διάστημα</span>', 1),
+    ("""<p class="neck-earth">The cervical spine: seven vertebrae, C1 to C7, separated by discs (teal) and held
+          in a gentle forward curve by the deep neck muscles (red).</p>""",
+     """<p class="neck-earth">Η αυχενική μοίρα της σπονδυλικής στήλης: επτά σπόνδυλοι, από τον Α1 έως τον Α7,
+          που χωρίζονται από δίσκους (τιρκουάζ) και διατηρούν μια ήπια καμπύλη προς τα εμπρός χάρη στους εν τω
+          βάθει μύες του αυχένα (κόκκινο).</p>""", 1),
+    ("""<p class="neck-space" hidden>Without gravity to compress it, the spine lengthens. The discs take on fluid
+          and swell, the neck's curve flattens, and the deep neck muscles, no longer holding up the head, can lose
+          size. The Cervical in Space trial measures these changes in astronauts, and how they relate to the higher
+          risk of disc herniation after flight.</p>""",
+     """<p class="neck-space" hidden>Χωρίς τη βαρύτητα να τη συμπιέζει, η σπονδυλική στήλη επιμηκύνεται. Οι δίσκοι
+          απορροφούν υγρό και διογκώνονται, η καμπύλη του αυχένα ισιώνει και οι εν τω βάθει μύες, που δεν
+          χρειάζεται πια να στηρίζουν το κεφάλι, μπορεί να μειωθούν σε μέγεθος. Η μελέτη Cervical in Space
+          μετρά αυτές τις αλλαγές σε αστροναύτες και τη σχέση τους με τον αυξημένο κίνδυνο κήλης δίσκου μετά
+          την πτήση.</p>""", 1),
+    ('aria-label="Show the neck"', 'aria-label="Εμφάνιση του αυχένα"', 1),
+    ('data-space="0" aria-pressed="true">On Earth</button>', 'data-space="0" aria-pressed="true">Στη Γη</button>', 1),
+    ('data-space="1" aria-pressed="false">After spaceflight</button>', 'data-space="1" aria-pressed="false">Μετά την πτήση</button>', 1),
+    ('<p class="emg-note">Drag to turn the model. Simplified, with the changes exaggerated for illustration.</p>',
+     '<p class="emg-note">Σύρετε για να περιστρέψετε το μοντέλο. Απλοποιημένο, με τις αλλαγές μεγεθυμένες για επεξήγηση.</p>', 1),
 
     # ---------- research ----------
     ("<h2>Research</h2>", "<h2>Έρευνα</h2>", 1),
