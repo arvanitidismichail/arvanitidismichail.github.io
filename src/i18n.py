@@ -23,7 +23,6 @@ STRINGS = [
     ('<li><a href="#teaching">Teaching</a></li>', '<li><a href="#teaching">Διδασκαλία</a></li>', 1),
     ('<li><a href="#service">Service</a></li>', '<li><a href="#service">Ακαδημαϊκή προσφορά</a></li>', 1),
 
-    ('<a class="nav-cta" href="#contact">', '<a class="nav-cta" href="#contact">', 1),
     ("<span>Contact</span>", "<span>Επικοινωνία</span>", 1),
     ('<div class="foot-col" id="contact">', '<div class="foot-col" id="contact">', 1),
 
@@ -87,6 +86,9 @@ STRINGS = [
         προσαρμόζονται στον πόνο, και κεντρικό θέμα αυτής της έρευνας.</p>""", 1),
     ('<p class="emg-note">Simulated signal, for illustration.</p>', '<p class="emg-note">Προσομοιωμένο σήμα, για επεξήγηση.</p>', 1),
     ('<h3>Collaborations</h3>', '<h3>Συνεργασίες</h3>', 1),
+    ('<a class="nav-cta" href="#contact" aria-label="Contact">', '<a class="nav-cta" href="#contact" aria-label="Επικοινωνία">', 1),
+    ('aria-label="3D model of the cervical spine. Use the arrow keys to turn it."',
+     'aria-label="Τρισδιάστατο μοντέλο της αυχενικής μοίρας. Χρησιμοποιήστε τα βέλη για να το περιστρέψετε."', 1),
     ('<span class="mu-lbl">Force</span>', '<span class="mu-lbl">Δύναμη</span>', 1),
     ('aria-label="Condition"', 'aria-label="Κατάσταση"', 1),
     ('data-pain="0" aria-pressed="true">Pain-free</button>', 'data-pain="0" aria-pressed="true">Χωρίς πόνο</button>', 1),
@@ -237,7 +239,7 @@ STRINGS = [
 
     # ---------- publications ----------
     ("<h2>Publications ", "<h2>Δημοσιεύσεις ", 1),
-    (">29 published · 7 in progress<", ">29 δημοσιευμένες · 7 σε εξέλιξη<", 1),
+    (">__N_PUB__ published · __N_PENDING__ in progress<", ">__N_PUB__ δημοσιευμένες · __N_PENDING__ σε εξέλιξη<", 1),
     (">Search publications<", ">Αναζήτηση δημοσιεύσεων<", 1),
     ('placeholder="Search title, author, journal or topic"',
      'placeholder="Αναζήτηση τίτλου, συγγραφέα, περιοδικού ή θέματος"', 1),

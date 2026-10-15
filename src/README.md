@@ -28,6 +28,27 @@ Add a dict to the list in `pubs.py` and run `build.py`. The counts in the page
 ("29 published · 7 in progress"), the year filters and the search index all
 update themselves — they are computed, not typed.
 
+## The weekly automatic update
+
+Every Monday a GitHub Action (`.github/workflows/weekly-update.yml`) runs
+`src/weekly.py`, which:
+
+- marks a paper listed as under review or in preparation as **published**
+  once it appears with a journal DOI, with its journal, volume and pages;
+- fills in volume and pages for published papers that were still waiting
+  for them;
+- **adds** any new journal article linked to the ORCID that is not listed
+  yet (topic and note left blank: add them by hand if you want);
+- refreshes the Google Scholar figures (best effort: Scholar often refuses
+  cloud servers, and then the previous numbers stay) and the collaboration map;
+- rebuilds both pages and publishes them if anything changed.
+
+Each run lists what it changed on its page in the repository's Actions tab,
+and in the commit message. To run it now: Actions → Weekly site update →
+Run workflow. To stop something being added (a conference abstract, say), put
+its DOI in `src/ignore_dois.txt`. The CV PDFs are not regenerated
+automatically.
+
 ## Updating the Google Scholar figures
 
 The citations, h-index and i10-index under the header figures, the

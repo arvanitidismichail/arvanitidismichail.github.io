@@ -1,0 +1,48 @@
+# Every Monday: check for new or newly published papers, refresh the Google
+# Scholar figures and the collaboration map, rebuild both pages, and publish
+# if anything changed. Run it by hand from the Actions tab with "Run workflow".
+name: Weekly site update
+
+on:
+  schedule:
+    - cron: "17 6 * * 1"     # Mondays 06:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: weekly-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Refresh publications, metrics and map, then rebuild
+        run: python3 src/weekly.py
+
+      - name: Publish if anything changed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git diff --quiet; then
+            echo "Nothing changed this week."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          { echo "Weekly update: publications, citations and map"; echo; cat .weekly-summary.txt; } > /tmp/msg
+          git commit -F /tmp/msg
+          git push
+          # pushes made by this workflow don't start a Pages build on their own
+          gh api -X POST "repos/${{ github.repository }}/pages/builds" >/dev/null

@@ -62,4 +62,5 @@ lines = [
 print(f"Scholar: {cites} citations, h-index {h}, i10-index {i10} (as of {today}); "
       f"{len(papers)} papers, {len(by_year)} years")
 
-subprocess.run([sys.executable, str(HERE / "build.py")], check=True)
+if "--no-build" not in sys.argv:
+    subprocess.run([sys.executable, str(HERE / "build.py")], check=True)

@@ -1,0 +1,5 @@
+# DOIs the weekly update should never add to the publications list —
+# conference abstracts, theses and the like. One per line.
+10.1016/j.bas.2026.106635
+10.1016/j.physio.2020.03.144
+10.12681/eadd/61676

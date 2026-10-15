@@ -250,6 +250,11 @@ def fill(doc, lang):
     y, m, _ = SCHOLAR["as_of"].split("-")
     mon = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][int(m) - 1]
     doc = doc.replace("__SCHOLAR_ASOF__", f'{MONTHS[mon] if lang == "el" else mon} {y}')
+    # counts, computed so a new paper updates them everywhere
+    published = [p for p in PUBS if p["status"] == "published"]
+    doc = (doc.replace("__N_PUB__", str(len(published)))
+              .replace("__N_FIRST__", str(sum(1 for p in published if p["first"])))
+              .replace("__N_PENDING__", str(len(PUBS) - len(published))))
     doc = doc.replace("__CITE_CHART__", cite_chart(lang))
     assert "<!--COLLAB-->" in doc, "collaboration marker missing"
     doc = doc.replace("<!--COLLAB-->", render_map(lang))

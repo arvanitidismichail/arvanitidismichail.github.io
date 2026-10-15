@@ -77,7 +77,7 @@ __WEBSITE_LD__<script type="application/ld+json">
   --surface:    #ffffff;
   --ink:        #14202b;
   --ink-2:      #4a5763;
-  --ink-3:      #7f8b96;
+  --ink-3:      #5f6b76;
   --rule:       #dfe3e6;
   --rule-soft:  #ecEFF1;
   --accent:     #103a63;
@@ -101,7 +101,7 @@ html[data-theme="dark"] {
   --surface:    #17202a;
   --ink:        #e8eef2;
   --ink-2:      #aab6c0;
-  --ink-3:      #7d8994;
+  --ink-3:      #8a96a1;
   --rule:       #26323c;
   --rule-soft:  #1d2831;
   --accent:     #7db4e8;
@@ -992,6 +992,7 @@ html:not(.js) .emg { display: none; }
   cursor: grab; touch-action: pan-y;
 }
 .neck-stage:active { cursor: grabbing; }
+.neck-stage:focus-visible { outline: 2px solid var(--mark); outline-offset: 3px; }
 .neck-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .neck-labels span {
   position: absolute; left: 0; top: 0; transform: translate(-100%, -50%);
@@ -1293,7 +1294,7 @@ h1 .c { display: inline-block; }
       <li><a href="#service">Service</a></li>
     </ul>
     <div class="nav-tools">
-      <a class="nav-cta" href="#contact">
+      <a class="nav-cta" href="#contact" aria-label="Contact">
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2"/><path d="M3 6l9 6 9-6"/></svg>
         <span>Contact</span>
       </a>
@@ -1327,7 +1328,7 @@ h1 .c { display: inline-block; }
           University of Birmingham, United Kingdom
         </p>
       </div>
-      <img src="./office-1.jpg" alt="Michail Arvanitidis" class="portrait" width="168" height="200">
+      <img src="./office-1@sm.jpg" srcset="./office-1@sm.jpg 400w, ./office-1@md.jpg 600w" sizes="200px" alt="Michail Arvanitidis" class="portrait" width="168" height="200" fetchpriority="high">
     </div>
 
     <div class="links">
@@ -1345,8 +1346,8 @@ h1 .c { display: inline-block; }
     </div>
 
     <div class="tally">
-      <div><div class="n">29</div><div class="t">Peer-reviewed papers</div></div>
-      <div><div class="n">10</div><div class="t">As first author</div></div>
+      <div><div class="n">__N_PUB__</div><div class="t">Peer-reviewed papers</div></div>
+      <div><div class="n">__N_FIRST__</div><div class="t">As first author</div></div>
       <div><div class="n">£711k</div><div class="t">Funding, co-applicant</div></div>
       <div><div class="n">14</div><div class="t">Journals reviewed for</div></div>
     </div>
@@ -1446,7 +1447,7 @@ h1 .c { display: inline-block; }
     </div>
 
     <div class="emg neck rise">
-      <div class="neck-stage">
+      <div class="neck-stage" tabindex="0" role="img" aria-label="3D model of the cervical spine. Use the arrow keys to turn it.">
         <canvas class="neck-canvas" aria-hidden="true"></canvas>
         <div class="neck-labels" aria-hidden="true"></div>
         <p class="neck-fallback">The 3D model needs WebGL, which this browser has turned off.</p>
@@ -1558,7 +1559,7 @@ h1 .c { display: inline-block; }
 
   <!-- ===================== PUBLICATIONS ===================== -->
   <section id="publications">
-    <h2>Publications <span class="label aside">29 published · 7 in progress</span></h2>
+    <h2>Publications <span class="label aside">__N_PUB__ published · __N_PENDING__ in progress</span></h2>
 
     <div class="tools rise">
       <label for="pub-search" class="hidden">Search publications</label>
@@ -2640,6 +2641,12 @@ if (stage) {
     });
     const endDrag = () => { drag = null; idle = 0; };
     stage.addEventListener('pointerup', endDrag);
+    stage.addEventListener('keydown', e => {
+      const k = { ArrowLeft: [-0.25, 0], ArrowRight: [0.25, 0], ArrowUp: [0, -0.15], ArrowDown: [0, 0.15] }[e.key];
+      if (!k) return;
+      e.preventDefault();
+      yaw += k[0]; pitch = Math.max(-0.5, Math.min(0.6, pitch + k[1])); idle = -3;   // hold still a moment
+    });
     stage.addEventListener('pointercancel', endDrag);
 
     const size = () => {

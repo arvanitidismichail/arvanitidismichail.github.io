@@ -1,2 +1,3 @@
 src/cv_print*.html
 __pycache__/
+.weekly-summary.txt
