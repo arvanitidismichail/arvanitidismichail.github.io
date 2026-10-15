@@ -5,7 +5,7 @@ import re
 import sys
 from pathlib import Path
 
-sys.path.insert(0, "/home/claude")
+sys.path.insert(0, str(Path(__file__).parent))
 from pubs import PUBS  # noqa: E402
 from conferences import CONFS  # noqa: E402
 from i18n import STRINGS, MONTHS  # noqa: E402
@@ -213,13 +213,13 @@ def main():
     result = result.replace("<!--CONFERENCES-->", render_confs())
 
     en = fill(result, "en")
-    dest = Path("/home/claude/out/index.html")
+    dest = HERE.parent / "index.html"
     dest.write_text(en, encoding="utf-8")
     print(f"wrote {dest} — {len(en):,} bytes")
 
     el = fill(to_greek(result), "el")
     el = to_subdir(el)
-    el_dest = Path("/home/claude/out/el/index.html")
+    el_dest = HERE.parent / "el" / "index.html"
     el_dest.parent.mkdir(parents=True, exist_ok=True)
     el_dest.write_text(el, encoding="utf-8")
     print(f"wrote {el_dest} — {len(el):,} bytes")

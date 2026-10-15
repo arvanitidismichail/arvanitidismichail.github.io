@@ -5,12 +5,12 @@ import subprocess
 import sys
 from pathlib import Path
 
-sys.path.insert(0, "/home/claude")
+sys.path.insert(0, str(Path(__file__).parent))
 from pubs import PUBS  # noqa: E402
 from conferences import CONFS  # noqa: E402
 
-OUT_HTML = Path("/home/claude/build/cv_print.html")
-OUT_PDF = Path("/home/claude/out/CV_Michail_Arvanitidis.pdf")
+OUT_HTML = Path(__file__).parent / "cv_print.html"
+OUT_PDF = Path(__file__).parent.parent / "CV_Michail_Arvanitidis.pdf"
 
 CSS = """
 @page { size: A4; margin: 15mm 16mm 16mm; }
