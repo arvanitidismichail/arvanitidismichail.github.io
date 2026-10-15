@@ -70,6 +70,23 @@ STRINGS = [
     ('<span class="sk">h-index</span>', '<span class="sk">δείκτης h</span>', 1),
     ('<span class="sk">i10-index</span>', '<span class="sk">δείκτης i10</span>', 1),
     ('<span class="scholar-d">as of', '<span class="scholar-d">στις', 1),
+    ('<span class="cl">Cited by</span>', '<span class="cl">Αναφορές</span>', None),
+    ('<button class="sort" data-sort="new" aria-pressed="true">Newest</button>', '<button class="sort" data-sort="new" aria-pressed="true">Νεότερες</button>', 1),
+    ('<button class="sort" data-sort="cited" aria-pressed="false">Most cited</button>', '<button class="sort" data-sort="cited" aria-pressed="false">Περισσότερες αναφορές</button>', 1),
+    ('aria-label="Sort publications"', 'aria-label="Ταξινόμηση δημοσιεύσεων"', 1),
+    ('<span class="sort-k">Sort</span>', '<span class="sort-k">Ταξινόμηση</span>', 1),
+    ("'Most cited'", "'Περισσότερες αναφορές'", 1),
+    ('<span>Low</span><i></i><span>High</span>', '<span>Χαμηλή</span><i></i><span>Υψηλή</span>', 1),
+    ('<span class="k">High-density EMG, live</span>', '<span class="k">Ηλεκτρομυογραφία υψηλής πυκνότητας, ζωντανά</span>', 1),
+    ("""<p>A grid of 64 electrodes over a muscle records activity at every point, so the map shows
+        where the muscle is working hardest. Move across the grid to shift that activity. Changes in
+        this spatial distribution are one way muscles adapt to pain, and a recurring focus of this research.</p>""",
+     """<p>Ένα πλέγμα 64 ηλεκτροδίων πάνω από έναν μυ καταγράφει τη δραστηριότητα σε κάθε σημείο, ώστε ο χάρτης
+        να δείχνει πού εργάζεται περισσότερο ο μυς. Κινηθείτε πάνω στο πλέγμα για να μετακινήσετε αυτή τη
+        δραστηριότητα. Οι αλλαγές σε αυτή τη χωρική κατανομή είναι ένας τρόπος με τον οποίο οι μύες
+        προσαρμόζονται στον πόνο, και κεντρικό θέμα αυτής της έρευνας.</p>""", 1),
+    ('<p class="emg-note">Simulated signal, for illustration.</p>', '<p class="emg-note">Προσομοιωμένο σήμα, για επεξήγηση.</p>', 1),
+    ('<h3>Collaborations</h3>', '<h3>Συνεργασίες</h3>', 1),
 
     # ---------- research ----------
     ("<h2>Research</h2>", "<h2>Έρευνα</h2>", 1),

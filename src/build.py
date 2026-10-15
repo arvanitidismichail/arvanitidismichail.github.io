@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Generate index.html for arvanitidismichail.com from the CV publication dataset."""
+import difflib
 import html
 import re
 import sys
@@ -9,7 +10,9 @@ sys.path.insert(0, str(Path(__file__).parent))
 from pubs import PUBS  # noqa: E402
 from conferences import CONFS  # noqa: E402
 from i18n import STRINGS, MONTHS  # noqa: E402
-from scholar import SCHOLAR  # noqa: E402
+from scholar import SCHOLAR, BY_YEAR, PAPERS  # noqa: E402
+from collab import HOME, CITIES  # noqa: E402
+import worldmap  # noqa: E402
 
 HERE = Path(__file__).parent
 
@@ -29,6 +32,21 @@ def search_blob(p):
     if p["status"] == "prep":
         parts.append("in preparation")
     return html.escape(" ".join(parts).lower(), quote=True)
+
+
+def _norm(t):
+    return re.sub(r"[^a-z0-9]+", " ", t.lower().replace("\u2010", "-")).strip()
+
+
+def scholar_cites(p):
+    """Citations on Scholar for this paper, matched by title (Scholar truncates
+    long titles with an ellipsis, so a long shared prefix counts as a match)."""
+    n, best = _norm(p["title"]), (0.0, 0)
+    for t, c in PAPERS:
+        m = _norm(t.rstrip("\u2026."))
+        r = 1.0 if len(m) > 40 and n.startswith(m) else difflib.SequenceMatcher(None, n, m).ratio()
+        best = max(best, (r, c))
+    return best[1] if best[0] >= 0.9 else 0
 
 
 def render_item(p):
@@ -58,12 +76,15 @@ def render_item(p):
     venue = f'<em>{html.escape(p["journal"])}</em>'
     if p["vol"]:
         venue += " · " + html.escape(p["vol"])
+    cites = scholar_cites(p)
+    if cites:
+        venue += f' <span class="cites"><span class="cl">Cited by</span> {cites}</span>'
 
     note = (
         f'<p class="pub-note">{html.escape(p["note"])}</p>' if p.get("note") else ""
     )
 
-    return f"""      <article class="{cls}" data-year="{p['year']}" data-status="{p['status']}" data-first="{1 if p['first'] else 0}" data-search="{search_blob(p)}">
+    return f"""      <article class="{cls}" data-year="{p['year']}" data-status="{p['status']}" data-first="{1 if p['first'] else 0}" data-cites="{cites}" data-search="{search_blob(p)}">
         {title_html}
         <div class="pub-authors">{p['authors']}</div>
         <div class="pub-venue">{venue}</div>
@@ -123,6 +144,96 @@ LANG = {
 }
 
 
+MAP_TEXT = {
+    "en": dict(paper="paper", papers="papers", inst="institutions", cities="cities",
+               countries="countries", all="All institutions", home="Birmingham — home institution",
+               label="World map of co-authors' institutions, each linked to Birmingham",
+               src="Co-authors' affiliations on the papers listed here, from OpenAlex. "
+                   "Dot size shows shared papers."),
+    "el": dict(paper="δημοσίευση", papers="δημοσιεύσεις", inst="ιδρύματα", cities="πόλεις",
+               countries="χώρες", all="Όλα τα ιδρύματα", home="Μπέρμιγχαμ — ίδρυμα υποδοχής",
+               label="Παγκόσμιος χάρτης των ιδρυμάτων των συν-συγγραφέων, συνδεδεμένων με το Μπέρμιγχαμ",
+               src="Ιδρύματα των συν-συγγραφέων στις δημοσιεύσεις αυτής της σελίδας, από το OpenAlex. "
+                   "Το μέγεθος κάθε κουκκίδας δείχνει τις κοινές δημοσιεύσεις."),
+}
+
+
+def render_map(lang):
+    """Collaboration map: a dot-grid world, an arc from Birmingham to each city
+    whose institutions co-authored a paper, dots sized by shared papers."""
+    T = MAP_TEXT[lang]
+    k, top = worldmap.SCALE, worldmap.LAT_TOP
+
+    def xy(lat, lon):
+        return (lon + 180) * k, (top - lat) * k
+
+    hx, hy = xy(HOME["lat"], HOME["lon"])
+    arcs, dots = [], []
+    for i, c in enumerate(sorted(CITIES, key=lambda c: c["lon"])):
+        x, y = xy(c["lat"], c["lon"])
+        # bow each arc upward, more for longer hops
+        mx, my = (hx + x) / 2, (hy + y) / 2
+        d = ((x - hx) ** 2 + (y - hy) ** 2) ** 0.5
+        cy = max(my - min(d * 0.35, 160), 12)   # stay inside the frame
+        arcs.append(f'<path class="arc" style="--n:{i}" pathLength="1" '
+                    f'd="M{hx:.0f} {hy:.0f}Q{mx:.0f} {cy:.0f} {x:.0f} {y:.0f}"/>')
+        r = 4 + 2.2 * c["papers"] ** 0.5
+        papers = f'{c["papers"]} {T["paper"] if c["papers"] == 1 else T["papers"]}'
+        tip = html.escape(f'{c["city"]}, {c["country"]} · {papers} · ' + "; ".join(c["institutions"]), quote=True)
+        dots.append(f'<circle class="city" style="--n:{i}" cx="{x:.0f}" cy="{y:.0f}" r="{r:.1f}" '
+                    f'data-tip="{tip}"><title>{tip}</title></circle>')
+
+    countries = sorted({c["country"] for c in CITIES})
+    insts = sorted({i for c in CITIES for i in c["institutions"]})
+    rows = "\n".join(
+        f'        <li><b>{html.escape(c["city"])}</b>, {html.escape(c["country"])} '
+        f'<span class="sub">{html.escape("; ".join(c["institutions"]))}</span></li>'
+        for c in sorted(CITIES, key=lambda c: (c["country"], c["city"])))
+    # crop the empty Pacific: 125°W to 165°E
+    x0, x1 = (-125 + 180) * k, (165 + 180) * k
+    return f"""    <figure class="cmap-fig rise">
+      <div class="cmap-wrap">
+        <svg class="cmap" viewBox="{x0} 0 {x1 - x0} {worldmap.HEIGHT}" role="img"
+             aria-label="{T['label']}">
+          <path class="land" d="{worldmap.DOTS}"/>
+          <g class="arcs">{"".join(arcs)}</g>
+          <g class="cities">{"".join(dots)}</g>
+          <circle class="home" cx="{hx:.0f}" cy="{hy:.0f}" r="7"><title>{T['home']}</title></circle>
+        </svg>
+        <div class="cmap-tip" aria-hidden="true"></div>
+      </div>
+      <figcaption>
+        <span class="cmap-n"><b>{len(insts)}</b> {T['inst']}</span>
+        <span class="cmap-n"><b>{len(CITIES)}</b> {T['cities']}</span>
+        <span class="cmap-n"><b>{len(countries)}</b> {T['countries']}</span>
+        <span class="cmap-src">{T['src']}</span>
+      </figcaption>
+      <details class="cmap-list">
+        <summary>{T['all']}</summary>
+        <ul>
+{rows}
+        </ul>
+      </details>
+    </figure>"""
+
+
+def cite_chart(lang):
+    """Citations per year from Scholar: thin bars, the latest year labelled,
+    every bar with a tooltip, and the figures as text for screen readers."""
+    ys = sorted(BY_YEAR)
+    top = max(BY_YEAR.values()) or 1
+    word = "αναφορές" if lang == "el" else "citations"
+    label = ("Αναφορές ανά έτος" if lang == "el" else "Citations per year") + ": " + \
+        ", ".join(f"{y} {BY_YEAR[y]}" for y in ys)
+    bars = "".join(
+        f'<span class="cb" style="--h:{max(BY_YEAR[y] / top, 0.03):.3f};--n:{i}" data-tip="{y}: {BY_YEAR[y]} {word}">'
+        f'{f"<b>{BY_YEAR[y]}</b>" if y == ys[-1] else ""}</span>'
+        for i, y in enumerate(ys))
+    return (f'<span class="cchart" role="img" aria-label="{label}">'
+            f'<span class="cbars">{bars}</span>'
+            f'<span class="caxis" aria-hidden="true"><span>{ys[0]}</span><span>{ys[-1]}</span></span></span>')
+
+
 def fill(doc, lang):
     cfg = LANG[lang]
     # Google supports one site name per domain: declare WebSite on the root only
@@ -139,6 +250,9 @@ def fill(doc, lang):
     y, m, _ = SCHOLAR["as_of"].split("-")
     mon = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][int(m) - 1]
     doc = doc.replace("__SCHOLAR_ASOF__", f'{MONTHS[mon] if lang == "el" else mon} {y}')
+    doc = doc.replace("__CITE_CHART__", cite_chart(lang))
+    assert "<!--COLLAB-->" in doc, "collaboration marker missing"
+    doc = doc.replace("<!--COLLAB-->", render_map(lang))
     if lang == "el":
         doc = doc.replace('<html lang="en" data-theme="dark">', '<html lang="el" data-theme="dark">', 1)
     return doc

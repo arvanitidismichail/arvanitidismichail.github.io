@@ -30,8 +30,10 @@ update themselves — they are computed, not typed.
 
 ## Updating the Google Scholar figures
 
-The citations, h-index and i10-index under the header figures come from
-`scholar.py`. To refresh them from the live profile and rebuild:
+The citations, h-index and i10-index under the header figures, the
+citations-per-year chart beside them and the "Cited by" count on each
+publication all come from `scholar.py`. To refresh them from the live
+profile and rebuild:
 
 ```
 cd src
@@ -41,6 +43,20 @@ python3 update_scholar.py
 Scholar has no API, so this reads the public profile page. It works from a home
 or office connection; if Scholar ever answers with a CAPTCHA, edit the three
 numbers and the date in `scholar.py` by hand and run `build.py`.
+
+## Updating the collaboration map
+
+The map in Research is built from `collab.py`: the institutions of co-authors
+on the papers in `pubs.py`, taken from OpenAlex (open data, no account needed)
+and grouped by city. After adding papers, refresh it and rebuild:
+
+```
+cd src
+python3 update_collab.py
+```
+
+The dotted land behind it is `worldmap.py`, generated once by
+`make_worldmap.py` from Natural Earth; it never needs rerunning.
 
 ## How the Greek version works
 
