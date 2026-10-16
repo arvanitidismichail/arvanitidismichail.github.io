@@ -2537,7 +2537,7 @@ h1 .c { display: inline-block; }
     var view = reduce ? 1 : 0, sig = view ? 1 : 0, tilt = 0;
     var auto = !reduce, autoT = 0;
     var running = false, visible = false, lastT = 0;
-    var W = 1, H = 1, cell = 1, teal = [63, 201, 192], base = 'rgba(128,128,128,.2)';
+    var W = 1, H = 1, cell = 1, base = 'rgba(128,128,128,.2)';
 
     // "turbo": a rainbow tuned to be even to the eye; blue low, red high
     var turbo = function (v) {
@@ -2559,11 +2559,7 @@ h1 .c { display: inline-block; }
     if (bar) bar.style.background = 'linear-gradient(90deg,' + stops.join(',') + ')';
 
     var emgColours = function () {
-      var cs = getComputedStyle(root);
-      var m = cs.getPropertyValue('--mark').trim().match(/^#([0-9a-f]{6})$/i);
-      var n = m ? parseInt(m[1], 16) : 0x3fc9c0;
-      teal = [n >> 16, (n >> 8) & 255, n & 255];
-      base = cs.getPropertyValue('--rule').trim() || base;
+      base = getComputedStyle(root).getPropertyValue('--rule').trim() || base;
     };
     var emgSize = function () {
       var r = emg.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -2626,7 +2622,7 @@ h1 .c { display: inline-block; }
       var c = cell;
       var th = tilt * 1.0, ps = tilt * (-0.5 + 0.14 * Math.sin(t * 0.35));
       var cT = Math.cos(th), sT = Math.sin(th), cP = Math.cos(ps), sP = Math.sin(ps);
-      var F = c * 18, lift = c * 2.4 * tilt;
+      var F = c * 18, lift = c * 2.4 * tilt, floorZ = c * 0.7 * tilt;
       var place = function (X, Y, Z) {
         var x1 = X * cP - Y * sP, y1 = X * sP + Y * cP;
         var d = -y1 * sT - Z * cT, s = F / (F + d);
@@ -2636,7 +2632,7 @@ h1 .c { display: inline-block; }
       var x0 = 1e9, x9 = -1e9, y0 = 1e9, y9 = -1e9;
       [-1, 1].forEach(function (sx) {
         [-1, 1].forEach(function (sy) {
-          [0, lift].forEach(function (z) {
+          [-floorZ, lift].forEach(function (z) {
             var p = place(sx * COLS / 2 * c, sy * ROWS / 2 * c, z);
             x0 = Math.min(x0, p[0]); x9 = Math.max(x9, p[0]); y0 = Math.min(y0, p[1]); y9 = Math.max(y9, p[1]);
           });
@@ -2657,6 +2653,26 @@ h1 .c { display: inline-block; }
         if (tilt > 0.01) {
           quads.forEach(function (q) { q.d = pd[q.i] + pd[q.i + NX + 1]; });
           quads.sort(function (a, b) { return b.d - a.d; });
+        }
+        // in 3D, a floor under the surface: the grid's footprint, with a soft shadow
+        if (tilt > 0.02) {
+          var fl = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(function (k) {
+            var pp = place(k[0] * COLS / 2 * c * 1.03, k[1] * ROWS / 2 * c * 1.08, -floorZ);
+            return [offX + pp[0] * fit, offY + pp[1] * fit];
+          });
+          ctx.globalAlpha = sig * tilt;
+          ctx.beginPath();
+          fl.forEach(function (p, n) { n ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]); });
+          ctx.closePath();
+          ctx.fillStyle = 'rgba(0,0,0,.16)'; ctx.fill();
+          ctx.strokeStyle = base; ctx.lineWidth = Math.max(1, c / 40); ctx.stroke();
+          // electrode columns, faintly, on the floor
+          ctx.globalAlpha = sig * tilt * 0.5; ctx.beginPath();
+          for (var gx = 1; gx < COLS; gx++) {
+            var g0 = place((gx - COLS / 2) * c, -ROWS / 2 * c, -floorZ), g1 = place((gx - COLS / 2) * c, ROWS / 2 * c, -floorZ);
+            ctx.moveTo(offX + g0[0] * fit, offY + g0[1] * fit); ctx.lineTo(offX + g1[0] * fit, offY + g1[1] * fit);
+          }
+          ctx.stroke();
         }
         ctx.globalAlpha = sig;
         ctx.lineWidth = 1;
@@ -2686,14 +2702,13 @@ h1 .c { display: inline-block; }
       }
 
       if (sig < 0.99) {
-        // the raw signals, one per electrode, in teal with a soft glow; quiet
-        // channels fade back. Handing over to the map, they flatten and take
-        // on their amplitude's colour.
+        // the raw signals, one per electrode, each coloured by its own amplitude
+        // on the map's scale (blue quiet, red working hardest), with a soft glow.
+        // Handing over to the map, they flatten into it.
         var fade = 1 - sig;
         var lw = Math.max(1, c / 40);
         ctx.lineJoin = 'round'; ctx.lineCap = 'round';
         var wBox = c * 0.84, hBox = c * 0.4 * (1 - 0.85 * sig);
-        var mix = Math.min(1, sig * 2);
         for (var y = 0; y < ROWS; y++) {
           for (var x = 0; x < COLS; x++) {
             if (!x && !y) continue;
@@ -2703,8 +2718,7 @@ h1 .c { display: inline-block; }
             ctx.globalAlpha = fade * 0.5;
             ctx.strokeStyle = base; ctx.lineWidth = Math.max(1, lw * 0.6);
             ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ox + wBox, oy); ctx.stroke();
-            var tc = turbo(amp[e]);
-            var col = [teal[0] + (tc[0] - teal[0]) * mix, teal[1] + (tc[1] - teal[1]) * mix, teal[2] + (tc[2] - teal[2]) * mix];
+            var col = turbo(amp[e]);
             ctx.beginPath();
             for (var n = 0; n < SAMPLES; n++) {
               var v2 = tr[(head + n) % SAMPLES];
@@ -2712,9 +2726,9 @@ h1 .c { display: inline-block; }
               var sx = ox + n / (SAMPLES - 1) * wBox, sy = oy - v2 / 1.5 * hBox;
               n ? ctx.lineTo(sx, sy) : ctx.moveTo(sx, sy);
             }
-            var a2 = fade * (0.4 + 0.6 * Math.min(1, amp[e] * 1.4));
+            var a2 = fade * (0.6 + 0.4 * Math.min(1, amp[e] * 1.4));
             ctx.strokeStyle = rgb(col);
-            ctx.globalAlpha = a2 * 0.18; ctx.lineWidth = lw * 3.2; ctx.stroke();     // glow
+            ctx.globalAlpha = a2 * (0.1 + 0.2 * amp[e]); ctx.lineWidth = lw * 3.4; ctx.stroke();     // glow
             ctx.globalAlpha = a2; ctx.lineWidth = lw; ctx.stroke();
           }
         }
