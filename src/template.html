@@ -2032,11 +2032,12 @@ h1 .c { display: inline-block; }
   // time, it plays through all three; the buttons switch between them.
   var emg = document.querySelector('.emg-canvas');
   if (emg && emg.getContext) {
-    var COLS = 13, ROWS = 5, N_E = COLS * ROWS, SAMPLES = 64, K = 6;
+    var COLS = 13, ROWS = 5, N_E = COLS * ROWS, SAMPLES = 96, K = 6;
     var NX = COLS * K + 1, NY = ROWS * K + 1;       // vertices of the fine mesh
     var ctx = emg.getContext('2d');
     var views = Array.prototype.slice.call(document.querySelectorAll('.emg-view'));
-    var amp = new Float32Array(N_E), jit = new Float32Array(N_E), last1 = new Float32Array(N_E);
+    var amp = new Float32Array(N_E), jit = new Float32Array(N_E);
+    var last1 = new Float32Array(N_E), last2 = new Float32Array(N_E);
     var traces = [];
     for (var e = 0; e < N_E; e++) traces.push(new Float32Array(SAMPLES));
     var head = 0;
@@ -2048,7 +2049,7 @@ h1 .c { display: inline-block; }
     var view = reduce ? 1 : 0, sig = view ? 1 : 0, tilt = 0;
     var auto = !reduce, autoT = 0;
     var running = false, visible = false, lastT = 0;
-    var W = 1, H = 1, cell = 1, ink = [128, 128, 128];
+    var W = 1, H = 1, cell = 1, teal = [63, 201, 192], base = 'rgba(128,128,128,.2)';
 
     // "turbo": a rainbow tuned to be even to the eye; blue low, red high
     var turbo = function (v) {
@@ -2070,9 +2071,11 @@ h1 .c { display: inline-block; }
     if (bar) bar.style.background = 'linear-gradient(90deg,' + stops.join(',') + ')';
 
     var emgColours = function () {
-      var m = getComputedStyle(root).getPropertyValue('--ink-2').trim().match(/^#([0-9a-f]{6})$/i);
-      var n = m ? parseInt(m[1], 16) : 0x888888;
-      ink = [n >> 16, (n >> 8) & 255, n & 255];
+      var cs = getComputedStyle(root);
+      var m = cs.getPropertyValue('--mark').trim().match(/^#([0-9a-f]{6})$/i);
+      var n = m ? parseInt(m[1], 16) : 0x3fc9c0;
+      teal = [n >> 16, (n >> 8) & 255, n & 255];
+      base = cs.getPropertyValue('--rule').trim() || base;
     };
     var emgSize = function () {
       var r = emg.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -2106,8 +2109,10 @@ h1 .c { display: inline-block; }
       for (var sN = 0; sN < steps; sN++) {
         for (var k2 = 0; k2 < N_E; k2++) {
           // band-limited noise whose size is the local activity: raw surface EMG
-          last1[k2] = 0.35 * last1[k2] + emgGauss();
-          traces[k2][head] = last1[k2] * (0.05 + amp[k2]);
+          // a resonant filter on noise: zero-crossings and spikes like real surface EMG
+          var x0 = 1.05 * last1[k2] - 0.55 * last2[k2] + emgGauss();
+          last2[k2] = last1[k2]; last1[k2] = x0;
+          traces[k2][head] = x0 * 0.6 * (0.04 + amp[k2]);
         }
         head = (head + 1) % SAMPLES;
       }
@@ -2193,28 +2198,36 @@ h1 .c { display: inline-block; }
       }
 
       if (sig < 0.99) {
-        // the raw signals, one per electrode; while they hand over to the map
-        // they shrink and take on their amplitude's colour
-        ctx.globalAlpha = 1 - sig;
-        ctx.lineWidth = Math.max(1, c / 34);
-        ctx.lineJoin = 'round';
-        var wBox = c * 0.82, hBox = c * 0.36 * (1 - 0.8 * sig);
+        // the raw signals, one per electrode, in teal with a soft glow; quiet
+        // channels fade back. Handing over to the map, they flatten and take
+        // on their amplitude's colour.
+        var fade = 1 - sig;
+        var lw = Math.max(1, c / 40);
+        ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+        var wBox = c * 0.84, hBox = c * 0.4 * (1 - 0.85 * sig);
+        var mix = Math.min(1, sig * 2);
         for (var y = 0; y < ROWS; y++) {
           for (var x = 0; x < COLS; x++) {
             if (!x && !y) continue;
             var e = y * COLS + x, tr = traces[e];
             var ox = W / 2 + (x + 0.5 - COLS / 2) * c - wBox / 2, oy = H / 2 + (y + 0.5 - ROWS / 2) * c;
-            var col2 = sig > 0.02 ? turbo(amp[e]) : ink;
-            ctx.strokeStyle = rgb([ink[0] + (col2[0] - ink[0]) * sig * 1.5, ink[1] + (col2[1] - ink[1]) * sig * 1.5,
-              ink[2] + (col2[2] - ink[2]) * sig * 1.5]);
+            // baseline
+            ctx.globalAlpha = fade * 0.5;
+            ctx.strokeStyle = base; ctx.lineWidth = Math.max(1, lw * 0.6);
+            ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ox + wBox, oy); ctx.stroke();
+            var tc = turbo(amp[e]);
+            var col = [teal[0] + (tc[0] - teal[0]) * mix, teal[1] + (tc[1] - teal[1]) * mix, teal[2] + (tc[2] - teal[2]) * mix];
             ctx.beginPath();
             for (var n = 0; n < SAMPLES; n++) {
               var v2 = tr[(head + n) % SAMPLES];
-              v2 = v2 > 1.4 ? 1.4 : v2 < -1.4 ? -1.4 : v2;
-              var sx = ox + n / (SAMPLES - 1) * wBox, sy = oy - v2 / 1.4 * hBox;
+              v2 = v2 > 1.5 ? 1.5 : v2 < -1.5 ? -1.5 : v2;
+              var sx = ox + n / (SAMPLES - 1) * wBox, sy = oy - v2 / 1.5 * hBox;
               n ? ctx.lineTo(sx, sy) : ctx.moveTo(sx, sy);
             }
-            ctx.stroke();
+            var a2 = fade * (0.4 + 0.6 * Math.min(1, amp[e] * 1.4));
+            ctx.strokeStyle = rgb(col);
+            ctx.globalAlpha = a2 * 0.18; ctx.lineWidth = lw * 3.2; ctx.stroke();     // glow
+            ctx.globalAlpha = a2; ctx.lineWidth = lw; ctx.stroke();
           }
         }
         ctx.globalAlpha = 1;
@@ -2226,13 +2239,13 @@ h1 .c { display: inline-block; }
       var t = (now - t0) / 1000;
       if (auto) {
         autoT += dt;
-        var want = autoT < 3.2 ? 0 : autoT < 6.6 ? 1 : 2;
+        var want = autoT < 1.8 ? 0 : autoT < 3.6 ? 1 : 2;
         if (want !== view) emgSetView(want, true);
-        if (autoT > 6.6) auto = false;
+        if (autoT > 3.6) auto = false;
       }
-      sig += ((view ? 1 : 0) - sig) * Math.min(1, dt * 2.6);
-      tilt += ((view === 2 ? 1 : 0) - tilt) * Math.min(1, dt * 2.2);
-      emgSim(t, 2);
+      sig += ((view ? 1 : 0) - sig) * Math.min(1, dt * 5);
+      tilt += ((view === 2 ? 1 : 0) - tilt) * Math.min(1, dt * 4);
+      emgSim(t, 3);
       emgDraw(t);
       if (running) requestAnimationFrame(emgFrame);
     };
