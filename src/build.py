@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Generate index.html for arvanitidismichail.com from the CV publication dataset."""
+import datetime
 import difflib
 import html
 import re
@@ -234,6 +235,36 @@ def cite_chart(lang):
             f'<span class="caxis" aria-hidden="true"><span>{ys[0]}</span><span>{ys[-1]}</span></span></span>')
 
 
+MONTHS_FULL = {
+    "en": ["January", "February", "March", "April", "May", "June", "July",
+           "August", "September", "October", "November", "December"],
+    # genitive, as Greek writes a day and month: 16 Οκτωβρίου 2026
+    "el": ["Ιανουαρίου", "Φεβρουαρίου", "Μαρτίου", "Απριλίου", "Μαΐου", "Ιουνίου", "Ιουλίου",
+           "Αυγούστου", "Σεπτεμβρίου", "Οκτωβρίου", "Νοεμβρίου", "Δεκεμβρίου"],
+}
+
+
+def stamp(doc, lang, day):
+    """Fill in the footer's "Last update" date."""
+    return (doc.replace("__UPDATED_ISO__", day.isoformat())
+               .replace("__UPDATED__", f"{day.day} {MONTHS_FULL[lang][day.month - 1]} {day.year}"))
+
+
+def last_update(pages):
+    """The date to show: kept from the published pages when nothing else in them
+    has changed (so a rebuild with no news leaves them untouched), otherwise today."""
+    try:
+        old = {dest: dest.read_text(encoding="utf-8") for dest, _, _ in pages}
+    except FileNotFoundError:
+        return datetime.date.today()
+    m = re.search(r'<time datetime="(\d{4}-\d{2}-\d{2})"', next(iter(old.values())))
+    if m:
+        prev = datetime.date.fromisoformat(m.group(1))
+        if all(stamp(doc, lang, prev) == old[dest] for dest, doc, lang in pages):
+            return prev
+    return datetime.date.today()
+
+
 def fill(doc, lang):
     cfg = LANG[lang]
     # Google supports one site name per domain: declare WebSite on the root only
@@ -341,12 +372,14 @@ def main():
 
     en = fill(result, "en")
     dest = HERE.parent / "index.html"
+    el = to_subdir(fill(to_greek(result), "el"))
+    el_dest = HERE.parent / "el" / "index.html"
+    day = last_update([(dest, en, "en"), (el_dest, el, "el")])
+    en, el = stamp(en, "en", day), stamp(el, "el", day)
+
     dest.write_text(en, encoding="utf-8")
     print(f"wrote {dest} — {len(en):,} bytes")
 
-    el = fill(to_greek(result), "el")
-    el = to_subdir(el)
-    el_dest = HERE.parent / "el" / "index.html"
     el_dest.parent.mkdir(parents=True, exist_ok=True)
     el_dest.write_text(el, encoding="utf-8")
     print(f"wrote {el_dest} — {len(el):,} bytes")

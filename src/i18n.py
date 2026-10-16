@@ -387,7 +387,7 @@ STRINGS = [
     (">University of Birmingham</a>", ">Πανεπιστήμιο του Μπέρμιγχαμ</a>", 1),
     ("<span>&copy; 2026 Dr Michail Arvanitidis. All rights reserved.</span>",
      "<span>&copy; 2026 Δρ Μιχαήλ Αρβανιτίδης. Με επιφύλαξη παντός δικαιώματος.</span>", 1),
-    ("<span>Last update: August 2026</span>", "<span>Τελευταία ενημέρωση: Αύγουστος 2026</span>", 1),
+    ("<span>Last update: <time", "<span>Τελευταία ενημέρωση: <time", 1),
     ('aria-label="LinkedIn"', 'aria-label="LinkedIn"', 1),
     ('aria-label="Personal e-mail (Gmail)"', 'aria-label="Προσωπικό e-mail (Gmail)"', 1),
     ('aria-label="University e-mail (Outlook)"', 'aria-label="Πανεπιστημιακό e-mail (Outlook)"', 1),
