@@ -100,13 +100,24 @@ STRINGS = [
     ('data-pain="1" aria-pressed="false">With pain</button>', 'data-pain="1" aria-pressed="false">Με πόνο</button>', 1),
     ('<span>Sound</span>', '<span>Ήχος</span>', 1),
     ('<span class="k">Motor units, live</span>', '<span class="k">Κινητικές μονάδες, ζωντανά</span>', 1),
-    ("""<p>Each row is one motor unit: a nerve cell and the muscle fibres it drives, as identified from
-        high-density EMG. Raise the force to recruit more units and make them fire faster. Switch on pain to see
-        the pattern reported in people with pain: slower, less regular firing and a less steady force.</p>""",
-     """<p>Κάθε σειρά είναι μία κινητική μονάδα: ένα νευρικό κύτταρο και οι μυϊκές ίνες που ενεργοποιεί, όπως
-        ταυτοποιούνται με ηλεκτρομυογραφία υψηλής πυκνότητας. Αυξήστε τη δύναμη για να ενεργοποιηθούν περισσότερες
-        μονάδες και να πυροδοτούν ταχύτερα. Ενεργοποιήστε τον πόνο για να δείτε το μοτίβο που έχει καταγραφεί σε
-        άτομα με πόνο: πιο αργή, λιγότερο σταθερή πυροδότηση και λιγότερο σταθερή δύναμη.</p>""", 1),
+    ("""<p>A motor unit is one motor neuron in the spinal cord and the muscle fibres it drives. Each time the
+        neuron fires, an action potential runs down its axon and all of its fibres respond together; added up,
+        they make the EMG recorded on the skin. The raster shows the same units as rows of discharges, as
+        identified from high-density EMG. Raise the force to recruit more units and make them fire faster.
+        Switch on pain to see the pattern reported in people with pain: slower, less regular firing and a less
+        steady force.</p>""",
+     """<p>Μια κινητική μονάδα είναι ένας κινητικός νευρώνας του νωτιαίου μυελού και οι μυϊκές ίνες που
+        ενεργοποιεί. Κάθε φορά που ο νευρώνας πυροδοτεί, ένα δυναμικό ενέργειας διατρέχει τον άξονά του και όλες
+        οι ίνες του αποκρίνονται μαζί· αθροιζόμενες, δίνουν το ηλεκτρομυογράφημα που καταγράφεται στο δέρμα. Το
+        διάγραμμα εκφορτίσεων δείχνει τις ίδιες μονάδες ως σειρές εκφορτίσεων, όπως ταυτοποιούνται με
+        ηλεκτρομυογραφία υψηλής πυκνότητας. Αυξήστε τη δύναμη για να ενεργοποιηθούν περισσότερες μονάδες και να
+        πυροδοτούν ταχύτερα. Ενεργοποιήστε τον πόνο για να δείτε το μοτίβο που έχει καταγραφεί σε άτομα με πόνο:
+        πιο αργή, λιγότερο σταθερή πυροδότηση και λιγότερο σταθερή δύναμη.</p>""", 1),
+    ('data-labels="Spinal cord|Motor neurons|Muscle fibres|Surface EMG"',
+     'data-labels="Νωτιαίος μυελός|Κινητικοί νευρώνες|Μυϊκές ίνες|Επιφανειακό ΗΜΓ"', 1),
+    ('aria-label="Motor unit view"', 'aria-label="Προβολή κινητικών μονάδων"', 1),
+    ('data-view="0" aria-pressed="true">Anatomy</button>', 'data-view="0" aria-pressed="true">Ανατομία</button>', 1),
+    ('data-view="1" aria-pressed="false">Raster</button>', 'data-view="1" aria-pressed="false">Εκφορτίσεις</button>', 1),
     ('<p class="emg-note">Simulated, for illustration. Sound plays each discharge as a note.</p>',
      '<p class="emg-note">Προσομοίωση, για επεξήγηση. Ο ήχος παίζει κάθε εκφόρτιση ως νότα.</p>', 1),
     ('<p class="neck-fallback">The 3D model needs WebGL, which this browser has turned off.</p>',

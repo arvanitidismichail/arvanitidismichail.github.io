@@ -1415,8 +1415,12 @@ h1 .c { display: inline-block; }
 
     <div class="emg mu rise">
       <div class="emg-plot">
-        <canvas class="mu-canvas" aria-hidden="true"></canvas>
+        <canvas class="mu-canvas" aria-hidden="true" data-labels="Spinal cord|Motor neurons|Muscle fibres|Surface EMG"></canvas>
         <div class="mu-controls">
+          <span class="sort-seg" role="group" aria-label="Motor unit view">
+            <button class="sort mu-view" type="button" data-view="0" aria-pressed="true">Anatomy</button>
+            <button class="sort mu-view" type="button" data-view="1" aria-pressed="false">Raster</button>
+          </span>
           <label class="mu-force" for="mu-force">
             <span class="mu-lbl">Force</span>
             <input type="range" id="mu-force" min="0" max="80" step="1" value="30">
@@ -1434,9 +1438,12 @@ h1 .c { display: inline-block; }
       </div>
       <div class="emg-text">
         <span class="k">Motor units, live</span>
-        <p>Each row is one motor unit: a nerve cell and the muscle fibres it drives, as identified from
-        high-density EMG. Raise the force to recruit more units and make them fire faster. Switch on pain to see
-        the pattern reported in people with pain: slower, less regular firing and a less steady force.</p>
+        <p>A motor unit is one motor neuron in the spinal cord and the muscle fibres it drives. Each time the
+        neuron fires, an action potential runs down its axon and all of its fibres respond together; added up,
+        they make the EMG recorded on the skin. The raster shows the same units as rows of discharges, as
+        identified from high-density EMG. Raise the force to recruit more units and make them fire faster.
+        Switch on pain to see the pattern reported in people with pain: slower, less regular firing and a less
+        steady force.</p>
         <p class="emg-note">Simulated, for illustration. Sound plays each discharge as a note.</p>
       </div>
     </div>
@@ -2306,48 +2313,97 @@ h1 .c { display: inline-block; }
     }
   }
 
-  /* ---------- Motor unit raster ---------- */
+  /* ---------- Motor units: from spinal cord to raster ---------- */
   // Ten motor units recruited in order of threshold. Each fires faster as force
   // rises above its threshold (earlier units faster: the "onion skin" pattern).
   // Pain lowers the rates of low-threshold units, recruits extra units to hold
   // the force, and makes both firing and force less regular.
+  // Two views of the same live simulation: the anatomy (motor neurons in the
+  // spinal cord, action potentials running down their axons to the muscle
+  // fibres they drive, summing into surface EMG) and the raster of discharges.
+  // Seen for the first time it opens on the anatomy, then the neurons glide
+  // into the raster's rows.
   var muCanvas = document.querySelector('.mu-canvas');
   if (muCanvas && muCanvas.getContext) {
-    var N = 10, WINDOW = 2;               // units, seconds on screen
+    var N = 10, WINDOW = 2, TC = 0.3;     // units, seconds on screen, nerve-to-muscle time
     var mctx = muCanvas.getContext('2d');
     var forceIn = document.getElementById('mu-force');
     var forceOut = document.getElementById('mu-force-out');
     var conds = Array.prototype.slice.call(document.querySelectorAll('.mu-cond'));
+    var muViews = Array.prototype.slice.call(document.querySelectorAll('.mu-view'));
     var soundBtn = document.querySelector('.mu-sound');
-    var target = +forceIn.value, pain = 0, painT = 0, simT = 0;
+    var LABELS = (muCanvas.getAttribute('data-labels') || '').split('|');
+    var target = +forceIn.value, pain = 0, painT = 0, simT = 0, bulge = 1;
     var units = [];
     for (var u = 0; u < N; u++) units.push({ rt: 2 + u * 8, next: Math.random() * 0.1, spikes: [], rate: 0 });
     var forceTrace = [], fNoise = 0, fSlow = 0;
     var muVisible = false, muRunning = false, last = 0;
+    var muView = reduce ? 1 : 0, morph = muView, muAuto = !reduce, muAutoT = 0;
     var audio = null, sound = false;
     // a pentatonic scale, low-threshold units lowest
     var NOTES = [196, 220, 247, 294, 330, 392, 440, 494, 587, 659];
-    var ink = '#888', ink3 = '#888', mark = '#3fc9c0', grid = 'rgba(128,128,128,.15)';
+    var ink = '#888', ink3 = '#888', mark = '#3fc9c0', grid = 'rgba(128,128,128,.15)', dark = true;
+    var G = null;                         // anatomy geometry, rebuilt on resize
 
     var muColours = function () {
       var cs = getComputedStyle(root);
       ink = cs.getPropertyValue('--ink-2').trim(); ink3 = cs.getPropertyValue('--ink-3').trim();
       mark = cs.getPropertyValue('--mark').trim(); grid = cs.getPropertyValue('--rule').trim();
+      dark = root.getAttribute('data-theme') === 'dark';
+    };
+    var muGauss = function () {
+      return (Math.random() + Math.random() + Math.random() + Math.random() - 2) / 0.577;
+    };
+    // a fixed shuffle, so the picture is the same on every visit
+    var seed = 7;
+    var rnd = function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
+
+    var muGeo = function () {
+      var W = muCanvas.width, H = muCanvas.height, k = H / 220;
+      seed = 7;
+      var cord = { x: W * 0.17, y: H * 0.4, rx: W * 0.135, ry: H * 0.2 };
+      var horn = { x: cord.x + cord.rx * 0.36, y: cord.y + cord.ry * 0.34 };
+      var OFFS = [[-0.55, -0.35], [0.05, -0.5], [0.6, -0.3], [-0.7, 0.15], [-0.1, 0.05],
+                  [0.5, 0.25], [-0.45, 0.6], [0.15, 0.62], [0.85, 0.5], [1.05, -0.05]];
+      var neurons = OFFS.map(function (o, i) {
+        return { x: horn.x + o[0] * cord.rx * 0.22, y: horn.y + o[1] * cord.ry * 0.42, r: k * (1.7 + 0.3 * i) };
+      });
+      var mus = { x0: W * 0.5, x1: W * 0.97, y: H * 0.4, half: H * 0.21 };
+      // 30 fibres: bigger units drive more of them, scattered through the muscle
+      var owners = [];
+      for (var i = 0; i < N; i++) for (var n = 0; n < 1 + (i >> 1); n++) owners.push(i);
+      for (var j = owners.length - 1; j > 0; j--) { var q = Math.floor(rnd() * (j + 1)); var tmp = owners[j]; owners[j] = owners[q]; owners[q] = tmp; }
+      var fibres = owners.map(function (o, j) {
+        return { unit: o, off: -0.92 + 1.84 * j / (owners.length - 1), ep: W * (0.67 + 0.05 * rnd()) };
+      });
+      var axons = neurons.map(function (nr, i) {
+        var mine = fibres.filter(function (f) { return f.unit === i; });
+        var avg = mine.reduce(function (s2, f) { return s2 + f.off; }, 0) / mine.length;
+        var bx = W * 0.6, by = mus.y + avg * mus.half * 0.75;
+        var p0 = [nr.x, nr.y], c1 = [cord.x + cord.rx * 1.25, nr.y + H * 0.07];
+        var c2 = [W * 0.4, by + (i - 4.5) * H * 0.004], p3 = [bx, by];
+        var pts = [];
+        for (var t = 0; t <= 1.0001; t += 1 / 48) {
+          var a1 = (1 - t) * (1 - t) * (1 - t), a2 = 3 * (1 - t) * (1 - t) * t, a3 = 3 * (1 - t) * t * t, a4 = t * t * t;
+          pts.push([a1 * p0[0] + a2 * c1[0] + a3 * c2[0] + a4 * p3[0], a1 * p0[1] + a2 * c1[1] + a3 * c2[1] + a4 * p3[1]]);
+        }
+        return { pts: pts, bx: bx, by: by, fibres: mine, w: k * (0.7 + 0.11 * i) };
+      });
+      G = { W: W, H: H, k: k, cord: cord, neurons: neurons, mus: mus, fibres: fibres, axons: axons,
+            emg: { x0: W * 0.5, x1: W * 0.97, y: H * 0.86, amp: H * 0.075 } };
     };
     var muSize = function () {
       var r = muCanvas.getBoundingClientRect(), d = Math.min(window.devicePixelRatio || 1, 2);
       muCanvas.width = Math.round(r.width * d); muCanvas.height = Math.round(r.height * d);
+      muGeo();
     };
-    var gauss = function () {
-      return (Math.random() + Math.random() + Math.random() + Math.random() - 2) / 0.577;
-    };
-    var unitRate = function (u, i) {
+    var muRate = function (u, i) {
       var rt = u.rt * (1 - 0.15 * painT * (i >= 3 ? 1 : 0));   // pain: extra recruitment
       if (target < rt) return 0;
       var r = Math.min(8 + 0.55 * (target - rt), 34 - i * 1.4);
       return r * (1 - painT * (i < 4 ? 0.2 : 0.06));
     };
-    var blip = function (i) {
+    var muBlip = function (i) {
       if (!sound || !audio) return;
       var t = audio.currentTime, o = audio.createOscillator(), g = audio.createGain();
       o.type = 'sine'; o.frequency.value = NOTES[i];
@@ -2359,84 +2415,282 @@ h1 .c { display: inline-block; }
     };
 
     // advance the simulation by dt seconds
-    var step = function (dt, audible) {
+    var muStep = function (dt, audible) {
       simT += dt;
       painT += (pain - painT) * Math.min(1, dt * 4);
       var cov = 0.1 + 0.14 * painT;
       units.forEach(function (u, i) {
-        u.rate = unitRate(u, i);
+        u.rate = muRate(u, i);
         if (!u.rate) { u.next = simT + Math.random() * 0.05; }
         while (u.rate && u.next <= simT) {
           u.spikes.push(u.next);
-          if (audible) blip(i);
-          u.next += Math.max(0.02, (1 / u.rate) * (1 + cov * gauss()));
+          if (audible) muBlip(i);
+          u.next += Math.max(0.02, (1 / u.rate) * (1 + cov * muGauss()));
         }
-        while (u.spikes.length && u.spikes[0] < simT - WINDOW) u.spikes.shift();
+        while (u.spikes.length && u.spikes[0] < simT - WINDOW - TC) u.spikes.shift();
       });
       // force: the target plus slow drift and fast tremor, both larger with pain
-      fSlow += (gauss() * (0.6 + 1.6 * painT) - fSlow) * Math.min(1, dt * 1.5);
-      fNoise = gauss() * (0.25 + 0.7 * painT) * Math.sqrt(target / 30 + 0.2);
+      fSlow += (muGauss() * (0.6 + 1.6 * painT) - fSlow) * Math.min(1, dt * 1.5);
+      fNoise = muGauss() * (0.25 + 0.7 * painT) * Math.sqrt(target / 30 + 0.2);
       forceTrace.push([simT, Math.max(0, target + fSlow + fNoise)]);
       while (forceTrace.length && forceTrace[0][0] < simT - WINDOW) forceTrace.shift();
+      bulge += (1 + 0.16 * target / 80 - bulge) * Math.min(1, dt * 3);
     };
 
-    var draw = function () {
+    // raster geometry, shared by the raster and by the neurons gliding into it
+    var rasterGeo = function () {
       var W = muCanvas.width, H = muCanvas.height, d = W / muCanvas.getBoundingClientRect().width || 1;
-      mctx.clearRect(0, 0, W, H);
       var padL = 34 * d, padR = 44 * d, top = 10 * d, fH = H * 0.24, rowsTop = top + fH + 10 * d;
-      var rowH = (H - rowsTop - 8 * d) / N, plotW = W - padL - padR;
-      var x = function (t) { return padL + (t - (simT - WINDOW)) / WINDOW * plotW; };
-      mctx.font = (10 * d) + 'px ' + getComputedStyle(document.body).fontFamily;
-      mctx.textBaseline = 'middle';
+      var rowH = (H - rowsTop - 8 * d) / N;
+      return { W: W, H: H, d: d, padL: padL, padR: padR, top: top, fH: fH, rowsTop: rowsTop, rowH: rowH,
+               plotW: W - padL - padR, rowY: function (i) { return rowsTop + (N - 1 - i) * rowH + rowH / 2; } };
+    };
 
-      // force panel: target dashed, measured solid
-      var fy = function (f) { return top + fH - f / 85 * fH; };
+    var drawRaster = function (R, alpha) {
+      var d = R.d;
+      mctx.globalAlpha = alpha;
+      var x = function (t) { return R.padL + (t - (simT - WINDOW)) / WINDOW * R.plotW; };
+      var fy = function (f) { return R.top + R.fH - f / 85 * R.fH; };
       mctx.strokeStyle = grid; mctx.lineWidth = d;
       mctx.setLineDash([4 * d, 4 * d]);
-      mctx.beginPath(); mctx.moveTo(padL, fy(target)); mctx.lineTo(padL + plotW, fy(target)); mctx.stroke();
+      mctx.beginPath(); mctx.moveTo(R.padL, fy(target)); mctx.lineTo(R.padL + R.plotW, fy(target)); mctx.stroke();
       mctx.setLineDash([]);
       mctx.strokeStyle = ink; mctx.lineWidth = 1.5 * d; mctx.beginPath();
       forceTrace.forEach(function (p, k) { k ? mctx.lineTo(x(p[0]), fy(p[1])) : mctx.moveTo(x(p[0]), fy(p[1])); });
       mctx.stroke();
       mctx.fillStyle = ink3; mctx.textAlign = 'left';
-      mctx.fillText(forceOut.textContent, padL + plotW + 6 * d, fy(target));
-
-      // raster: one row per unit, newest on the right
+      mctx.fillText(forceOut.textContent, R.padL + R.plotW + 6 * d, fy(target));
       units.forEach(function (u, i) {
-        var cy = rowsTop + (N - 1 - i) * rowH + rowH / 2;
+        var cy = R.rowY(i);
         mctx.strokeStyle = grid; mctx.lineWidth = d;
-        mctx.beginPath(); mctx.moveTo(padL, cy); mctx.lineTo(padL + plotW, cy); mctx.stroke();
+        mctx.beginPath(); mctx.moveTo(R.padL, cy); mctx.lineTo(R.padL + R.plotW, cy); mctx.stroke();
         mctx.strokeStyle = mark; mctx.lineWidth = 2 * d; mctx.lineCap = 'round';
         mctx.beginPath();
         u.spikes.forEach(function (t) {
+          if (t < simT - WINDOW) return;
           var sx = x(t);
-          mctx.moveTo(sx, cy - rowH * 0.32); mctx.lineTo(sx, cy + rowH * 0.32);
+          mctx.moveTo(sx, cy - R.rowH * 0.32); mctx.lineTo(sx, cy + R.rowH * 0.32);
         });
         mctx.stroke();
-        mctx.fillStyle = ink3; mctx.textAlign = 'right';
-        mctx.fillText(String(i + 1), padL - 8 * d, cy);
         mctx.textAlign = 'left';
         mctx.fillStyle = u.rate ? ink : ink3;
-        mctx.fillText(u.rate ? Math.round(u.rate) + ' Hz' : '–', padL + plotW + 6 * d, cy);
+        mctx.fillText(u.rate ? Math.round(u.rate) + ' Hz' : '–', R.padL + R.plotW + 6 * d, cy);
       });
+      mctx.globalAlpha = 1;
     };
 
-    var tick = function (now) {
+    var MUSCLE = [200, 103, 91], HOT = [255, 128, 104];
+    var muscleY = function (f, x) {      // a fibre's height across the spindle-shaped muscle
+      var M = G.mus, e = Math.sin(Math.PI * (x - M.x0) / (M.x1 - M.x0));
+      return M.y + f.off * M.half * bulge * Math.pow(Math.max(0, e), 0.75);
+    };
+    var drawAnatomy = function (alpha) {
+      if (alpha < 0.01) return;
+      var g = G, k = g.k, c = g.cord, M = g.mus;
+      mctx.globalAlpha = alpha;
+      mctx.lineCap = 'round'; mctx.lineJoin = 'round';
+
+      // spinal cord: white matter, with the grey-matter "butterfly" inside
+      mctx.beginPath(); mctx.ellipse(c.x, c.y, c.rx, c.ry, 0, 0, 6.283);
+      mctx.fillStyle = dark ? 'rgba(255,255,255,.05)' : 'rgba(20,32,43,.05)'; mctx.fill();
+      mctx.strokeStyle = grid; mctx.lineWidth = k; mctx.stroke();
+      mctx.beginPath();
+      mctx.ellipse(c.x, c.y, c.rx * 0.3, c.ry * 0.13, 0, 0, 6.283);
+      [-1, 1].forEach(function (sd) {
+        // dorsal horn: a slim wing reaching up and out
+        mctx.moveTo(c.x + sd * c.rx * 0.33 + c.rx * 0.08, c.y - c.ry * 0.36);
+        mctx.ellipse(c.x + sd * c.rx * 0.33, c.y - c.ry * 0.36, c.rx * 0.08, c.ry * 0.46, sd * 0.85, 0, 6.283);
+        // ventral horn: broad, where the motor neurons live
+        mctx.moveTo(c.x + sd * c.rx * 0.33 + c.rx * 0.22, c.y + c.ry * 0.3);
+        mctx.ellipse(c.x + sd * c.rx * 0.33, c.y + c.ry * 0.3, c.rx * 0.22, c.ry * 0.4, -sd * 0.6, 0, 6.283);
+      });
+      mctx.fillStyle = dark ? 'rgba(170,182,192,.2)' : 'rgba(74,87,99,.16)'; mctx.fill();
+      mctx.beginPath(); mctx.arc(c.x, c.y, k * 1.6, 0, 6.283); mctx.fillStyle = grid; mctx.fill();
+      // anterior median fissure and posterior median septum
+      mctx.strokeStyle = grid; mctx.lineWidth = k;
+      mctx.beginPath();
+      mctx.moveTo(c.x, c.y + c.ry); mctx.lineTo(c.x, c.y + c.ry * 0.62);
+      mctx.moveTo(c.x, c.y - c.ry); mctx.lineTo(c.x, c.y - c.ry * 0.2);
+      mctx.stroke();
+
+      // the muscle: a spindle of fibres
+      mctx.beginPath();
+      for (var xx = 0; xx <= 40; xx++) {
+        var px0 = M.x0 + (M.x1 - M.x0) * xx / 40;
+        var yy = muscleY({ off: -1.06 }, px0); xx ? mctx.lineTo(px0, yy) : mctx.moveTo(px0, yy);
+      }
+      for (var xb = 40; xb >= 0; xb--) {
+        var px1 = M.x0 + (M.x1 - M.x0) * xb / 40; mctx.lineTo(px1, muscleY({ off: 1.06 }, px1));
+      }
+      mctx.closePath();
+      mctx.fillStyle = 'rgba(200,103,91,' + (dark ? 0.1 : 0.08) + ')'; mctx.fill();
+      mctx.strokeStyle = 'rgba(200,103,91,.4)'; mctx.lineWidth = k; mctx.stroke();
+
+      // when each unit's fibres last received an action potential
+      var arrive = units.map(function (u) {
+        for (var s2 = u.spikes.length - 1; s2 >= 0; s2--) if (u.spikes[s2] + TC <= simT) return u.spikes[s2] + TC;
+        return -9;
+      });
+      g.fibres.forEach(function (f) {
+        var heat = Math.exp(-(simT - arrive[f.unit]) / 0.06);
+        var col = MUSCLE.map(function (v, n) { return Math.round(v + (HOT[n] - v) * heat); });
+        mctx.strokeStyle = 'rgba(' + col.join(',') + ',' + (0.3 + 0.7 * heat) + ')';
+        mctx.lineWidth = k * (0.8 + 0.9 * heat);
+        mctx.beginPath();
+        for (var s3 = 0; s3 <= 24; s3++) {
+          var fx = M.x0 + (M.x1 - M.x0) * (0.03 + 0.94 * s3 / 24);
+          s3 ? mctx.lineTo(fx, muscleY(f, fx)) : mctx.moveTo(fx, muscleY(f, fx));
+        }
+        mctx.stroke();
+      });
+
+      // axons and their branches to the end plates
+      g.axons.forEach(function (ax, i) {
+        var on = units[i].rate > 0;
+        mctx.strokeStyle = on ? mark : ink3;
+        mctx.globalAlpha = alpha * (on ? 0.5 : 0.18);
+        mctx.lineWidth = ax.w;
+        mctx.beginPath();
+        ax.pts.forEach(function (p, n) { n ? mctx.lineTo(p[0], p[1]) : mctx.moveTo(p[0], p[1]); });
+        ax.fibres.forEach(function (f) { mctx.moveTo(ax.bx, ax.by); mctx.lineTo(f.ep, muscleY(f, f.ep)); });
+        mctx.stroke();
+        mctx.fillStyle = on ? mark : ink3;
+        ax.fibres.forEach(function (f) {
+          mctx.beginPath(); mctx.arc(f.ep, muscleY(f, f.ep), k * 1.3, 0, 6.283); mctx.fill();
+        });
+      });
+      mctx.globalAlpha = alpha;
+
+      // action potentials on their way: along the axon, then out along every branch
+      units.forEach(function (u, i) {
+        var ax = g.axons[i];
+        u.spikes.forEach(function (ts) {
+          var age = simT - ts;
+          if (age < 0 || age > TC) return;
+          var f = age / TC, pts = [];
+          if (f < 0.82) {
+            var pos = f / 0.82 * (ax.pts.length - 1), n0 = Math.floor(pos), fr = pos - n0;
+            var a0 = ax.pts[n0], a1 = ax.pts[Math.min(n0 + 1, ax.pts.length - 1)];
+            pts.push([a0[0] + (a1[0] - a0[0]) * fr, a0[1] + (a1[1] - a0[1]) * fr]);
+          } else {
+            var b = (f - 0.82) / 0.18;
+            ax.fibres.forEach(function (fb) {
+              var ey = muscleY(fb, fb.ep);
+              pts.push([ax.bx + (fb.ep - ax.bx) * b, ax.by + (ey - ax.by) * b]);
+            });
+          }
+          pts.forEach(function (p) {
+            mctx.fillStyle = mark;
+            mctx.globalAlpha = alpha * 0.25; mctx.beginPath(); mctx.arc(p[0], p[1], k * 4.5, 0, 6.283); mctx.fill();
+            mctx.globalAlpha = alpha; mctx.fillStyle = dark ? '#e9fffd' : mark;
+            mctx.beginPath(); mctx.arc(p[0], p[1], k * 1.7, 0, 6.283); mctx.fill();
+          });
+        });
+      });
+      mctx.globalAlpha = alpha;
+
+      // surface EMG: every unit's action potential, summed
+      var E = g.emg, n2 = 180, sum = new Float32Array(n2 + 1), t0w = simT - WINDOW, wd = 0.012;
+      units.forEach(function (u, i) {
+        var A = 0.35 + 0.13 * i;
+        u.spikes.forEach(function (ts) {
+          var ta = ts + TC;
+          if (ta > simT || ta < t0w - 0.05) return;
+          var c0 = Math.round((ta - t0w) / WINDOW * n2), span = Math.ceil(4 * wd / WINDOW * n2);
+          for (var q = Math.max(0, c0 - span); q <= Math.min(n2, c0 + span); q++) {
+            var z = (t0w + q / n2 * WINDOW - ta) / wd;
+            sum[q] += -A * z * Math.exp(-z * z / 2) * 1.6;     // a biphasic motor unit action potential
+          }
+        });
+      });
+      mctx.strokeStyle = grid; mctx.lineWidth = k * 0.6;
+      mctx.beginPath(); mctx.moveTo(E.x0, E.y); mctx.lineTo(E.x1, E.y); mctx.stroke();
+      mctx.strokeStyle = ink; mctx.lineWidth = k * 0.9;
+      mctx.beginPath();
+      for (var q2 = 0; q2 <= n2; q2++) {
+        var v = Math.max(-1.4, Math.min(1.4, sum[q2] / 2.2));
+        var ex = E.x0 + (E.x1 - E.x0) * q2 / n2, ey2 = E.y - v * E.amp;
+        q2 ? mctx.lineTo(ex, ey2) : mctx.moveTo(ex, ey2);
+      }
+      mctx.stroke();
+
+      // labels
+      mctx.fillStyle = ink3; mctx.font = Math.round(k * 7.2) + 'px ' + getComputedStyle(document.body).fontFamily;
+      mctx.textAlign = 'center'; mctx.textBaseline = 'alphabetic';
+      if (LABELS[0]) mctx.fillText(LABELS[0], c.x, c.y - c.ry - k * 6);
+      if (LABELS[1]) mctx.fillText(LABELS[1], c.x + c.rx * 0.45, c.y + c.ry + k * 12);
+      if (LABELS[2]) mctx.fillText(LABELS[2], (M.x0 + M.x1) / 2, M.y - M.half * 1.12 - k * 6);
+      mctx.textAlign = 'left';
+      if (LABELS[3]) mctx.fillText(LABELS[3], E.x0, E.y - E.amp - k * 6);
+      mctx.globalAlpha = 1;
+    };
+
+    var muDraw = function () {
+      var R = rasterGeo(), d = R.d;
+      var m = morph * morph * (3 - 2 * morph);           // eased
+      mctx.clearRect(0, 0, R.W, R.H);
+      mctx.font = (10 * d) + 'px ' + getComputedStyle(document.body).fontFamily;
+      mctx.textBaseline = 'middle';
+      drawAnatomy(1 - m);
+      mctx.font = (10 * d) + 'px ' + getComputedStyle(document.body).fontFamily;
+      mctx.textBaseline = 'middle';
+      if (m > 0.01) drawRaster(R, m);
+
+      // the motor neurons, gliding from the spinal cord to the head of their rows
+      units.forEach(function (u, i) {
+        var a = G.neurons[i], rx = R.padL - 14 * d, ry = R.rowY(i);
+        var x = a.x + (rx - a.x) * m, y = a.y + (ry - a.y) * m;
+        var r = a.r + (Math.min(R.rowH * 0.3, 2 * d + i * 0.35 * d) - a.r) * m;
+        var lastS = u.spikes.length ? u.spikes[u.spikes.length - 1] : -9, flash = Math.exp(-(simT - lastS) / 0.08);
+        var on = u.rate > 0;
+        if (1 - m > 0.05) {                               // dendrites, in the cord only
+          mctx.globalAlpha = (1 - m) * (on ? 0.6 : 0.3); mctx.strokeStyle = on ? mark : ink3; mctx.lineWidth = r * 0.35;
+          mctx.beginPath();
+          [2.2, 3.4, 4.6].forEach(function (ang) {
+            mctx.moveTo(x, y); mctx.lineTo(x + Math.cos(ang) * r * 2.3, y + Math.sin(ang) * r * 2.3);
+          });
+          mctx.stroke();
+        }
+        if (flash > 0.05) {
+          mctx.globalAlpha = 0.35 * flash; mctx.fillStyle = mark;
+          mctx.beginPath(); mctx.arc(x, y, r * 2.6, 0, 6.283); mctx.fill();
+        }
+        mctx.globalAlpha = 1;
+        mctx.fillStyle = on ? mark : ink3;
+        mctx.beginPath(); mctx.arc(x, y, r, 0, 6.283); mctx.fill();
+      });
+      mctx.globalAlpha = 1;
+    };
+
+    var muSetView = function (v, fromAuto) {
+      muView = v;
+      if (!fromAuto) muAuto = false;
+      muViews.forEach(function (b) { b.setAttribute('aria-pressed', String(+b.dataset.view === v)); });
+      if (reduce) { morph = v; muDraw(); }
+    };
+    muViews.forEach(function (b) { b.addEventListener('click', function () { muSetView(+b.dataset.view); }); });
+
+    var muTick = function (now) {
       if (!muRunning) return;
       var dt = Math.min(0.05, (now - last) / 1000); last = now;
-      step(dt, true); draw();
-      requestAnimationFrame(tick);
+      if (muAuto) {
+        muAutoT += dt;
+        if (muAutoT > 5.5) { muSetView(1, true); muAuto = false; }
+      }
+      morph += (muView - morph) * Math.min(1, dt * 2.4);
+      muStep(dt, true); muDraw();
+      requestAnimationFrame(muTick);
     };
     var muStart = function () {
       if (muRunning || reduce || !muVisible) return;
-      muRunning = true; last = performance.now(); requestAnimationFrame(tick);
+      muRunning = true; last = performance.now(); requestAnimationFrame(muTick);
     };
-    // without motion: fill a fresh two-second window and hold it still
+    // without motion: fill a fresh window and hold it still
     var muStill = function () {
       units.forEach(function (u) { u.spikes = []; }); forceTrace = [];
       painT = pain;
-      for (var k = 0; k < WINDOW * 60; k++) step(1 / 60, false);
-      draw();
+      for (var k = 0; k < (WINDOW + TC) * 60; k++) muStep(1 / 60, false);
+      muDraw();
     };
 
     forceIn.addEventListener('input', function () {
@@ -2461,16 +2715,17 @@ h1 .c { display: inline-block; }
     });
 
     muColours(); muSize();
-    for (var w = 0; w < WINDOW * 60; w++) step(1 / 60, false);   // start with a full window
-    draw();
-    new MutationObserver(function () { muColours(); draw(); })
+    for (var w = 0; w < (WINDOW + TC) * 60; w++) muStep(1 / 60, false);   // start with a full window
+    muSetView(muView, true);
+    muDraw();
+    new MutationObserver(function () { muColours(); muDraw(); })
       .observe(root, { attributes: true, attributeFilter: ['data-theme'] });
-    addEventListener('resize', function () { muSize(); draw(); });
+    addEventListener('resize', function () { muSize(); muDraw(); });
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(function (es) {
         muVisible = es[0].isIntersecting;
         if (muVisible) muStart(); else muRunning = false;
-      }).observe(muCanvas);
+      }, { threshold: 0.35 }).observe(muCanvas);
     }
   }
 
