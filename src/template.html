@@ -965,14 +965,15 @@ footer {
 main > section:nth-of-type(odd) .emg { background: var(--paper); }
 .emg-plot { display: grid; gap: .55rem; }
 .emg-canvas {
-  width: 100%; aspect-ratio: 13 / 5; display: block;
+  width: 100%; aspect-ratio: 13 / 6.4; display: block;
   border-radius: 10px; cursor: crosshair; touch-action: pan-y;
   background: var(--rule-soft);
 }
-.emg-scale { display: flex; align-items: center; gap: .5rem; font-size: .66rem; color: var(--ink-3);
+.emg-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1rem; }
+.emg-scale { flex: 1 1 10rem; display: flex; align-items: center; gap: .5rem; font-size: .66rem; color: var(--ink-3);
   letter-spacing: .1em; text-transform: uppercase; font-weight: 600; }
 .emg-scale i { flex: 1; height: 6px; border-radius: 3px;
-  background: linear-gradient(90deg, var(--rule-soft), var(--mark) 60%, color-mix(in srgb, var(--mark), var(--ink))); }
+  background: linear-gradient(90deg, #4a58dd, #26bae3, #49f788, #b4f242, #ffad25, #e54813); }
 .emg-text .k {
   font-size: 0.758rem; font-weight: 600; letter-spacing: .13em;
   text-transform: uppercase; color: var(--accent); display: block; margin-bottom: .4rem;
@@ -1393,13 +1394,21 @@ h1 .c { display: inline-block; }
     <div class="emg rise">
       <div class="emg-plot">
         <canvas class="emg-canvas" aria-hidden="true"></canvas>
-        <div class="emg-scale" aria-hidden="true"><span>Low</span><i></i><span>High</span></div>
+        <div class="emg-bar">
+          <span class="sort-seg" role="group" aria-label="View">
+            <button class="sort emg-view" type="button" data-view="0" aria-pressed="true">Signals</button>
+            <button class="sort emg-view" type="button" data-view="1" aria-pressed="false">Map</button>
+            <button class="sort emg-view" type="button" data-view="2" aria-pressed="false">3D</button>
+          </span>
+          <div class="emg-scale" aria-hidden="true"><span>Low</span><i></i><span>High</span></div>
+        </div>
       </div>
       <div class="emg-text">
         <span class="k">High-density EMG, live</span>
-        <p>A grid of 64 electrodes over a muscle records activity at every point, so the map shows
-        where the muscle is working hardest. Move across the grid to shift that activity. Changes in
-        this spatial distribution are one way muscles adapt to pain, and a recurring focus of this research.</p>
+        <p>A grid of 64 electrodes over a muscle: each one records its own signal. Their amplitude becomes a
+        colour map, blue where the muscle is quiet and red where it works hardest, and in 3D a landscape of
+        activity. Move across the grid to shift it. Changes in this spatial distribution are one way muscles
+        adapt to pain, and a recurring focus of this research.</p>
         <p class="emg-note">Simulated signal, for illustration.</p>
       </div>
     </div>
@@ -2015,112 +2024,258 @@ h1 .c { display: inline-block; }
 
 
 
-  /* ---------- HD-sEMG map ---------- */
-  // A 13 x 5 grid of simulated electrode amplitudes: a moving centre of activity
-  // (following the pointer, or drifting on its own), a weaker second region, and
-  // per-electrode fluctuation. Painted at grid size and scaled up, so the canvas
-  // interpolates between electrodes as published HD-sEMG maps do.
+  /* ---------- HD-sEMG panel ---------- */
+  // 13 x 5 electrodes (64: one corner is empty). Each records a raw signal whose
+  // size follows a moving centre of activity (the pointer, or a slow drift).
+  // Three views: the signals themselves; their amplitude as a colour map, blue
+  // low to red high; and that map raised into a 3D surface. Seen for the first
+  // time, it plays through all three; the buttons switch between them.
   var emg = document.querySelector('.emg-canvas');
   if (emg && emg.getContext) {
-    var COLS = 13, ROWS = 5;
+    var COLS = 13, ROWS = 5, N_E = COLS * ROWS, SAMPLES = 64, K = 6;
+    var NX = COLS * K + 1, NY = ROWS * K + 1;       // vertices of the fine mesh
     var ctx = emg.getContext('2d');
-    var small = document.createElement('canvas');
-    small.width = COLS; small.height = ROWS;
-    var sctx = small.getContext('2d');
-    var img = sctx.createImageData(COLS, ROWS);
-    var jitter = new Float32Array(COLS * ROWS);
-    var lo = [0, 0, 0], mid = [0, 0, 0], hi = [0, 0, 0], dot = 'rgba(0,0,0,.25)';
+    var views = Array.prototype.slice.call(document.querySelectorAll('.emg-view'));
+    var amp = new Float32Array(N_E), jit = new Float32Array(N_E), last1 = new Float32Array(N_E);
+    var traces = [];
+    for (var e = 0; e < N_E; e++) traces.push(new Float32Array(SAMPLES));
+    var head = 0;
+    var fine = new Float32Array(NX * NY);
+    var px = new Float32Array(NX * NY), py = new Float32Array(NX * NY), pd = new Float32Array(NX * NY);
+    var quads = [];
+    for (var qy = 0; qy < NY - 1; qy++) for (var qx = 0; qx < NX - 1; qx++) quads.push({ i: qy * NX + qx, d: 0 });
     var cx = 4, cy = 2, tx = 4, ty = 2, pointer = false, t0 = performance.now();
-    var running = false, visible = false;
+    var view = reduce ? 1 : 0, sig = view ? 1 : 0, tilt = 0;
+    var auto = !reduce, autoT = 0;
+    var running = false, visible = false, lastT = 0;
+    var W = 1, H = 1, cell = 1, ink = [128, 128, 128];
 
-    var rgb = function (v) {
-      var m = getComputedStyle(root).getPropertyValue(v).trim().match(/^#([0-9a-f]{6})$/i);
-      if (!m) return [128, 128, 128];
-      var n = parseInt(m[1], 16);
-      return [n >> 16, (n >> 8) & 255, n & 255];
+    // "turbo": a rainbow tuned to be even to the eye; blue low, red high
+    var turbo = function (v) {
+      var t = 0.1 + 0.8 * (v < 0 ? 0 : v > 1 ? 1 : v);
+      return [
+        34.61 + t * (1172.33 - t * (10793.56 - t * (33300.12 - t * (38394.49 - t * 14825.05)))),
+        23.31 + t * (557.33 + t * (1225.33 - t * (3574.96 - t * (1073.77 + t * 707.56)))),
+        27.2 + t * (3211.1 - t * (15327.97 - t * (27814 - t * (22569.18 - t * 6838.66))))
+      ];
     };
-    var colours = function () {
-      // one hue: from the panel's own tone, through the teal, to a pale teal peak
-      lo = rgb('--rule-soft'); mid = rgb('--mark');
-      var ink = rgb('--ink');
-      hi = mid.map(function (c, i) { return c + (ink[i] - c) * 0.5; });
-      dot = root.getAttribute('data-theme') === 'dark' ? 'rgba(255,255,255,.28)' : 'rgba(20,32,43,.22)';
+    var rgb = function (c, k) {
+      k = k == null ? 1 : k;
+      return 'rgb(' + Math.max(0, Math.min(255, c[0] * k | 0)) + ',' +
+        Math.max(0, Math.min(255, c[1] * k | 0)) + ',' + Math.max(0, Math.min(255, c[2] * k | 0)) + ')';
     };
-    var size = function () {
-      var r = emg.getBoundingClientRect(), d = Math.min(window.devicePixelRatio || 1, 2);
-      emg.width = Math.round(r.width * d); emg.height = Math.round(r.height * d);
+    var stops = [];
+    for (var si = 0; si <= 6; si++) stops.push(rgb(turbo(si / 6)) + ' ' + Math.round(si / 6 * 100) + '%');
+    var bar = document.querySelector('.emg-scale i');
+    if (bar) bar.style.background = 'linear-gradient(90deg,' + stops.join(',') + ')';
+
+    var emgColours = function () {
+      var m = getComputedStyle(root).getPropertyValue('--ink-2').trim().match(/^#([0-9a-f]{6})$/i);
+      var n = m ? parseInt(m[1], 16) : 0x888888;
+      ink = [n >> 16, (n >> 8) & 255, n & 255];
+    };
+    var emgSize = function () {
+      var r = emg.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
+      emg.width = Math.round(r.width * dpr); emg.height = Math.round(r.height * dpr);
+      W = emg.width; H = emg.height;
+      cell = Math.min(W * 0.92 / COLS, H * 0.86 / ROWS);
+    };
+    var emgGauss = function () {
+      return (Math.random() + Math.random() + Math.random() + Math.random() - 2) * 1.73;
     };
 
-    var frame = function (now) {
-      var t = (now - t0) / 1000;
-      if (!pointer) {           // drift in a slow figure-of-eight when left alone
+    // activity at each electrode, and a few new samples of each raw signal
+    var emgSim = function (t, steps) {
+      if (!pointer) {
         tx = 6 + 4.2 * Math.sin(t * 0.45);
         ty = 2 + 1.4 * Math.sin(t * 0.9);
       }
       cx += (tx - cx) * 0.08; cy += (ty - cy) * 0.08;
-      var drive = 0.78 + 0.14 * Math.sin(t * 2.3) + 0.08 * Math.sin(t * 7.1);
-      for (var i = 0; i < jitter.length; i++) {
-        jitter[i] += ((Math.random() - 0.5) * 0.5 - jitter[i]) * 0.25;
-      }
+      var drive = 0.8 + 0.12 * Math.sin(t * 2.3) + 0.08 * Math.sin(t * 7.1);
       for (var y = 0; y < ROWS; y++) {
         for (var x = 0; x < COLS; x++) {
           var k = y * COLS + x;
+          jit[k] += ((Math.random() - 0.5) * 0.5 - jit[k]) * 0.25;
           var d1 = (x - cx) * (x - cx) / 4 + (y - cy) * (y - cy) / 1.4;
-          var d2 = (x - (12 - cx * 0.6)) * (x - (12 - cx * 0.6)) / 3.5 + (y - (4 - cy)) * (y - (4 - cy)) / 1.6;
-          var v = drive * 1.45 * Math.exp(-d1) + 0.4 * Math.exp(-d2) + 0.08 * jitter[k];
-          v = v < 0 ? 0 : v > 1 ? 1 : v;
-          var a = v < 0.6 ? lo : mid, b = v < 0.6 ? mid : hi;
-          var f = v < 0.6 ? v / 0.6 : (v - 0.6) / 0.4;
-          img.data[k * 4]     = a[0] + (b[0] - a[0]) * f;
-          img.data[k * 4 + 1] = a[1] + (b[1] - a[1]) * f;
-          img.data[k * 4 + 2] = a[2] + (b[2] - a[2]) * f;
-          img.data[k * 4 + 3] = 255;
+          var x2 = 12 - cx * 0.6, y2 = 4 - cy;
+          var d2 = (x - x2) * (x - x2) / 3.5 + (y - y2) * (y - y2) / 1.6;
+          var v = drive * 1.25 * Math.exp(-d1) + 0.35 * Math.exp(-d2) + 0.06 * jit[k] + 0.04;
+          amp[k] = v < 0 ? 0 : v > 1 ? 1 : v;
         }
       }
-      sctx.putImageData(img, 0, 0);
-      var W = emg.width, H = emg.height;
-      ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = 'high';
-      // pad by half a cell so the outer electrodes sit at their own pixel centres
-      ctx.drawImage(small, -W / COLS / 2, -H / ROWS / 2, W + W / COLS, H + H / ROWS);
-      ctx.fillStyle = dot;
-      var rr = Math.max(1.5, W / 260);
-      for (var yy = 0; yy < ROWS; yy++) {
-        for (var xx = 0; xx < COLS; xx++) {
-          if (xx === 0 && yy === 0) continue;   // 64 electrodes: one corner is empty
-          ctx.beginPath();
-          ctx.arc((xx + 0.5) * W / COLS, (yy + 0.5) * H / ROWS, rr, 0, 6.283);
-          ctx.fill();
+      for (var sN = 0; sN < steps; sN++) {
+        for (var k2 = 0; k2 < N_E; k2++) {
+          // band-limited noise whose size is the local activity: raw surface EMG
+          last1[k2] = 0.35 * last1[k2] + emgGauss();
+          traces[k2][head] = last1[k2] * (0.05 + amp[k2]);
         }
+        head = (head + 1) % SAMPLES;
       }
-      if (running) requestAnimationFrame(frame);
     };
-    var start = function () {
-      if (running || reduce || !visible) return;
-      running = true; requestAnimationFrame(frame);
-    };
-    var stop = function () { running = false; };
 
-    var aim = function (e) {
-      var r = emg.getBoundingClientRect();
-      tx = (e.clientX - r.left) / r.width * COLS - 0.5;
-      ty = (e.clientY - r.top) / r.height * ROWS - 0.5;
-      pointer = true;
-      if (reduce) { cx = tx; cy = ty; frame(performance.now()); }
+    // amplitude on the fine mesh, interpolated between electrodes
+    var emgRefine = function () {
+      for (var j = 0; j < NY; j++) {
+        var ey = Math.max(0, Math.min(ROWS - 1, (j / K) - 0.5));
+        var y0 = Math.min(ROWS - 2, ey | 0), fy = ey - y0;
+        for (var i = 0; i < NX; i++) {
+          var ex = Math.max(0, Math.min(COLS - 1, (i / K) - 0.5));
+          var x0 = Math.min(COLS - 2, ex | 0), fx = ex - x0;
+          var a = amp[y0 * COLS + x0], b = amp[y0 * COLS + x0 + 1];
+          var c = amp[(y0 + 1) * COLS + x0], d = amp[(y0 + 1) * COLS + x0 + 1];
+          fine[j * NX + i] = (a * (1 - fx) + b * fx) * (1 - fy) + (c * (1 - fx) + d * fx) * fy;
+        }
+      }
     };
-    emg.addEventListener('pointermove', aim);
-    emg.addEventListener('pointerdown', aim);
+
+    var emgDraw = function (t) {
+      ctx.clearRect(0, 0, W, H);
+      var c = cell;
+      var th = tilt * 1.0, ps = tilt * (-0.5 + 0.14 * Math.sin(t * 0.35));
+      var cT = Math.cos(th), sT = Math.sin(th), cP = Math.cos(ps), sP = Math.sin(ps);
+      var F = c * 18, lift = c * 2.4 * tilt;
+      var place = function (X, Y, Z) {
+        var x1 = X * cP - Y * sP, y1 = X * sP + Y * cP;
+        var d = -y1 * sT - Z * cT, s = F / (F + d);
+        return [x1 * s, (y1 * cT - Z * sT) * s, d];
+      };
+      // fit the whole surface, at its tallest, inside the frame
+      var x0 = 1e9, x9 = -1e9, y0 = 1e9, y9 = -1e9;
+      [-1, 1].forEach(function (sx) {
+        [-1, 1].forEach(function (sy) {
+          [0, lift].forEach(function (z) {
+            var p = place(sx * COLS / 2 * c, sy * ROWS / 2 * c, z);
+            x0 = Math.min(x0, p[0]); x9 = Math.max(x9, p[0]); y0 = Math.min(y0, p[1]); y9 = Math.max(y9, p[1]);
+          });
+        });
+      });
+      var fit = Math.min(1, W * 0.94 / (x9 - x0), H * 0.9 / (y9 - y0));
+      var offX = W / 2 - (x0 + x9) / 2 * fit, offY = H / 2 - (y0 + y9) / 2 * fit;
+
+      if (sig > 0.01) {
+        emgRefine();
+        for (var j = 0; j < NY; j++) {
+          for (var i = 0; i < NX; i++) {
+            var k = j * NX + i;
+            var pp = place((i / K - COLS / 2) * c, (j / K - ROWS / 2) * c, fine[k] * lift);
+            px[k] = offX + pp[0] * fit; py[k] = offY + pp[1] * fit; pd[k] = pp[2];
+          }
+        }
+        if (tilt > 0.01) {
+          quads.forEach(function (q) { q.d = pd[q.i] + pd[q.i + NX + 1]; });
+          quads.sort(function (a, b) { return b.d - a.d; });
+        }
+        ctx.globalAlpha = sig;
+        ctx.lineWidth = 1;
+        quads.forEach(function (q) {
+          var i0 = q.i, i1 = i0 + 1, i2 = i0 + NX + 1, i3 = i0 + NX;
+          var v = (fine[i0] + fine[i1] + fine[i2] + fine[i3]) / 4;
+          // light from the upper left: brighter on slopes facing it
+          var shade = 1 + tilt * Math.max(-0.35, Math.min(0.3, ((fine[i0] - fine[i1]) + (fine[i0] - fine[i3])) * 4));
+          var col = rgb(turbo(v), shade);
+          ctx.fillStyle = col; ctx.strokeStyle = col;
+          ctx.beginPath();
+          ctx.moveTo(px[i0], py[i0]); ctx.lineTo(px[i1], py[i1]);
+          ctx.lineTo(px[i2], py[i2]); ctx.lineTo(px[i3], py[i3]);
+          ctx.closePath(); ctx.fill(); ctx.stroke();
+        });
+        // electrodes, sitting on the surface
+        ctx.fillStyle = 'rgba(255,255,255,.55)';
+        var rr = Math.max(1.5, c * 0.06 * fit);
+        for (var ey2 = 0; ey2 < ROWS; ey2++) {
+          for (var ex2 = 0; ex2 < COLS; ex2++) {
+            if (!ex2 && !ey2) continue;
+            var kk = (ey2 * K + (K >> 1)) * NX + ex2 * K + (K >> 1);
+            ctx.beginPath(); ctx.arc(px[kk], py[kk], rr, 0, 6.283); ctx.fill();
+          }
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      if (sig < 0.99) {
+        // the raw signals, one per electrode; while they hand over to the map
+        // they shrink and take on their amplitude's colour
+        ctx.globalAlpha = 1 - sig;
+        ctx.lineWidth = Math.max(1, c / 34);
+        ctx.lineJoin = 'round';
+        var wBox = c * 0.82, hBox = c * 0.36 * (1 - 0.8 * sig);
+        for (var y = 0; y < ROWS; y++) {
+          for (var x = 0; x < COLS; x++) {
+            if (!x && !y) continue;
+            var e = y * COLS + x, tr = traces[e];
+            var ox = W / 2 + (x + 0.5 - COLS / 2) * c - wBox / 2, oy = H / 2 + (y + 0.5 - ROWS / 2) * c;
+            var col2 = sig > 0.02 ? turbo(amp[e]) : ink;
+            ctx.strokeStyle = rgb([ink[0] + (col2[0] - ink[0]) * sig * 1.5, ink[1] + (col2[1] - ink[1]) * sig * 1.5,
+              ink[2] + (col2[2] - ink[2]) * sig * 1.5]);
+            ctx.beginPath();
+            for (var n = 0; n < SAMPLES; n++) {
+              var v2 = tr[(head + n) % SAMPLES];
+              v2 = v2 > 1.4 ? 1.4 : v2 < -1.4 ? -1.4 : v2;
+              var sx = ox + n / (SAMPLES - 1) * wBox, sy = oy - v2 / 1.4 * hBox;
+              n ? ctx.lineTo(sx, sy) : ctx.moveTo(sx, sy);
+            }
+            ctx.stroke();
+          }
+        }
+        ctx.globalAlpha = 1;
+      }
+    };
+
+    var emgFrame = function (now) {
+      var dt = Math.min(0.05, (now - lastT) / 1000); lastT = now;
+      var t = (now - t0) / 1000;
+      if (auto) {
+        autoT += dt;
+        var want = autoT < 3.2 ? 0 : autoT < 6.6 ? 1 : 2;
+        if (want !== view) emgSetView(want, true);
+        if (autoT > 6.6) auto = false;
+      }
+      sig += ((view ? 1 : 0) - sig) * Math.min(1, dt * 2.6);
+      tilt += ((view === 2 ? 1 : 0) - tilt) * Math.min(1, dt * 2.2);
+      emgSim(t, 2);
+      emgDraw(t);
+      if (running) requestAnimationFrame(emgFrame);
+    };
+    var emgStill = function () {           // reduced motion: one frame, no easing
+      sig = view ? 1 : 0; tilt = view === 2 ? 1 : 0;
+      emgDraw(0);
+    };
+    var emgStart = function () {
+      if (running || reduce || !visible) return;
+      running = true; lastT = performance.now(); requestAnimationFrame(emgFrame);
+    };
+
+    var emgSetView = function (v, fromAuto) {
+      view = v;
+      if (!fromAuto) auto = false;
+      views.forEach(function (b) { b.setAttribute('aria-pressed', String(+b.dataset.view === v)); });
+      if (reduce) emgStill();
+    };
+    views.forEach(function (b) { b.addEventListener('click', function () { emgSetView(+b.dataset.view); }); });
+
+    var emgAim = function (e) {
+      var r = emg.getBoundingClientRect(), dpr = emg.width / r.width;
+      tx = ((e.clientX - r.left) * dpr - W / 2) / cell + COLS / 2 - 0.5;
+      ty = ((e.clientY - r.top) * dpr - H / 2) / cell + ROWS / 2 - 0.5;
+      pointer = true;
+      if (reduce) { cx = tx; cy = ty; emgSim(1, 0); emgStill(); }
+    };
+    emg.addEventListener('pointermove', emgAim);
+    emg.addEventListener('pointerdown', emgAim);
     emg.addEventListener('pointerleave', function () { pointer = false; });
 
-    colours(); size(); frame(performance.now());
-    new MutationObserver(function () { colours(); if (!running) frame(performance.now()); })
+    emgColours(); emgSize();
+    for (var w0 = 0; w0 < SAMPLES; w0++) emgSim(w0 / 60, 1);      // start with full traces
+    emgSetView(view, true);
+    emgDraw(0);
+    new MutationObserver(function () { emgColours(); if (!running) emgDraw(0); })
       .observe(root, { attributes: true, attributeFilter: ['data-theme'] });
-    addEventListener('resize', function () { size(); if (!running) frame(performance.now()); });
+    addEventListener('resize', function () { emgSize(); if (!running) emgDraw(0); });
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(function (es) {
         visible = es[0].isIntersecting;
-        if (visible) start(); else stop();
-      }).observe(emg);
+        if (visible) emgStart(); else running = false;
+      }, { threshold: 0.35 }).observe(emg);
     }
   }
 
