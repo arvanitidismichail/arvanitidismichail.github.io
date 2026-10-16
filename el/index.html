@@ -1128,45 +1128,75 @@ h1 .c { display: inline-block; }
 @keyframes focus-in { to { opacity: 1; filter: saturate(.92) blur(0); transform: none; } }
 @keyframes draw     { to { transform: scaleX(1); } }
 
-/* Spine rail: one vertebra per section, filled as you read.
+/* Section rail: a motor neuron. The soma is the top of the page, each myelin
+   segment one section, and as you read an action potential jumps from node
+   to node down the axon (saltatory conduction) to the terminal.
    Built by the script, so it never exists without it. */
 .spine {
   position: fixed; z-index: 40; top: 50%; transform: translateY(-50%);
-  left: max(1rem, calc(50vw - 31rem - 4.25rem));
-  display: none; padding: .6rem 0;
+  left: max(.5rem, calc(50vw - 31rem - 5rem));
+  width: 40px; display: none;
 }
 @media (min-width: 1180px) { .spine { display: block; } }
-.spine::before, .spine-fill {
-  content: ''; position: absolute; left: 50%; top: 0; bottom: 0;
-  width: 2px; margin-left: -1px; border-radius: 2px; background: var(--rule);
+.spine svg { display: block; overflow: visible; }
+.spine .soma { display: block; position: relative; width: 40px; height: 40px; }
+.spine .soma svg path, .spine .term path { fill: none; stroke: var(--ink-3); stroke-opacity: .6; stroke-width: 1.6; stroke-linecap: round; }
+.spine.arrived .term path { stroke-opacity: 1; }
+.spine .soma svg .body { fill: var(--paper); stroke: var(--mark); stroke-width: 1.6; }
+.spine .soma svg .nuc { fill: var(--mark); stroke: none; opacity: .55; }
+.spine .soma:hover svg .body { fill: var(--mark-soft); }
+.spine .axon { position: relative; padding: 6px 0; }
+.spine .axon::before, .spine-fill {
+  content: ''; position: absolute; left: 50%; top: 0; width: 2px; margin-left: -1px;
+  border-radius: 2px; background: var(--rule);
 }
+.spine .axon::before { bottom: 0; }
 .spine-fill {
-  background: linear-gradient(var(--mark), var(--accent));
-  transform-origin: top; transform: scaleY(var(--p, 0));
+  height: var(--fill, 0px); background: linear-gradient(var(--mark), var(--accent));
+  transition: height .28s var(--ease-out);
 }
-.spine ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.55rem; position: relative; }
-.spine a {
-  display: block; position: relative; width: 22px; height: 22px;
-  margin: 0 -2px;   /* a 22px hit area around an 18x7 vertebra */
+.spine ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; position: relative; }
+.spine a.sheath { display: block; position: relative; width: 40px; height: 30px; }
+.spine a.sheath::before {
+  content: ''; position: absolute; left: 14px; top: 0; width: 12px; height: 30px;
+  border-radius: 6px; background: var(--paper); border: 1.5px solid var(--rule);
+  transition: border-color .3s, background-color .3s, box-shadow .3s, transform .35s var(--ease-out);
 }
-.spine a::before {
-  content: ''; position: absolute; left: 2px; top: 7.5px; width: 18px; height: 7px;
-  border-radius: 3.5px; background: var(--paper); border: 1.5px solid var(--rule);
-  transition: border-color .3s, background-color .3s, transform .35s var(--ease-out);
+.spine a.sheath.past::before { border-color: var(--mark); background: var(--mark-soft); }
+.spine a.sheath.on::before {
+  background: var(--mark); border-color: var(--mark); transform: scaleX(1.2);
+  box-shadow: 0 0 10px var(--mark-soft), 0 0 0 4px var(--mark-soft);
 }
-.spine a.past::before { border-color: var(--mark); }
-.spine a.on::before { background: var(--mark); border-color: var(--mark); transform: scaleX(1.25); }
-.spine a:hover::before { border-color: var(--accent); }
+.spine a.sheath:hover::before { border-color: var(--accent); }
 .spine a span {
-  position: absolute; left: 30px; top: 50%; transform: translate(-4px, -50%);
+  position: absolute; left: 36px; top: 50%; transform: translate(-4px, -50%);
   white-space: nowrap; pointer-events: none;
   font-size: .7rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
   color: var(--ink-2); background: var(--surface);
   border: 1px solid var(--rule); border-radius: 4px; padding: .2rem .5rem;
   opacity: 0; transition: opacity .2s, transform .25s var(--ease-out);
 }
-.spine a:hover span, .spine a:focus-visible span { opacity: 1; transform: translate(0, -50%); }
-.spine a:focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; border-radius: 4px; }
+.spine a:hover span { opacity: 1; transform: translate(0, -50%); }
+/* the action potential, sitting at a node of Ranvier */
+.spine .ap {
+  position: absolute; left: 50%; top: 0; width: 8px; height: 8px; margin: -4px 0 0 -4px;
+  border-radius: 50%; background: #e9fffd; box-shadow: 0 0 0 3px var(--mark), 0 0 14px 4px var(--mark);
+  transform: translateY(var(--ap, 0px)); transition: transform .28s var(--ease-out);
+  pointer-events: none; z-index: 2;
+}
+.spine .ap::after {
+  content: ''; position: absolute; inset: -4px; border-radius: 50%;
+  border: 2px solid var(--mark); opacity: 0;
+}
+.spine .ap.jump::after { animation: ap-ring .6s ease-out; }
+@keyframes ap-ring { from { opacity: .9; transform: scale(.6); } to { opacity: 0; transform: scale(2.6); } }
+.spine .term circle { fill: var(--paper); stroke: var(--ink-3); stroke-opacity: .6; stroke-width: 1.5; transition: fill .3s, stroke .3s; }
+.spine.arrived .term path { stroke: var(--mark); }
+.spine.arrived .term circle { fill: var(--mark); stroke: var(--mark); }
+@media (prefers-reduced-motion: reduce) {
+  .spine-fill, .spine .ap, .spine a.sheath::before { transition: none; }
+  .spine .ap.jump::after { animation: none; }
+}
 
 /* Narrow screens: the same progress as a hairline under the bar */
 .nav-progress {
@@ -2488,32 +2518,63 @@ h1 .c { display: inline-block; }
   /* ---------- Spine rail and reading progress ---------- */
   // Mirrors the nav (same links, same labels in either language), so it is
   // hidden from assistive tech and the tab order — the nav already serves them.
-  var vertebrae = [];
+  var vertebrae = [];      // the rail's myelin segments, one per section
   var nav = document.querySelector('.nav');
   if (nav && links.length) {
     var rail = document.createElement('nav');
     rail.className = 'spine';
     rail.setAttribute('aria-hidden', 'true');
-    rail.innerHTML = '<div class="spine-fill"></div><ol>' + links.map(function (a) {
-      return '<li><a href="' + a.getAttribute('href') + '" tabindex="-1"><span>' + a.textContent + '</span></a></li>';
-    }).join('') + '</ol>';
+    var topName = (document.querySelector('.nav-name') || {}).textContent || '';
+    rail.innerHTML =
+      // soma with dendrites, tapering into the axon hillock
+      '<a class="soma" href="#top" tabindex="-1"><svg viewBox="0 0 40 40" width="40" height="40">' +
+        '<path d="M14 18 L6 10 M6 10 L2 11 M6 10 L5 5 M20 13 L19 4 M19 4 L15 1 M19 4 L23 1 M26 18 L34 9 M34 9 L38 10 M34 9 L33 4 M15 25 L5 26"/>' +
+        '<path class="body" d="M20 11 C27 11 29 18 27 24 C25.5 28 22 30 21 34 L21 40 L19 40 L19 34 C18 30 14.5 28 13 24 C11 18 13 11 20 11 Z"/>' +
+        '<circle class="nuc" cx="20" cy="20" r="2.6"/></svg><span>' + topName + '</span></a>' +
+      '<div class="axon"><div class="spine-fill"></div><ol>' + links.map(function (a) {
+        return '<li><a class="sheath" href="' + a.getAttribute('href') + '" tabindex="-1"><span>' + a.textContent + '</span></a></li>';
+      }).join('') + '</ol><i class="ap"></i></div>' +
+      // axon terminal: branches ending in boutons
+      '<svg class="term" viewBox="0 0 40 30" width="40" height="30">' +
+        '<path d="M20 0 L20 8 M20 8 L9 20 M20 8 L20 23 M20 8 L31 20"/>' +
+        '<circle cx="9" cy="22" r="3"/><circle cx="20" cy="25" r="3"/><circle cx="31" cy="22" r="3"/></svg>';
     document.body.appendChild(rail);
-    vertebrae = Array.prototype.slice.call(rail.querySelectorAll('a'));
+    vertebrae = Array.prototype.slice.call(rail.querySelectorAll('a.sheath'));
     var bar = document.createElement('div');
     bar.className = 'nav-progress';
     nav.appendChild(bar);
+    var ap = rail.querySelector('.ap'), axon = rail.querySelector('.axon');
 
+    // nodes of Ranvier: the hillock, each gap between segments, and the terminal
+    var nodes = [];
+    var measure = function () {
+      nodes = [0];
+      vertebrae.forEach(function (v, i) {
+        // 6px of axon padding above the list; 7px gaps between segments
+        var li = v.parentNode, y = 6 + li.offsetTop + li.offsetHeight + (i < vertebrae.length - 1 ? 3.5 : 6);
+        nodes.push(y);
+      });
+    };
+    var node = -1;
     var queued = false;
     var progress = function () {
       queued = false;
       var max = document.documentElement.scrollHeight - innerHeight;
       var p = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
-      rail.style.setProperty('--p', p.toFixed(4));
       bar.style.setProperty('--p', p.toFixed(4));
+      if (!nodes.length) measure();
+      var n = Math.round(p * (nodes.length - 1));
+      if (n !== node) {
+        node = n;
+        axon.style.setProperty('--ap', nodes[n] + 'px');
+        axon.style.setProperty('--fill', nodes[n] + 'px');
+        ap.classList.remove('jump'); void ap.offsetWidth; ap.classList.add('jump');
+        rail.classList.toggle('arrived', n === nodes.length - 1);
+      }
     };
     var queue = function () { if (!queued) { queued = true; requestAnimationFrame(progress); } };
     addEventListener('scroll', queue, { passive: true });
-    addEventListener('resize', queue);
+    addEventListener('resize', function () { measure(); node = -1; queue(); });
     progress();
   }
 
