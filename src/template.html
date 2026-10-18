@@ -91,6 +91,8 @@ __WEBSITE_LD__<script type="application/ld+json">
   --nav-h:      58px;
   --ease-out:   cubic-bezier(.22, .8, .26, 1);
   --measure:    40rem;
+  --page-w:     88rem;          /* the width of the whole site: text, nav and footer */
+  --gutter:     2.5rem;
   --sans: 'Avenir Next', 'Avenir', 'Mulish', -apple-system, BlinkMacSystemFont,
           'Segoe UI', system-ui, 'Helvetica Neue', Arial, sans-serif;
   color-scheme: light;
@@ -168,7 +170,7 @@ a:hover { text-decoration: underline; text-underline-offset: 2px; }
   border-bottom: 1px solid var(--rule);
 }
 .nav-in {
-  max-width: 76rem; height: 100%; margin: 0 auto; padding: 0 2.5rem;
+  max-width: var(--page-w); height: 100%; margin: 0 auto; padding: 0 var(--gutter);
   display: flex; align-items: center; gap: 1.4rem;
 }
 .nav-name {
@@ -259,7 +261,9 @@ html[data-theme="dark"] .theme-btn .i-moon { display: none; }
 /* ============================================================
    Page
    ============================================================ */
-.page { max-width: 62rem; margin: 0 auto; padding: 4.5rem 2.5rem 5rem; }
+.page { max-width: var(--page-w); margin: 0 auto; padding: 4.5rem var(--gutter) 5rem; }
+/* wide screens: more room at the sides, which is also where the section rail sits */
+@media (min-width: 1180px) { :root { --gutter: 5rem; } }
 
 /* Hidden only when script is running and motion is welcome — without JS,
    or under reduced motion, everything is simply there. */
@@ -318,6 +322,7 @@ h3 {
    Header
    ============================================================ */
 .head { display: grid; grid-template-columns: 1fr 168px; gap: 3rem; align-items: start; }
+@media (min-width: 1180px) { .head { grid-template-columns: 1fr 224px; } .head .portrait { width: 224px; height: 266px; } }
 
 .eyebrow {
   font-family: var(--sans);
@@ -326,7 +331,7 @@ h3 {
   margin-bottom: .5rem;
 }
 h1 {
-  font-size: clamp(2.4rem, 5.6vw, 3.15rem); font-weight: 500;
+  font-size: clamp(2.4rem, 5.6vw, 3.6rem); font-weight: 500;
   line-height: 1.08; letter-spacing: -.021em;
   color: var(--ink); margin: 0 0 .55rem;
 }
@@ -419,7 +424,7 @@ main > section:nth-of-type(odd) .strand { background: var(--paper); }
   text-transform: uppercase; color: var(--accent);
   display: block; margin-bottom: .3rem;
 }
-.strand p { margin: 0; font-size: 1.097rem; }
+.strand p { margin: 0; font-size: 1.097rem; max-width: 62rem; }
 
 .tags {
   display: grid; gap: .6rem;
@@ -526,7 +531,7 @@ h2 + .entries, h2 + .rows { border-top: none; }
 }
 .year-label.pending { color: var(--mark); border-bottom-color: var(--mark); }
 
-.publication-item { padding: 1rem 0; border-bottom: 1px solid var(--rule-soft); }
+.publication-item { padding: 1rem 0; border-bottom: 1px solid var(--rule-soft); max-width: 74rem; }
 .publication-item:last-child { border-bottom: none; }
 
 .pub-title { display: block; font-size: 1.123rem; line-height: 1.45; color: var(--ink);
@@ -580,7 +585,7 @@ a.pub-title .ext svg { width: 10px; height: 10px; fill: none; stroke: currentCol
   font-size: 0.812rem; font-weight: 500; letter-spacing: .045em;
   color: var(--ink-3); padding-top: .28rem;
 }
-.row .what { font-size: 1.075rem; color: var(--ink-2); }
+.row .what { font-size: 1.075rem; color: var(--ink-2); max-width: 60rem; }
 .row .what b { color: var(--ink); font-weight: 500; }
 .row .what em { font-style: italic; }
 .row .sub {
@@ -1134,7 +1139,7 @@ h1 .c { display: inline-block; }
    Built by the script, so it never exists without it. */
 .spine {
   position: fixed; z-index: 40; top: 50%; transform: translateY(-50%);
-  left: max(.5rem, calc(50vw - 31rem - 5rem));
+  left: calc(max(0px, (100vw - var(--page-w)) / 2) + 1rem);
   width: 40px; display: none;
 }
 @media (min-width: 1180px) { .spine { display: block; } }
