@@ -43,10 +43,8 @@ language on that file gives the numbers shown on the page. Both codes follow the
 sliders (the R box stops following once a student edits it; Reset brings it
 back).
 
-There are seven lessons: EMG amplitude, force steadiness, filtering,
-normalising to MVC, the HD-sEMG map (centroid and peak), motor unit firing
-(discharge rate and variability from spike times) and a two-group comparison
-(Welch t-test, effect size, confidence interval).
+There are three lessons: EMG amplitude, force steadiness and the HD-sEMG map
+(centroid and peak).
 
 To add a lesson, copy an entry in `lessons.py`: the text, the code and a `ctl`
 list that describes its sliders (a range or a checkbox each; `{name}` in the
@@ -60,8 +58,7 @@ current sliders, `draw()` the picture, and `read()`, `out()`, `vals()` and
 Every number on the page comes from the model's own maths, so check a new
 lesson the same way the existing ones were checked: download the CSV, run the R
 code on it with Rscript and compare. Set `matlab_out=False` on a lesson whose
-MATLAB output cannot be matched exactly (filtering, because MATLAB's filtfilt
-pads the ends differently). The first Run of R downloads it (about 10 MB, once);
+MATLAB output cannot be matched exactly. The first Run of R downloads it (about 10 MB, once);
 nothing else on the page depends on it.
 
 ## The weekly automatic update
