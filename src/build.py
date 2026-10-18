@@ -221,15 +221,20 @@ def render_map(lang):
 
 def render_lessons(lang):
     """The interactive lessons (src/lessons.py): notebook cells with a live model,
-    R that runs in the page, and a question. One article per lesson."""
+    MATLAB code that follows it, and a question. One article per lesson."""
     U, esc = LAB_UI[lang], html.escape
 
     def controls(kind, L):
         if kind == "emg":
-            return (f'<label class="ctl"><span>{esc(L["labels"][2])}</span>'
+            segs = "".join(
+                f'<button class="sort env-btn" type="button" data-env="{i}" aria-pressed="{"true" if i == 0 else "false"}">{esc(t)}</button>'
+                for i, t in enumerate(L["env_options"]))
+            return (f'<label class="ctl"><span>{esc(L["labels"][3])}</span>'
                     f'<input type="range" data-k="win" min="10" max="400" step="5" value="100">'
-                    f'<output data-unit="{esc(L["labels"][3])}">100 {esc(L["labels"][3])}</output></label>'
-                    f'<label class="ctl chk"><input type="checkbox" data-k="rect"><span>{esc(L["rectify"])}</span></label>')
+                    f'<output>100 {esc(L["labels"][4])}</output></label>'
+                    f'<span class="ctl"><span>{esc(L["env_label"])}</span>'
+                    f'<span class="sort-seg" role="group" aria-label="{esc(L["env_label"])}">{segs}</span></span>'
+                    f'<p class="lab-read" aria-live="off"></p>')
         return (f'<label class="ctl"><span>{esc(L["labels"][2])}</span>'
                 f'<input type="range" data-k="sd" min="0.2" max="3" step="0.1" value="1">'
                 f'<output>1.0</output></label>'
@@ -238,38 +243,61 @@ def render_lessons(lang):
                 f'<output>20 {esc(L["labels"][5])}</output></label>'
                 f'<p class="lab-read" aria-live="off"></p>')
 
+    def code_text(L, kind, key, envkey):
+        txt = "\n".join(L[key])
+        if kind == "emg":
+            txt = txt.replace("{win}", "100").replace("{env}", L[envkey][0])
+        return txt
+
+    def tpl_attrs(L, kind, key, envkey):
+        if kind != "emg":
+            return ""
+        return (f' data-tpl="{esc(chr(10).join(L[key]), quote=True)}"'
+                f' data-env-rms="{esc(L[envkey][0], quote=True)}" data-env-arv="{esc(L[envkey][1], quote=True)}"')
+
     tabs, arts = [], []
     for n, les in enumerate(LESSONS, 1):
-        L = les[lang]
+        L, kind = les[lang], les["kind"]
         tabs.append(f'<button class="sort lab-tab" type="button" data-lesson="{les["id"]}" '
                     f'aria-pressed="{"true" if n == 1 else "false"}">{n} · {esc(L["title"])}</button>')
-        code = "\n".join(L["code"])
         opts = "".join(
             f'<button class="opt" type="button" data-ok="{1 if ok else 0}" data-fb="{esc(fb, quote=True)}">{esc(t)}</button>'
             for t, ok, fb in L["options"])
-        arts.append(f"""      <article class="lesson" id="lesson-{les['id']}" data-kind="{les['kind']}">
+        rrows = len(code_text(L, kind, "rcode", "renv_code").split("\n")) + 1
+        arts.append(f"""      <article class="lesson" id="lesson-{les['id']}" data-kind="{kind}" data-file="{les['file']}">
         <h4>{esc(L['title'])}</h4>
         <div class="cell"><span class="cell-k">{esc(U['read'])}</span>
           <div class="cell-b">{''.join(f'<p>{p}</p>' for p in L['read'])}</div></div>
         <div class="cell viz"><span class="cell-k">{esc(U['explore'])}</span>
           <div class="cell-b"><p class="lab-note">{esc(L['explore'])}</p>
             <canvas class="lab-canvas" aria-hidden="true" data-labels="{esc('|'.join(L['labels']), quote=True)}"></canvas>
-            <div class="lab-ctl">{controls(les['kind'], L)}</div></div></div>
+            <div class="lab-ctl">{controls(kind, L)}</div></div></div>
         <div class="cell"><span class="cell-k">{esc(U['code'])}</span>
           <div class="cell-b"><p class="lab-note">{esc(L['code_note'])}</p>
-            <textarea class="code" rows="{len(L['code']) + 1}" spellcheck="false" autocapitalize="off" autocorrect="off"
-              aria-label="{esc(U['code'])}" data-out="{esc(L['out'], quote=True)}">{esc(code)}</textarea>
-            <div class="lab-run"><button class="run" type="button">{esc(U['run'])}</button>
-              <button class="reset" type="button">{esc(U['reset'])}</button>
-              <span class="lab-status">{esc(U['edit'])}</span></div>
-            <pre class="out" aria-live="polite" aria-label="{esc(U['out'])}"></pre>
+            <span class="sort-seg lang-seg" role="group" aria-label="{esc(U['code'])}">
+              <button class="sort lang-btn" type="button" data-lang="r" aria-pressed="true">R</button>
+              <button class="sort lang-btn" type="button" data-lang="m" aria-pressed="false">MATLAB</button></span>
+            <div class="pane on" data-lang="r">
+              <textarea class="code" rows="{rrows}" spellcheck="false" autocapitalize="off" autocorrect="off"
+                aria-label="R"{tpl_attrs(L, kind, "rcode", "renv_code")}>{esc(code_text(L, kind, "rcode", "renv_code"))}</textarea>
+              <div class="lab-run"><button class="run go" type="button">{esc(U['run'])}</button>
+                <button class="reset rs" type="button">{esc(U['reset'])}</button>
+                <button class="reset dl" type="button">{esc(U['download'])}</button>
+                <span class="lab-status">{esc(U['edit'])}</span></div>
+              <p class="lab-note outl">{esc(U['rout'])}</p>
+              <pre class="out rout" aria-live="polite"></pre></div>
+            <div class="pane" data-lang="m">
+              <pre class="code" tabindex="0"{tpl_attrs(L, kind, "code", "env_code")}>{esc(code_text(L, kind, "code", "env_code"))}</pre>
+              <div class="lab-run"><button class="run cp" type="button">{esc(U['copy'])}</button>
+                <button class="reset dl" type="button">{esc(U['download'])}</button></div>
+              <p class="lab-note outl">{esc(U['out'])}</p>
+              <pre class="out mout" aria-live="polite"></pre></div>
             <p class="lab-note tip">{L['tip']}</p></div></div>
         <div class="cell quiz"><span class="cell-k">{esc(U['quiz'])}</span>
           <div class="cell-b"><p><b>{esc(L['question'])}</b></p>
             <div class="opts">{opts}</div><p class="fb" role="status"></p></div></div>
       </article>""")
-    data = " ".join(f'data-{k}="{esc(U[k], quote=True)}"' for k in
-                    ("loading", "running", "offline", "error", "correct", "wrong", "run", "edit"))
+    data = " ".join(f'data-{k}="{esc(U[k], quote=True)}"' for k in ("correct", "wrong", "copied", "loading", "running", "edit", "offline", "error"))
     return f"""    <h3>{esc(U['heading'])}</h3>
     <p class="lab-intro">{esc(U['intro'])}</p>
     <div class="lab rise" {data}>

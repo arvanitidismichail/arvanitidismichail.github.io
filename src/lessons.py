@@ -1,39 +1,50 @@
 # Interactive lessons for the Teaching section, rendered by build.py (render_lessons).
 #
 # Each lesson is a small notebook: read, explore (a live model with sliders),
-# run R in the page, answer a question. To add a lesson, copy one entry and
-# change it; "kind" picks the live model (see the .lab script in template.html).
+# code, and a one-question check. The code comes in two languages. R runs in the
+# page (webR) on the signal being shown. MATLAB cannot run in a web page, so the
+# page does the next best thing: the code follows the sliders, an "Output in
+# MATLAB" block shows the numbers it gives, and "Download the data" saves the
+# very signal on screen as a CSV. Run on that file, either language gives the
+# numbers on the page.
 #
-# Prose may contain simple HTML (<b>, <i>, <code>). The R code is shared by both
-# languages; only its comments differ. "out" is what R prints, shown if R cannot
-# be loaded in the visitor's browser: regenerate it with Rscript when you edit a chunk.
+# To add a lesson, copy an entry and change it; "kind" picks the live model (see
+# the "Interactive lessons" block in template.html). Prose may contain simple
+# HTML (<b>, <i>, <code>). Lines of code are shared by both languages except for
+# their % comments. {win} and {env} are filled in by the page.
 
 UI = {
     "en": dict(
         heading="Interactive lessons",
-        intro="Short notebooks for my students: read, play with the model, then run the R yourself. "
-              "They run entirely in your browser; nothing is installed or sent anywhere.",
-        lesson="Lesson", read="Read", explore="Explore", code="R code", quiz="Check",
+        intro="Short notebooks for my students: read, play with the model, then run the code on the data you have "
+              "just seen: R right here, or MATLAB on your own computer. The model runs in your browser; nothing is "
+              "sent anywhere.",
+        lesson="Lesson", read="Read", explore="Explore", code="Code", quiz="Check",
+        copy="Copy code", copied="Copied", download="Download the data (CSV)",
+        out="Output in MATLAB", correct="Correct.", wrong="Not quite.",
         run="Run", reset="Reset", loading="Loading R in your browser (first run only, a few seconds)…",
-        running="Running…", out="Output", offline="R could not be loaded in this browser. Expected output:",
-        error="R reported an error:", edit="Edit the code, then press Run.",
-        correct="Correct.", wrong="Not quite.", webr="R runs in your browser with {link}",
+        running="Running…", edit="Edit the code, then press Run.", rout="Output in R",
+        offline="R could not be loaded in this browser. It would give:", error="R reported an error:",
+        webr="R runs in your browser with {link}",
     ),
     "el": dict(
         heading="Διαδραστικά μαθήματα",
-        intro="Σύντομα notebooks για τους φοιτητές μου: διαβάστε, παίξτε με το μοντέλο και μετά τρέξτε μόνοι σας "
-              "τον κώδικα R. Τρέχουν εξ ολοκλήρου στον browser σας· τίποτα δεν εγκαθίσταται και τίποτα δεν στέλνεται.",
-        lesson="Μάθημα", read="Διαβάστε", explore="Δοκιμάστε", code="Κώδικας R", quiz="Έλεγχος",
+        intro="Σύντομα notebooks για τους φοιτητές μου: διαβάστε, παίξτε με το μοντέλο και μετά τρέξτε τον κώδικα "
+              "πάνω στα δεδομένα που μόλις είδατε: την R εδώ, ή το MATLAB στον δικό σας υπολογιστή. Το μοντέλο τρέχει "
+              "στον browser σας· τίποτα δεν στέλνεται πουθενά.",
+        lesson="Μάθημα", read="Διαβάστε", explore="Δοκιμάστε", code="Κώδικας", quiz="Έλεγχος",
+        copy="Αντιγραφή κώδικα", copied="Αντιγράφηκε", download="Λήψη δεδομένων (CSV)",
+        out="Αποτέλεσμα στο MATLAB", correct="Σωστά.", wrong="Όχι ακριβώς.",
         run="Εκτέλεση", reset="Επαναφορά", loading="Φόρτωση της R στον browser σας (μόνο την πρώτη φορά, λίγα δευτερόλεπτα)…",
-        running="Εκτέλεση…", out="Αποτέλεσμα", offline="Η R δεν φόρτωσε σε αυτόν τον browser. Αναμενόμενο αποτέλεσμα:",
-        error="Η R επέστρεψε σφάλμα:", edit="Αλλάξτε τον κώδικα και πατήστε Εκτέλεση.",
-        correct="Σωστά.", wrong="Όχι ακριβώς.", webr="Η R τρέχει στον browser σας με το {link}",
+        running="Εκτέλεση…", edit="Αλλάξτε τον κώδικα και πατήστε Εκτέλεση.", rout="Αποτέλεσμα στην R",
+        offline="Η R δεν φόρτωσε σε αυτόν τον browser. Θα έδινε:", error="Η R επέστρεψε σφάλμα:",
+        webr="Η R τρέχει στον browser σας με το {link}",
     ),
 }
 
 LESSONS = [
     dict(
-        id="emg", kind="emg",
+        id="emg", kind="emg", file="emg_demo.csv",
         en=dict(
             title="From raw EMG to an amplitude",
             read=["Surface EMG swings above and below zero, because the electrode sees the electrical activity of "
@@ -42,24 +53,52 @@ LESSONS = [
                   "Two standard fixes: <b>rectify</b> the signal (take absolute values) and average it, or take "
                   "the <b>RMS</b> (root mean square). Computed over a short sliding window, either gives an "
                   "<b>envelope</b> that follows how much the muscle is working."],
-            explore="Drag the window: a short one follows every detail, a long one is smooth but slow. "
-                    "Switch rectification on to see the negative half folded up.",
-            labels=["Raw EMG", "Envelope (RMS)", "Window", "ms"], rectify="Rectify",
-            code_note="Ten samples of a raw signal (µV). Compare the three ways of averaging them:",
-            code=["# Ten samples of raw EMG (microvolts)",
-                  "emg <- c(-42, 65, -18, 90, -75, 31, -58, 77, -26, 48)",
+            explore="Raw EMG on top; below it the rectified signal and its envelope. Drag the window: a short one "
+                    "follows every detail, a long one is smooth but slow, and the peak it reports gets lower.",
+            # canvas: raw, rectified, envelope, window, ms, µV ; readout: mean raw, mean rectified, envelope peak
+            labels=["Raw EMG", "Rectified EMG", "Envelope", "Window", "ms", "µV",
+                    "Mean of raw", "Mean of rectified", "Peak of envelope"],
+            env_label="Envelope", env_options=["RMS", "Mean rectified"],
+            rcode=["# Demo recording: 5 s of surface EMG at 1000 Hz (µV): the signal shown above",
+                   "emg <- scan(\"emg_demo.csv\", quiet = TRUE)",
+                   "",
+                   "# centred moving average, like MATLAB's movmean (cumulative-sum trick)",
+                   "movmean <- function(x, k) {",
+                   "  n <- length(x); cs <- c(0, cumsum(x)); i <- 1:n",
+                   "  lo <- pmax(1, i - k %/% 2); hi <- pmin(n, i + k - 1 - k %/% 2)",
+                   "  (cs[hi + 1] - cs[lo]) / (hi - lo + 1)",
+                   "}",
+                   "",
+                   "win <- {win}                   # window length (ms = samples at 1000 Hz)",
+                   "",
+                   "rect <- abs(emg)               # 1) full-wave rectification",
+                   "{env}",
+                   "",
+                   "round(c(m_raw = mean(emg), m_rect = mean(rect), peak = max(env)), 4)"],
+            renv_code=["env  <- sqrt(movmean(rect^2, win))   # 2) moving RMS",
+                       "env  <- movmean(rect, win)            # 2) moving mean of the rectified signal"],
+            code_note="The same steps in R (it runs right here, on the signal above) and in MATLAB (copy it, and download "
+                      "the 5 s recording to run it yourself). The three values match the ones on this page.",
+            code=["% Demo recording: 5 s of surface EMG at 1000 Hz (µV), downloaded from this page",
+                  "emg = readmatrix('emg_demo.csv');",
                   "",
-                  "mean(emg)               # raw: positive and negative cancel",
-                  "rectified <- abs(emg)   # full-wave rectification",
-                  "mean(rectified)         # mean rectified value",
-                  "sqrt(mean(emg^2))       # RMS"],
-            out="[1] 9.2\n[1] 53\n[1] 57.68189",
-            tip="Try changing a number, or add <code>max(rectified)</code> on a new line.",
+                  "win = {win};                    % window length (ms = samples at 1000 Hz)",
+                  "",
+                  "rect = abs(emg);                % 1) full-wave rectification",
+                  "{env}",
+                  "",
+                  "m_raw  = mean(emg)              % positive and negative phases cancel",
+                  "m_rect = mean(rect)             % mean rectified value",
+                  "peak   = max(env)               % peak of the envelope"],
+            env_code=["env  = sqrt(movmean(rect.^2, win));   % 2) moving RMS",
+                      "env  = movmean(rect, win);             % 2) moving mean of the rectified signal"],
+            tip="Change <code>win</code> to 20 or 300 and compare <code>peak</code>: it changes with the window "
+                "here too.",
             question="Why is the EMG rectified before it is averaged?",
             options=[("To remove noise from the recording.", False,
-                      "Rectifying does not remove noise; filtering does. Look at the first result: the raw mean is nearly 0."),
+                      "Rectifying does not remove noise; filtering does. Look at m_raw: the raw mean is nearly 0."),
                      ("Positive and negative phases cancel, so the raw mean is close to zero whatever the effort.", True,
-                      "The raw mean above is 9.2 µV, while the rectified mean is 53 µV."),
+                      "That is why m_raw is almost 0 while m_rect is not."),
                      ("To make the signal larger.", False,
                       "Amplitude is not the point: without rectifying the average would be meaningless, not small.")],
         ),
@@ -71,30 +110,58 @@ LESSONS = [
                   "Δύο βασικές λύσεις: <b>ανόρθωση</b> του σήματος (απόλυτες τιμές) και μέσος όρος, ή το "
                   "<b>RMS</b> (τετραγωνική ρίζα του μέσου τετραγώνου). Υπολογισμένα σε ένα κινούμενο παράθυρο, "
                   "δίνουν ένα <b>περίβλημα (envelope)</b> που ακολουθεί πόσο εργάζεται ο μυς."],
-            explore="Σύρετε το παράθυρο: ένα μικρό ακολουθεί κάθε λεπτομέρεια, ένα μεγάλο είναι ομαλό αλλά αργό. "
-                    "Ενεργοποιήστε την ανόρθωση για να δείτε το αρνητικό μισό να διπλώνει προς τα πάνω.",
-            labels=["Ακατέργαστο EMG", "Περίβλημα (RMS)", "Παράθυρο", "ms"], rectify="Ανόρθωση",
-            code_note="Δέκα δείγματα ενός ακατέργαστου σήματος (µV). Συγκρίνετε τους τρεις τρόπους μέσου όρου:",
-            code=["# Δέκα δείγματα ακατέργαστου EMG (μV)",
-                  "emg <- c(-42, 65, -18, 90, -75, 31, -58, 77, -26, 48)",
+            explore="Πάνω το ακατέργαστο EMG· από κάτω το ανορθωμένο σήμα και το περίβλημά του. Σύρετε το παράθυρο: "
+                    "ένα μικρό ακολουθεί κάθε λεπτομέρεια, ένα μεγάλο είναι ομαλό αλλά αργό, και η κορυφή που "
+                    "αναφέρει μικραίνει.",
+            labels=["Ακατέργαστο EMG", "Ανορθωμένο EMG", "Περίβλημα", "Παράθυρο", "ms", "µV",
+                    "Μέσος ακατέργαστου", "Μέσος ανορθωμένου", "Κορυφή περιβλήματος"],
+            env_label="Περίβλημα", env_options=["RMS", "Μέση ανορθωμένη"],
+            rcode=["# Καταγραφή: 5 s επιφανειακού EMG στα 1000 Hz (µV): το σήμα που φαίνεται παραπάνω",
+                   "emg <- scan(\"emg_demo.csv\", quiet = TRUE)",
+                   "",
+                   "# κεντραρισμένος κινούμενος μέσος, όπως το movmean του MATLAB (κόλπο αθροιστικού αθροίσματος)",
+                   "movmean <- function(x, k) {",
+                   "  n <- length(x); cs <- c(0, cumsum(x)); i <- 1:n",
+                   "  lo <- pmax(1, i - k %/% 2); hi <- pmin(n, i + k - 1 - k %/% 2)",
+                   "  (cs[hi + 1] - cs[lo]) / (hi - lo + 1)",
+                   "}",
+                   "",
+                   "win <- {win}                   # μήκος παραθύρου (ms = δείγματα στα 1000 Hz)",
+                   "",
+                   "rect <- abs(emg)               # 1) ανόρθωση πλήρους κύματος",
+                   "{env}",
+                   "",
+                   "round(c(m_raw = mean(emg), m_rect = mean(rect), peak = max(env)), 4)"],
+            renv_code=["env  <- sqrt(movmean(rect^2, win))   # 2) κινούμενο RMS",
+                       "env  <- movmean(rect, win)            # 2) κινούμενος μέσος του ανορθωμένου"],
+            code_note="Τα ίδια βήματα στην R (τρέχει εδώ, πάνω στο σήμα από πάνω) και στο MATLAB (αντιγράψτε το και "
+                      "κατεβάστε την καταγραφή των 5 s για να το τρέξετε μόνοι σας). Οι τρεις τιμές ταιριάζουν με της σελίδας.",
+            code=["% Καταγραφή: 5 s επιφανειακού EMG στα 1000 Hz (µV), από αυτή τη σελίδα",
+                  "emg = readmatrix('emg_demo.csv');",
                   "",
-                  "mean(emg)               # ακατέργαστο: θετικά και αρνητικά αλληλοαναιρούνται",
-                  "rectified <- abs(emg)   # ανόρθωση πλήρους κύματος",
-                  "mean(rectified)         # μέση ανορθωμένη τιμή",
-                  "sqrt(mean(emg^2))       # RMS"],
-            out="[1] 9.2\n[1] 53\n[1] 57.68189",
-            tip="Δοκιμάστε να αλλάξετε έναν αριθμό ή προσθέστε <code>max(rectified)</code> σε νέα γραμμή.",
+                  "win = {win};                    % μήκος παραθύρου (ms = δείγματα στα 1000 Hz)",
+                  "",
+                  "rect = abs(emg);                % 1) ανόρθωση πλήρους κύματος",
+                  "{env}",
+                  "",
+                  "m_raw  = mean(emg)              % θετικές και αρνητικές φάσεις αλληλοαναιρούνται",
+                  "m_rect = mean(rect)             % μέση ανορθωμένη τιμή",
+                  "peak   = max(env)               % κορυφή του περιβλήματος"],
+            env_code=["env  = sqrt(movmean(rect.^2, win));   % 2) κινούμενο RMS",
+                      "env  = movmean(rect, win);             % 2) κινούμενος μέσος του ανορθωμένου"],
+            tip="Αλλάξτε το <code>win</code> σε 20 ή 300 και συγκρίνετε το <code>peak</code>: αλλάζει με το "
+                "παράθυρο και εδώ.",
             question="Γιατί ανορθώνουμε το EMG πριν υπολογίσουμε τον μέσο όρο;",
             options=[("Για να αφαιρέσουμε θόρυβο από την καταγραφή.", False,
-                      "Η ανόρθωση δεν αφαιρεί θόρυβο· αυτό το κάνει το φιλτράρισμα. Δείτε το πρώτο αποτέλεσμα: ο ακατέργαστος μέσος είναι σχεδόν 0."),
+                      "Η ανόρθωση δεν αφαιρεί θόρυβο· αυτό το κάνει το φιλτράρισμα. Δείτε το m_raw: ο ακατέργαστος μέσος είναι σχεδόν 0."),
                      ("Οι θετικές και οι αρνητικές φάσεις αλληλοαναιρούνται, οπότε ο ακατέργαστος μέσος είναι κοντά στο μηδέν ανεξάρτητα από την προσπάθεια.", True,
-                      "Ο ακατέργαστος μέσος παραπάνω είναι 9,2 μV, ενώ ο ανορθωμένος 53 μV."),
+                      "Γι' αυτό το m_raw είναι σχεδόν 0 ενώ το m_rect όχι."),
                      ("Για να μεγαλώσει το σήμα.", False,
                       "Το πλάτος δεν είναι το ζητούμενο: χωρίς ανόρθωση ο μέσος όρος θα ήταν άνευ νοήματος, όχι μικρός.")],
         ),
     ),
     dict(
-        id="steadiness", kind="force",
+        id="steadiness", kind="force", file="force_demo.csv",
         en=dict(
             title="Force steadiness and the coefficient of variation",
             read=["Hold a muscle at a fixed force and the force still wobbles. How much it wobbles is the "
@@ -106,16 +173,23 @@ LESSONS = [
             explore="Raise the variability and the trace wobbles more. Then move the target level and watch what "
                     "happens to the CoV when the SD stays the same.",
             labels=["Force", "Target", "Variability (SD)", "Target level", "CoV", "% MVC", "SD", "Mean"],
-            code_note="Force (% of maximum) sampled during a hold at a target of 20 %:",
-            code=["# Force (% of maximum) while holding a target of 20 %",
-                  "force <- c(19.2, 20.5, 21.1, 18.8, 20.3, 19.6, 21.4, 18.5, 20.9, 19.7)",
+            rcode=["# Force (% of maximum), 6 s at 50 Hz: the trace shown above",
+                   "force <- scan(\"force_demo.csv\", quiet = TRUE)",
+                   "",
+                   "m  <- mean(force)              # mean force",
+                   "s  <- sd(force)                # standard deviation",
+                   "cv <- s / m * 100              # coefficient of variation (%)",
+                   "",
+                   "round(c(mean = m, sd = s, cv = cv), 2)"],
+            code_note="Run it in R right here, or copy the MATLAB and download the force trace on the screen "
+                      "(6 s at 50 Hz): the values match the ones on this page.",
+            code=["% Force (% of maximum), 6 s at 50 Hz, downloaded from this page",
+                  "force = readmatrix('force_demo.csv');",
                   "",
-                  "m  <- mean(force)",
-                  "s  <- sd(force)",
-                  "cv <- s / m * 100        # coefficient of variation (%)",
-                  "round(c(mean = m, sd = s, cv = cv), 2)"],
-            out=" mean    sd    cv \n20.00  0.99  4.97 ",
-            tip="Change the target to 40 (and the numbers with it) and run again.",
+                  "m  = mean(force)                % mean force",
+                  "s  = std(force)                 % standard deviation",
+                  "cv = s / m * 100                % coefficient of variation (%)"],
+            tip="Move the sliders, download again and see how the three values change.",
             question="The SD of the force stays the same but the target level doubles. What happens to the CoV?",
             options=[("It doubles.", False, "Doubling the mean in the denominator does the opposite."),
                      ("It halves.", True, "CoV = SD / mean × 100: the same SD over twice the mean is half the CoV."),
@@ -132,16 +206,23 @@ LESSONS = [
             explore="Αυξήστε τη μεταβλητότητα και η καμπύλη ταλαντώνεται περισσότερο. Μετά αλλάξτε το επίπεδο "
                     "στόχου και δείτε τι γίνεται με τον CoV όταν η SD μένει ίδια.",
             labels=["Δύναμη", "Στόχος", "Μεταβλητότητα (SD)", "Επίπεδο στόχου", "CoV", "% MVC", "SD", "Μέσος"],
-            code_note="Δύναμη (% του μέγιστου) που καταγράφηκε κατά τη διατήρηση στόχου 20 %:",
-            code=["# Δύναμη (% του μέγιστου) κατά τη διατήρηση στόχου 20 %",
-                  "force <- c(19.2, 20.5, 21.1, 18.8, 20.3, 19.6, 21.4, 18.5, 20.9, 19.7)",
+            rcode=["# Δύναμη (% του μέγιστου), 6 s στα 50 Hz: η καμπύλη που φαίνεται παραπάνω",
+                   "force <- scan(\"force_demo.csv\", quiet = TRUE)",
+                   "",
+                   "m  <- mean(force)              # μέση δύναμη",
+                   "s  <- sd(force)                # τυπική απόκλιση",
+                   "cv <- s / m * 100              # συντελεστής μεταβλητότητας (%)",
+                   "",
+                   "round(c(mean = m, sd = s, cv = cv), 2)"],
+            code_note="Τρέξτε το στην R εδώ, ή αντιγράψτε το MATLAB και κατεβάστε την καμπύλη δύναμης που φαίνεται "
+                      "(6 s στα 50 Hz): οι τιμές ταιριάζουν με της σελίδας.",
+            code=["% Δύναμη (% του μέγιστου), 6 s στα 50 Hz, από αυτή τη σελίδα",
+                  "force = readmatrix('force_demo.csv');",
                   "",
-                  "m  <- mean(force)",
-                  "s  <- sd(force)",
-                  "cv <- s / m * 100        # συντελεστής μεταβλητότητας (%)",
-                  "round(c(mean = m, sd = s, cv = cv), 2)"],
-            out=" mean    sd    cv \n20.00  0.99  4.97 ",
-            tip="Αλλάξτε τον στόχο σε 40 (και τους αριθμούς μαζί του) και τρέξτε ξανά.",
+                  "m  = mean(force)                % μέση δύναμη",
+                  "s  = std(force)                 % τυπική απόκλιση",
+                  "cv = s / m * 100                % συντελεστής μεταβλητότητας (%)"],
+            tip="Μετακινήστε τα sliders, κατεβάστε ξανά και δείτε πώς αλλάζουν οι τρεις τιμές.",
             question="Η SD της δύναμης μένει ίδια, αλλά το επίπεδο στόχου διπλασιάζεται. Τι γίνεται με τον CoV;",
             options=[("Διπλασιάζεται.", False, "Ο διπλασιασμός του μέσου στον παρονομαστή κάνει το αντίθετο."),
                      ("Υποδιπλασιάζεται.", True, "CoV = SD / μέσος × 100: η ίδια SD πάνω από διπλάσιο μέσο δίνει μισό CoV."),

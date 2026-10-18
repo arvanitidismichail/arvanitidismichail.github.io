@@ -31,17 +31,24 @@ update themselves — they are computed, not typed.
 ## Adding an interactive lesson
 
 The lessons under Teaching are written in `src/lessons.py`: one entry per
-lesson, with the English text, the Greek text and the R code together. Each
-is a small notebook: **read**, **explore** (a live model with sliders),
-**R code** (runs in the visitor's browser with webR, nothing to install) and a
-one-question **check**. To add one, copy an entry, change the text and the
-code, set `kind` to one of the live models (`emg` or `force`; new models are
-added in the "Interactive lessons" block of `template.html`), then run
-`python3 build.py`.
+lesson, with the English text, the Greek text and the code in both languages
+together. Each is a small notebook: **read**, **explore** (a live model with
+sliders), **code** and a one-question **check**.
 
-`out` is what R prints, shown only if R cannot load in the visitor's browser.
-Regenerate it with `Rscript` whenever you change a chunk. The first Run
-downloads R (about 10 MB, once); nothing else on the page depends on it.
+The code comes in two languages. **R** runs in the visitor's browser (webR,
+nothing to install) on the very signal being shown. **MATLAB** cannot run in a
+web page, so its tab shows the code, a Copy button and the output it gives;
+"Download the data (CSV)" saves the signal on screen, and running either
+language on that file gives the numbers shown on the page. Both codes follow the
+sliders (the R box stops following once a student edits it; Reset brings it
+back).
+
+To add a lesson, copy an entry, change the text and the code, set `kind` to one
+of the live models (`emg` or `force`; new models are added in the "Interactive
+lessons" block of `template.html`), then run `python3 build.py`. If you change a
+chunk, check its numbers against Rscript / MATLAB: the page's own values come
+from the same maths in the model. The first Run downloads R (about 10 MB, once);
+nothing else on the page depends on it.
 
 ## The weekly automatic update
 

@@ -1257,17 +1257,30 @@ html.js .lesson:not(.on) { display: none; }
 .ctl output { min-width: 3.4rem; text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); }
 .ctl.chk { flex: 0 0 auto; gap: .5rem; cursor: pointer; }
 .ctl.chk input { width: 18px; height: 18px; accent-color: var(--mark); }
-.lab-read { flex-basis: 100%; margin: .2rem 0 0 !important; font-size: 1rem !important; color: var(--ink-2);
-  font-variant-numeric: tabular-nums; }
-.lab-read b { font-size: 1.5rem; font-weight: 500; color: var(--ink); letter-spacing: -.02em; }
+.lab-read { flex-basis: 100%; margin: .2rem 0 0 !important; font-size: .95rem !important; color: var(--ink-2);
+  font-variant-numeric: tabular-nums; display: flex; flex-wrap: wrap; gap: .2rem 1.6rem; }
+.lab-read b { font-size: 1.3rem; font-weight: 500; color: var(--ink); letter-spacing: -.02em; }
 .code {
-  display: block; width: 100%; resize: vertical; box-sizing: border-box;
+  display: block; width: 100%; margin: 0; box-sizing: border-box;
   font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: .86rem; line-height: 1.55;
   color: var(--ink); background: var(--rule-soft); border: 1px solid var(--rule); border-radius: 10px;
   padding: .8rem 1rem; tab-size: 2; white-space: pre; overflow-x: auto;
 }
 .code:focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; }
+.cmt { color: var(--ink-3); }
+textarea.code { resize: vertical; }
+.lang-seg { margin: .1rem 0 .8rem; }
+.lang-btn { min-width: 4.6rem; text-align: center; }
+html.js .pane:not(.on) { display: none; }
+.lab-status { font-size: .8rem; color: var(--ink-3); }
+.lab-foot { margin: .9rem 0 0; font-size: .76rem; color: var(--ink-3); }
+.lab-foot a { color: var(--ink-3); text-decoration: underline; }
+.out.err { border-left-color: #d9534f; }
+.run[disabled] { opacity: .6; cursor: progress; }
+.outl { margin: .9rem 0 0 !important; font-size: .66rem !important; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
 .lab-run { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin-top: .6rem; }
+.lab-run .lab-status { flex-basis: 100%; }
+@media (min-width: 760px) { .lab-run .lab-status { flex-basis: auto; } }
 .run, .reset {
   font: inherit; font-size: .85rem; font-weight: 600; border-radius: 999px; padding: .4rem 1.1rem;
   cursor: pointer; min-height: 34px; border: 1px solid var(--accent);
@@ -1278,7 +1291,6 @@ html.js .lesson:not(.on) { display: none; }
 .reset { background: none; color: var(--accent); }
 .reset:hover { background: var(--accent-soft); }
 .run:focus-visible, .reset:focus-visible, .opt:focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; }
-.lab-status { font-size: .8rem; color: var(--ink-3); }
 .out {
   margin: .7rem 0 0; padding: .7rem 1rem; min-height: 0; white-space: pre-wrap;
   font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: .86rem; line-height: 1.5;
@@ -1299,7 +1311,7 @@ main > section:nth-of-type(odd) .out { background: var(--surface); }
 .fb { margin: .7rem 0 0 !important; font-size: .95rem !important; min-height: 1.4em; }
 .lab-foot { margin: .9rem 0 0; font-size: .76rem; color: var(--ink-3); }
 .lab-foot a { color: var(--ink-3); text-decoration: underline; }
-html:not(.js) .lab-tabs, html:not(.js) .viz, html:not(.js) .lab-run, html:not(.js) .quiz { display: none; }
+html:not(.js) .lab-tabs, html:not(.js) .viz, html:not(.js) .lab-run, html:not(.js) .quiz, html:not(.js) .outl { display: none; }
 @media (max-width: 760px) {
   .lab { padding: 1rem 1rem 1.3rem; }
   .cell { grid-template-columns: minmax(0, 1fr); gap: .2rem; }
@@ -2370,39 +2382,93 @@ html:not(.js) .lab-tabs, html:not(.js) .viz, html:not(.js) .lab-run, html:not(.j
     </div>
 
     <h3>Διαδραστικά μαθήματα</h3>
-    <p class="lab-intro">Σύντομα notebooks για τους φοιτητές μου: διαβάστε, παίξτε με το μοντέλο και μετά τρέξτε μόνοι σας τον κώδικα R. Τρέχουν εξ ολοκλήρου στον browser σας· τίποτα δεν εγκαθίσταται και τίποτα δεν στέλνεται.</p>
-    <div class="lab rise" data-loading="Φόρτωση της R στον browser σας (μόνο την πρώτη φορά, λίγα δευτερόλεπτα)…" data-running="Εκτέλεση…" data-offline="Η R δεν φόρτωσε σε αυτόν τον browser. Αναμενόμενο αποτέλεσμα:" data-error="Η R επέστρεψε σφάλμα:" data-correct="Σωστά." data-wrong="Όχι ακριβώς." data-run="Εκτέλεση" data-edit="Αλλάξτε τον κώδικα και πατήστε Εκτέλεση.">
+    <p class="lab-intro">Σύντομα notebooks για τους φοιτητές μου: διαβάστε, παίξτε με το μοντέλο και μετά τρέξτε τον κώδικα πάνω στα δεδομένα που μόλις είδατε: την R εδώ, ή το MATLAB στον δικό σας υπολογιστή. Το μοντέλο τρέχει στον browser σας· τίποτα δεν στέλνεται πουθενά.</p>
+    <div class="lab rise" data-correct="Σωστά." data-wrong="Όχι ακριβώς." data-copied="Αντιγράφηκε" data-loading="Φόρτωση της R στον browser σας (μόνο την πρώτη φορά, λίγα δευτερόλεπτα)…" data-running="Εκτέλεση…" data-edit="Αλλάξτε τον κώδικα και πατήστε Εκτέλεση." data-offline="Η R δεν φόρτωσε σε αυτόν τον browser. Θα έδινε:" data-error="Η R επέστρεψε σφάλμα:">
       <div class="lab-tabs"><span class="sort-seg" role="group" aria-label="Μάθημα"><button class="sort lab-tab" type="button" data-lesson="emg" aria-pressed="true">1 · Από το ακατέργαστο EMG σε ένα μέτρο πλάτους</button><button class="sort lab-tab" type="button" data-lesson="steadiness" aria-pressed="false">2 · Σταθερότητα δύναμης και συντελεστής μεταβλητότητας</button></span></div>
-      <article class="lesson" id="lesson-emg" data-kind="emg">
+      <article class="lesson" id="lesson-emg" data-kind="emg" data-file="emg_demo.csv">
         <h4>Από το ακατέργαστο EMG σε ένα μέτρο πλάτους</h4>
         <div class="cell"><span class="cell-k">Διαβάστε</span>
           <div class="cell-b"><p>Το επιφανειακό EMG κυμαίνεται πάνω και κάτω από το μηδέν, επειδή το ηλεκτρόδιο «βλέπει» την ηλεκτρική δραστηριότητα πολλών μυϊκών ινών ως θετικές και αρνητικές φάσεις. Έτσι ο <b>μέσος όρος του ακατέργαστου σήματος είναι κοντά στο μηδέν</b>, όσο έντονα κι αν εργάζεται ο μυς.</p><p>Δύο βασικές λύσεις: <b>ανόρθωση</b> του σήματος (απόλυτες τιμές) και μέσος όρος, ή το <b>RMS</b> (τετραγωνική ρίζα του μέσου τετραγώνου). Υπολογισμένα σε ένα κινούμενο παράθυρο, δίνουν ένα <b>περίβλημα (envelope)</b> που ακολουθεί πόσο εργάζεται ο μυς.</p></div></div>
         <div class="cell viz"><span class="cell-k">Δοκιμάστε</span>
-          <div class="cell-b"><p class="lab-note">Σύρετε το παράθυρο: ένα μικρό ακολουθεί κάθε λεπτομέρεια, ένα μεγάλο είναι ομαλό αλλά αργό. Ενεργοποιήστε την ανόρθωση για να δείτε το αρνητικό μισό να διπλώνει προς τα πάνω.</p>
-            <canvas class="lab-canvas" aria-hidden="true" data-labels="Ακατέργαστο EMG|Περίβλημα (RMS)|Παράθυρο|ms"></canvas>
-            <div class="lab-ctl"><label class="ctl"><span>Παράθυρο</span><input type="range" data-k="win" min="10" max="400" step="5" value="100"><output data-unit="ms">100 ms</output></label><label class="ctl chk"><input type="checkbox" data-k="rect"><span>Ανόρθωση</span></label></div></div></div>
-        <div class="cell"><span class="cell-k">Κώδικας R</span>
-          <div class="cell-b"><p class="lab-note">Δέκα δείγματα ενός ακατέργαστου σήματος (µV). Συγκρίνετε τους τρεις τρόπους μέσου όρου:</p>
-            <textarea class="code" rows="8" spellcheck="false" autocapitalize="off" autocorrect="off"
-              aria-label="Κώδικας R" data-out="[1] 9.2
-[1] 53
-[1] 57.68189"># Δέκα δείγματα ακατέργαστου EMG (μV)
-emg &lt;- c(-42, 65, -18, 90, -75, 31, -58, 77, -26, 48)
+          <div class="cell-b"><p class="lab-note">Πάνω το ακατέργαστο EMG· από κάτω το ανορθωμένο σήμα και το περίβλημά του. Σύρετε το παράθυρο: ένα μικρό ακολουθεί κάθε λεπτομέρεια, ένα μεγάλο είναι ομαλό αλλά αργό, και η κορυφή που αναφέρει μικραίνει.</p>
+            <canvas class="lab-canvas" aria-hidden="true" data-labels="Ακατέργαστο EMG|Ανορθωμένο EMG|Περίβλημα|Παράθυρο|ms|µV|Μέσος ακατέργαστου|Μέσος ανορθωμένου|Κορυφή περιβλήματος"></canvas>
+            <div class="lab-ctl"><label class="ctl"><span>Παράθυρο</span><input type="range" data-k="win" min="10" max="400" step="5" value="100"><output>100 ms</output></label><span class="ctl"><span>Περίβλημα</span><span class="sort-seg" role="group" aria-label="Περίβλημα"><button class="sort env-btn" type="button" data-env="0" aria-pressed="true">RMS</button><button class="sort env-btn" type="button" data-env="1" aria-pressed="false">Μέση ανορθωμένη</button></span></span><p class="lab-read" aria-live="off"></p></div></div></div>
+        <div class="cell"><span class="cell-k">Κώδικας</span>
+          <div class="cell-b"><p class="lab-note">Τα ίδια βήματα στην R (τρέχει εδώ, πάνω στο σήμα από πάνω) και στο MATLAB (αντιγράψτε το και κατεβάστε την καταγραφή των 5 s για να το τρέξετε μόνοι σας). Οι τρεις τιμές ταιριάζουν με της σελίδας.</p>
+            <span class="sort-seg lang-seg" role="group" aria-label="Κώδικας">
+              <button class="sort lang-btn" type="button" data-lang="r" aria-pressed="true">R</button>
+              <button class="sort lang-btn" type="button" data-lang="m" aria-pressed="false">MATLAB</button></span>
+            <div class="pane on" data-lang="r">
+              <textarea class="code" rows="17" spellcheck="false" autocapitalize="off" autocorrect="off"
+                aria-label="R" data-tpl="# Καταγραφή: 5 s επιφανειακού EMG στα 1000 Hz (µV): το σήμα που φαίνεται παραπάνω
+emg &lt;- scan(&quot;emg_demo.csv&quot;, quiet = TRUE)
 
-mean(emg)               # ακατέργαστο: θετικά και αρνητικά αλληλοαναιρούνται
-rectified &lt;- abs(emg)   # ανόρθωση πλήρους κύματος
-mean(rectified)         # μέση ανορθωμένη τιμή
-sqrt(mean(emg^2))       # RMS</textarea>
-            <div class="lab-run"><button class="run" type="button">Εκτέλεση</button>
-              <button class="reset" type="button">Επαναφορά</button>
-              <span class="lab-status">Αλλάξτε τον κώδικα και πατήστε Εκτέλεση.</span></div>
-            <pre class="out" aria-live="polite" aria-label="Αποτέλεσμα"></pre>
-            <p class="lab-note tip">Δοκιμάστε να αλλάξετε έναν αριθμό ή προσθέστε <code>max(rectified)</code> σε νέα γραμμή.</p></div></div>
+# κεντραρισμένος κινούμενος μέσος, όπως το movmean του MATLAB (κόλπο αθροιστικού αθροίσματος)
+movmean &lt;- function(x, k) {
+  n &lt;- length(x); cs &lt;- c(0, cumsum(x)); i &lt;- 1:n
+  lo &lt;- pmax(1, i - k %/% 2); hi &lt;- pmin(n, i + k - 1 - k %/% 2)
+  (cs[hi + 1] - cs[lo]) / (hi - lo + 1)
+}
+
+win &lt;- {win}                   # μήκος παραθύρου (ms = δείγματα στα 1000 Hz)
+
+rect &lt;- abs(emg)               # 1) ανόρθωση πλήρους κύματος
+{env}
+
+round(c(m_raw = mean(emg), m_rect = mean(rect), peak = max(env)), 4)" data-env-rms="env  &lt;- sqrt(movmean(rect^2, win))   # 2) κινούμενο RMS" data-env-arv="env  &lt;- movmean(rect, win)            # 2) κινούμενος μέσος του ανορθωμένου"># Καταγραφή: 5 s επιφανειακού EMG στα 1000 Hz (µV): το σήμα που φαίνεται παραπάνω
+emg &lt;- scan(&quot;emg_demo.csv&quot;, quiet = TRUE)
+
+# κεντραρισμένος κινούμενος μέσος, όπως το movmean του MATLAB (κόλπο αθροιστικού αθροίσματος)
+movmean &lt;- function(x, k) {
+  n &lt;- length(x); cs &lt;- c(0, cumsum(x)); i &lt;- 1:n
+  lo &lt;- pmax(1, i - k %/% 2); hi &lt;- pmin(n, i + k - 1 - k %/% 2)
+  (cs[hi + 1] - cs[lo]) / (hi - lo + 1)
+}
+
+win &lt;- 100                   # μήκος παραθύρου (ms = δείγματα στα 1000 Hz)
+
+rect &lt;- abs(emg)               # 1) ανόρθωση πλήρους κύματος
+env  &lt;- sqrt(movmean(rect^2, win))   # 2) κινούμενο RMS
+
+round(c(m_raw = mean(emg), m_rect = mean(rect), peak = max(env)), 4)</textarea>
+              <div class="lab-run"><button class="run go" type="button">Εκτέλεση</button>
+                <button class="reset rs" type="button">Επαναφορά</button>
+                <button class="reset dl" type="button">Λήψη δεδομένων (CSV)</button>
+                <span class="lab-status">Αλλάξτε τον κώδικα και πατήστε Εκτέλεση.</span></div>
+              <p class="lab-note outl">Αποτέλεσμα στην R</p>
+              <pre class="out rout" aria-live="polite"></pre></div>
+            <div class="pane" data-lang="m">
+              <pre class="code" tabindex="0" data-tpl="% Καταγραφή: 5 s επιφανειακού EMG στα 1000 Hz (µV), από αυτή τη σελίδα
+emg = readmatrix(&#x27;emg_demo.csv&#x27;);
+
+win = {win};                    % μήκος παραθύρου (ms = δείγματα στα 1000 Hz)
+
+rect = abs(emg);                % 1) ανόρθωση πλήρους κύματος
+{env}
+
+m_raw  = mean(emg)              % θετικές και αρνητικές φάσεις αλληλοαναιρούνται
+m_rect = mean(rect)             % μέση ανορθωμένη τιμή
+peak   = max(env)               % κορυφή του περιβλήματος" data-env-rms="env  = sqrt(movmean(rect.^2, win));   % 2) κινούμενο RMS" data-env-arv="env  = movmean(rect, win);             % 2) κινούμενος μέσος του ανορθωμένου">% Καταγραφή: 5 s επιφανειακού EMG στα 1000 Hz (µV), από αυτή τη σελίδα
+emg = readmatrix(&#x27;emg_demo.csv&#x27;);
+
+win = 100;                    % μήκος παραθύρου (ms = δείγματα στα 1000 Hz)
+
+rect = abs(emg);                % 1) ανόρθωση πλήρους κύματος
+env  = sqrt(movmean(rect.^2, win));   % 2) κινούμενο RMS
+
+m_raw  = mean(emg)              % θετικές και αρνητικές φάσεις αλληλοαναιρούνται
+m_rect = mean(rect)             % μέση ανορθωμένη τιμή
+peak   = max(env)               % κορυφή του περιβλήματος</pre>
+              <div class="lab-run"><button class="run cp" type="button">Αντιγραφή κώδικα</button>
+                <button class="reset dl" type="button">Λήψη δεδομένων (CSV)</button></div>
+              <p class="lab-note outl">Αποτέλεσμα στο MATLAB</p>
+              <pre class="out mout" aria-live="polite"></pre></div>
+            <p class="lab-note tip">Αλλάξτε το <code>win</code> σε 20 ή 300 και συγκρίνετε το <code>peak</code>: αλλάζει με το παράθυρο και εδώ.</p></div></div>
         <div class="cell quiz"><span class="cell-k">Έλεγχος</span>
           <div class="cell-b"><p><b>Γιατί ανορθώνουμε το EMG πριν υπολογίσουμε τον μέσο όρο;</b></p>
-            <div class="opts"><button class="opt" type="button" data-ok="0" data-fb="Η ανόρθωση δεν αφαιρεί θόρυβο· αυτό το κάνει το φιλτράρισμα. Δείτε το πρώτο αποτέλεσμα: ο ακατέργαστος μέσος είναι σχεδόν 0.">Για να αφαιρέσουμε θόρυβο από την καταγραφή.</button><button class="opt" type="button" data-ok="1" data-fb="Ο ακατέργαστος μέσος παραπάνω είναι 9,2 μV, ενώ ο ανορθωμένος 53 μV.">Οι θετικές και οι αρνητικές φάσεις αλληλοαναιρούνται, οπότε ο ακατέργαστος μέσος είναι κοντά στο μηδέν ανεξάρτητα από την προσπάθεια.</button><button class="opt" type="button" data-ok="0" data-fb="Το πλάτος δεν είναι το ζητούμενο: χωρίς ανόρθωση ο μέσος όρος θα ήταν άνευ νοήματος, όχι μικρός.">Για να μεγαλώσει το σήμα.</button></div><p class="fb" role="status"></p></div></div>
+            <div class="opts"><button class="opt" type="button" data-ok="0" data-fb="Η ανόρθωση δεν αφαιρεί θόρυβο· αυτό το κάνει το φιλτράρισμα. Δείτε το m_raw: ο ακατέργαστος μέσος είναι σχεδόν 0.">Για να αφαιρέσουμε θόρυβο από την καταγραφή.</button><button class="opt" type="button" data-ok="1" data-fb="Γι&#x27; αυτό το m_raw είναι σχεδόν 0 ενώ το m_rect όχι.">Οι θετικές και οι αρνητικές φάσεις αλληλοαναιρούνται, οπότε ο ακατέργαστος μέσος είναι κοντά στο μηδέν ανεξάρτητα από την προσπάθεια.</button><button class="opt" type="button" data-ok="0" data-fb="Το πλάτος δεν είναι το ζητούμενο: χωρίς ανόρθωση ο μέσος όρος θα ήταν άνευ νοήματος, όχι μικρός.">Για να μεγαλώσει το σήμα.</button></div><p class="fb" role="status"></p></div></div>
       </article>
-      <article class="lesson" id="lesson-steadiness" data-kind="force">
+      <article class="lesson" id="lesson-steadiness" data-kind="force" data-file="force_demo.csv">
         <h4>Σταθερότητα δύναμης και συντελεστής μεταβλητότητας</h4>
         <div class="cell"><span class="cell-k">Διαβάστε</span>
           <div class="cell-b"><p>Κρατήστε έναν μυ σε σταθερή δύναμη και η δύναμη εξακολουθεί να ταλαντώνεται. Πόσο ταλαντώνεται είναι η <b>σταθερότητα δύναμης</b>, ένας ευαίσθητος δείκτης του πόσο καλά ελέγχει το νευρικό σύστημα τον μυ· χειροτερεύει με την κόπωση, τη γήρανση και τον πόνο.</p><p>Συνήθως αναφέρεται ως <b>συντελεστής μεταβλητότητας</b> (CoV): η τυπική απόκλιση <i>σε σχέση με τον μέσο όρο</i>, <code>CoV = SD / μέσος × 100</code>. Η διαίρεση με τον μέσο καθιστά συγκρίσιμες τις συσπάσεις σε διαφορετικά επίπεδα δύναμης.</p></div></div>
@@ -2410,22 +2476,39 @@ sqrt(mean(emg^2))       # RMS</textarea>
           <div class="cell-b"><p class="lab-note">Αυξήστε τη μεταβλητότητα και η καμπύλη ταλαντώνεται περισσότερο. Μετά αλλάξτε το επίπεδο στόχου και δείτε τι γίνεται με τον CoV όταν η SD μένει ίδια.</p>
             <canvas class="lab-canvas" aria-hidden="true" data-labels="Δύναμη|Στόχος|Μεταβλητότητα (SD)|Επίπεδο στόχου|CoV|% MVC|SD|Μέσος"></canvas>
             <div class="lab-ctl"><label class="ctl"><span>Μεταβλητότητα (SD)</span><input type="range" data-k="sd" min="0.2" max="3" step="0.1" value="1"><output>1.0</output></label><label class="ctl"><span>Επίπεδο στόχου</span><input type="range" data-k="target" min="10" max="40" step="1" value="20"><output>20 % MVC</output></label><p class="lab-read" aria-live="off"></p></div></div></div>
-        <div class="cell"><span class="cell-k">Κώδικας R</span>
-          <div class="cell-b"><p class="lab-note">Δύναμη (% του μέγιστου) που καταγράφηκε κατά τη διατήρηση στόχου 20 %:</p>
-            <textarea class="code" rows="8" spellcheck="false" autocapitalize="off" autocorrect="off"
-              aria-label="Κώδικας R" data-out=" mean    sd    cv 
-20.00  0.99  4.97 "># Δύναμη (% του μέγιστου) κατά τη διατήρηση στόχου 20 %
-force &lt;- c(19.2, 20.5, 21.1, 18.8, 20.3, 19.6, 21.4, 18.5, 20.9, 19.7)
+        <div class="cell"><span class="cell-k">Κώδικας</span>
+          <div class="cell-b"><p class="lab-note">Τρέξτε το στην R εδώ, ή αντιγράψτε το MATLAB και κατεβάστε την καμπύλη δύναμης που φαίνεται (6 s στα 50 Hz): οι τιμές ταιριάζουν με της σελίδας.</p>
+            <span class="sort-seg lang-seg" role="group" aria-label="Κώδικας">
+              <button class="sort lang-btn" type="button" data-lang="r" aria-pressed="true">R</button>
+              <button class="sort lang-btn" type="button" data-lang="m" aria-pressed="false">MATLAB</button></span>
+            <div class="pane on" data-lang="r">
+              <textarea class="code" rows="9" spellcheck="false" autocapitalize="off" autocorrect="off"
+                aria-label="R"># Δύναμη (% του μέγιστου), 6 s στα 50 Hz: η καμπύλη που φαίνεται παραπάνω
+force &lt;- scan(&quot;force_demo.csv&quot;, quiet = TRUE)
 
-m  &lt;- mean(force)
-s  &lt;- sd(force)
-cv &lt;- s / m * 100        # συντελεστής μεταβλητότητας (%)
+m  &lt;- mean(force)              # μέση δύναμη
+s  &lt;- sd(force)                # τυπική απόκλιση
+cv &lt;- s / m * 100              # συντελεστής μεταβλητότητας (%)
+
 round(c(mean = m, sd = s, cv = cv), 2)</textarea>
-            <div class="lab-run"><button class="run" type="button">Εκτέλεση</button>
-              <button class="reset" type="button">Επαναφορά</button>
-              <span class="lab-status">Αλλάξτε τον κώδικα και πατήστε Εκτέλεση.</span></div>
-            <pre class="out" aria-live="polite" aria-label="Αποτέλεσμα"></pre>
-            <p class="lab-note tip">Αλλάξτε τον στόχο σε 40 (και τους αριθμούς μαζί του) και τρέξτε ξανά.</p></div></div>
+              <div class="lab-run"><button class="run go" type="button">Εκτέλεση</button>
+                <button class="reset rs" type="button">Επαναφορά</button>
+                <button class="reset dl" type="button">Λήψη δεδομένων (CSV)</button>
+                <span class="lab-status">Αλλάξτε τον κώδικα και πατήστε Εκτέλεση.</span></div>
+              <p class="lab-note outl">Αποτέλεσμα στην R</p>
+              <pre class="out rout" aria-live="polite"></pre></div>
+            <div class="pane" data-lang="m">
+              <pre class="code" tabindex="0">% Δύναμη (% του μέγιστου), 6 s στα 50 Hz, από αυτή τη σελίδα
+force = readmatrix(&#x27;force_demo.csv&#x27;);
+
+m  = mean(force)                % μέση δύναμη
+s  = std(force)                 % τυπική απόκλιση
+cv = s / m * 100                % συντελεστής μεταβλητότητας (%)</pre>
+              <div class="lab-run"><button class="run cp" type="button">Αντιγραφή κώδικα</button>
+                <button class="reset dl" type="button">Λήψη δεδομένων (CSV)</button></div>
+              <p class="lab-note outl">Αποτέλεσμα στο MATLAB</p>
+              <pre class="out mout" aria-live="polite"></pre></div>
+            <p class="lab-note tip">Μετακινήστε τα sliders, κατεβάστε ξανά και δείτε πώς αλλάζουν οι τρεις τιμές.</p></div></div>
         <div class="cell quiz"><span class="cell-k">Έλεγχος</span>
           <div class="cell-b"><p><b>Η SD της δύναμης μένει ίδια, αλλά το επίπεδο στόχου διπλασιάζεται. Τι γίνεται με τον CoV;</b></p>
             <div class="opts"><button class="opt" type="button" data-ok="0" data-fb="Ο διπλασιασμός του μέσου στον παρονομαστή κάνει το αντίθετο.">Διπλασιάζεται.</button><button class="opt" type="button" data-ok="1" data-fb="CoV = SD / μέσος × 100: η ίδια SD πάνω από διπλάσιο μέσο δίνει μισό CoV.">Υποδιπλασιάζεται.</button><button class="opt" type="button" data-ok="0" data-fb="Θα έμενε ίδιος μόνο αν διπλασιαζόταν και η SD.">Μένει ίδιος.</button></div><p class="fb" role="status"></p></div></div>
@@ -3442,8 +3525,10 @@ round(c(mean = m, sd = s, cv = cv), 2)</textarea>
   }
 
   /* ---------- Interactive lessons ---------- */
-  // Tabs between lessons, a live model per lesson, R running in the page (webR,
-  // fetched only when someone presses Run) and a one-question check.
+  // Tabs between lessons and a live model for each. MATLAB cannot run in a page,
+  // so the code on screen follows the sliders, the output block shows what that
+  // code prints, and "Download" saves the very signal being shown as a CSV, so
+  // running the code on that file in MATLAB gives the same numbers.
   var lab = document.querySelector('.lab');
   if (lab) {
     var labTabs = Array.prototype.slice.call(lab.querySelectorAll('.lab-tab'));
@@ -3467,49 +3552,30 @@ round(c(mean = m, sd = s, cv = cv), 2)</textarea>
       });
     });
 
-    // ---- R in the page
-    var rLoad = null;
-    var getR = function () {
-      if (!rLoad) {
-        var base = 'https://webr.r-wasm.org/v0.5.0/';
-        rLoad = import(base + 'webr.mjs').then(function (m) {
-          var w = new m.WebR({ baseUrl: base });
-          return w.init().then(function () { return w; });
-        });
-        rLoad.catch(function () { rLoad = null; });
-      }
-      return rLoad;
+    // ---- code, copy, download
+    var labEsc = function (t) { return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
+    var labCode = function (pre, text) {            // % comments in grey
+      pre.innerHTML = labEsc(text).replace(/(%.*)$/gm, '<span class="cmt">$1</span>');
     };
-    Array.prototype.forEach.call(lab.querySelectorAll('.lesson'), function (les) {
-      var ta = les.querySelector('.code'), run = les.querySelector('.run'), reset = les.querySelector('.reset');
-      var out = les.querySelector('.out'), status = les.querySelector('.lab-status');
-      var go = function () {
-        if (run.disabled) return;
-        run.disabled = true; out.classList.remove('err');
-        status.textContent = rLoad ? lab.dataset.running : lab.dataset.loading;
-        getR().then(function (webR) {
-          status.textContent = lab.dataset.running;
-          return new webR.Shelter().then(function (sh) {
-            return sh.captureR(ta.value, { withAutoprint: true }).then(function (res) {
-              out.textContent = res.output.map(function (o) { return o.data; }).join('\n');
-              out.classList.toggle('err', res.output.some(function (o) { return o.type === 'stderr'; }));
-              sh.purge();
-            }, function (err) {
-              out.classList.add('err');
-              out.textContent = lab.dataset.error + ' ' + (err && err.message ? err.message : err);
-              sh.purge();
-            });
-          });
-        }).then(function () { status.textContent = lab.dataset.edit; }, function () {
-          out.classList.remove('err');
-          out.textContent = lab.dataset.offline + '\n\n' + ta.dataset.out;
-          status.textContent = lab.dataset.edit;
-        }).then(function () { run.disabled = false; });
+    var labCopy = function (text, btn) {
+      var label = btn.textContent;
+      var done = function () { btn.textContent = lab.dataset.copied; setTimeout(function () { btn.textContent = label; }, 1500); };
+      var old = function () {
+        var t = document.createElement('textarea'); t.value = text; t.style.position = 'fixed'; t.style.opacity = '0';
+        document.body.appendChild(t); t.select();
+        try { document.execCommand('copy'); done(); } catch (e) {}
+        t.remove();
       };
-      run.addEventListener('click', go);
-      reset.addEventListener('click', function () { ta.value = ta.defaultValue; out.textContent = ''; });
-      ta.addEventListener('keydown', function (e) { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); go(); } });
-    });
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, old); else old();
+    };
+    var labSave = function (name, rows) {
+      var url = URL.createObjectURL(new Blob([rows.join('\n') + '\n'], { type: 'text/csv' }));
+      var a = document.createElement('a'); a.href = url; a.download = name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+    };
+    var labSetR = function (ta, text) { if (!ta.dataset.dirty) ta.value = text; };   // never overwrite the student's edits
+    var m4 = function (v) { return (Math.abs(v) < 5e-5 ? 0 : v).toFixed(4); };   // MATLAB "format short"
 
     // ---- live models: one canvas each, redrawn while on screen
     var labViz = function (canvas, step, draw) {
@@ -3543,102 +3609,164 @@ round(c(mean = m, sd = s, cv = cv), 2)</textarea>
     var gaussL = function () { return (Math.random() + Math.random() + Math.random() + Math.random() - 2) * 1.73; };
     var fontL = function (d) { return Math.round(10.5 * d) + 'px ' + getComputedStyle(document.body).fontFamily; };
 
-    // Lesson 1: raw EMG, optional rectification, a moving-RMS envelope
+    // Lesson 1: a surface EMG recording, its rectified form and an envelope.
+    // The recording is the same for everyone (seeded), so the numbers are too.
     var emgLes = lab.querySelector('#lesson-emg');
     if (emgLes) {
       var cv1 = emgLes.querySelector('.lab-canvas'), L1 = cv1.dataset.labels.split('|');
-      var inWin = emgLes.querySelector('[data-k=win]'), inRect = emgLes.querySelector('[data-k=rect]');
-      var LEN = 6000, VIS = 3000, off = 0, rect = 0, win = +inWin.value;
-      var raw = new Float32Array(LEN), rms = new Float32Array(LEN);
+      var inWin = emgLes.querySelector('[data-k=win]');
+      var envBtns = Array.prototype.slice.call(emgLes.querySelectorAll('.env-btn'));
+      var rd1 = emgLes.querySelector('.lab-read'), pre1 = emgLes.querySelector('.pane[data-lang=m] .code');
+      var out1 = emgLes.querySelector('.mout'), ta1 = emgLes.querySelector('.pane[data-lang=r] .code');
+      var NS1 = 5000, VIS = 2500, MAXV = 500, useRms = true, win = +inWin.value, off = 0;
+      var raw = new Float64Array(NS1), rect = new Float64Array(NS1), env = new Float64Array(NS1);
+      var cs1 = new Float64Array(NS1 + 1), cs2 = new Float64Array(NS1 + 1);
+      var meanRaw = 0, meanRect = 0, peak = 0;
       (function () {
-        var x1 = 0, x2 = 0, sq = 0, cyc = [], i;
-        for (i = 0; i < 4; i++) cyc.push(0.8 + 0.4 * Math.random());
-        for (i = 0; i < LEN; i++) {
-          var x0 = 1.05 * x1 - 0.55 * x2 + gaussL(); x2 = x1; x1 = x0;
-          var t = (i % 1500) / 1000, env = 0.12 + 0.88 * Math.exp(-Math.pow(t - 0.75, 2) / 0.08);
-          raw[i] = x0 * env * cyc[Math.floor(i / 1500)]; sq += raw[i] * raw[i];
+        var sd = 20261016;
+        var rand = function () {                       // mulberry32
+          sd = (sd + 0x6D2B79F5) | 0; var t = Math.imul(sd ^ (sd >>> 15), 1 | sd);
+          t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+        var gz = function () { return Math.sqrt(-2 * Math.log(1 - rand())) * Math.cos(2 * Math.PI * rand()); };
+        var ss = function (x) { return x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x); };
+        var burst = function (t, on, rise, hold, fall, amp) {      // a smooth contraction
+          return amp * ss((t - on) / rise) * (1 - ss((t - (on + rise + hold)) / fall));
+        };
+        var lp = 0, tot = 0, i, hp = new Float64Array(NS1);
+        for (i = 0; i < NS1; i++) {                    // white noise without the slow drift: 20 Hz and up
+          var w = gz(); lp += 0.12 * (w - lp); hp[i] = w - lp; tot += hp[i] * hp[i];
         }
-        var sd = Math.sqrt(sq / LEN) * 1.45;
-        for (i = 0; i < LEN; i++) raw[i] /= sd;
+        var k = 1 / Math.sqrt(tot / NS1);
+        for (i = 0; i < NS1; i++) {
+          var t = i / 1000;
+          var A = 0.05 + burst(t, 0.55, 0.45, 0.9, 0.5, 1) + burst(t, 3.2, 0.45, 0.7, 0.5, 0.62);
+          A *= 1 + 0.1 * Math.sin(2 * Math.PI * 1.7 * t + 1) + 0.06 * Math.sin(2 * Math.PI * 3.1 * t);
+          raw[i] = hp[i] * k * A * 150;                // about 150 µV RMS at full effort
+          rect[i] = Math.abs(raw[i]);
+          cs1[i + 1] = cs1[i] + rect[i]; cs2[i + 1] = cs2[i] + rect[i] * rect[i];
+        }
+        meanRaw = 0; for (i = 0; i < NS1; i++) meanRaw += raw[i];
+        meanRaw /= NS1; meanRect = cs1[NS1] / NS1;
       })();
-      var calc = function () {                // moving RMS, centred, circular
-        var cs = new Float64Array(2 * LEN + 1), i;
-        for (i = 0; i < 2 * LEN; i++) cs[i + 1] = cs[i] + raw[i % LEN] * raw[i % LEN];
-        var h = Math.round(win / 2);
-        for (i = 0; i < LEN; i++) {
-          var a = i + LEN - h, b = i + LEN + h + 1;
-          rms[i] = Math.sqrt((cs[b] - cs[a]) / (b - a));
+      var calc = function () {                         // movmean, as MATLAB does it: centred, shrinking at the ends
+        var before = Math.floor(win / 2), after = win - 1 - before, cs = useRms ? cs2 : cs1, i;
+        peak = 0;
+        for (i = 0; i < NS1; i++) {
+          var a = Math.max(0, i - before), b = Math.min(NS1 - 1, i + after);
+          var m = (cs[b + 1] - cs[a]) / (b - a + 1);
+          env[i] = useRms ? Math.sqrt(m) : m;
+          if (env[i] > peak) peak = env[i];
         }
       };
-      calc();
-      var viz1 = labViz(cv1, function (dt) {
-        off = (off + dt * 420) % LEN;
-        rect += ((inRect.checked ? 1 : 0) - rect) * Math.min(1, dt * 7);
-      }, function (c, W, H, d) {
-        var mark = css('--mark'), acc = css('--accent'), grid = css('--rule'), ink = css('--ink-2');
-        var base = H * (0.5 + 0.38 * rect), sc = H * 0.34 / 3.2, o = Math.floor(off), j, k;
+      var refresh = function () {
+        calc();
+        rd1.innerHTML = '<span>' + L1[6] + ' <b>' + meanRaw.toFixed(2) + '</b> ' + L1[5] + '</span>' +
+          '<span>' + L1[7] + ' <b>' + meanRect.toFixed(1) + '</b> ' + L1[5] + '</span>' +
+          '<span>' + L1[8] + ' <b>' + peak.toFixed(1) + '</b> ' + L1[5] + '</span>';
+        labCode(pre1, pre1.dataset.tpl.replace('{win}', win).replace('{env}', useRms ? pre1.dataset.envRms : pre1.dataset.envArv));
+        labSetR(ta1, ta1.dataset.tpl.replace('{win}', win).replace('{env}', useRms ? ta1.dataset.envRms : ta1.dataset.envArv));
+        out1.textContent = 'm_raw = ' + m4(meanRaw) + '\nm_rect = ' + m4(meanRect) + '\npeak = ' + m4(peak);
+      };
+      emgLes.labGen = function () { refresh(); };
+      emgLes.labExpect = function () { return out1.textContent; };
+      emgLes.labCsv = function () { var rows = [], i; for (i = 0; i < NS1; i++) rows.push(raw[i].toFixed(6)); return rows; };
+      refresh();
+      var viz1 = labViz(cv1, function (dt) { off = (off + dt * 500) % NS1; }, function (c, W, H, d) {
+        var mark = css('--mark'), acc = css('--accent'), grid = css('--rule'), ink = css('--ink-2'), ink3 = css('--ink-3');
+        var px0 = 50 * d, pw = W - px0 - 12 * d, o = Math.floor(off), j;
+        var yA0 = H * 0.11, yA1 = H * 0.46, cA = (yA0 + yA1) / 2, sA = (yA1 - yA0) / 2 / MAXV;
+        var yB1 = H * 0.95, yB0 = H * 0.58, sB = (yB1 - yB0) / MAXV;
         c.clearRect(0, 0, W, H);
-        c.strokeStyle = grid; c.lineWidth = d;
-        c.beginPath(); c.moveTo(0, base); c.lineTo(W, base); c.stroke();
-        c.lineJoin = 'round';
-        c.strokeStyle = mark; c.globalAlpha = 0.85; c.lineWidth = 1.2 * d; c.beginPath();
-        for (j = 0; j < VIS; j += 2) {
-          k = raw[(o + j) % LEN];
-          var y = base - ((1 - rect) * k + rect * Math.abs(k)) * sc;
-          j ? c.lineTo(j / (VIS - 1) * W, y) : c.moveTo(0, y);
+        c.lineJoin = 'round'; c.lineCap = 'round';
+        // baselines and ticks
+        c.strokeStyle = grid; c.lineWidth = d; c.beginPath();
+        c.moveTo(px0, cA); c.lineTo(px0 + pw, cA); c.moveTo(px0, yB1); c.lineTo(px0 + pw, yB1);
+        c.moveTo(px0, yB0); c.lineTo(px0 + pw, yB0); c.moveTo(px0, yA0); c.lineTo(px0 + pw, yA0); c.moveTo(px0, yA1); c.lineTo(px0 + pw, yA1);
+        c.globalAlpha = 0.5; c.stroke(); c.globalAlpha = 1;
+        c.font = fontL(d); c.textBaseline = 'middle'; c.textAlign = 'right'; c.fillStyle = ink3;
+        c.fillText('0', px0 - 8 * d, cA); c.fillText('+' + MAXV, px0 - 8 * d, yA0); c.fillText('−' + MAXV, px0 - 8 * d, yA1);
+        c.fillText('0', px0 - 8 * d, yB1); c.fillText(String(MAXV), px0 - 8 * d, yB0);
+        c.textAlign = 'left'; c.fillStyle = ink;
+        c.fillText(L1[0] + ' (' + L1[5] + ')', px0, H * 0.045);
+        c.fillText(L1[1] + ' + ' + L1[2].toLowerCase() + ' (' + envBtns[useRms ? 0 : 1].textContent + ', ' + win + ' ' + L1[4] + ')', px0, H * 0.535);
+        // raw
+        c.strokeStyle = mark; c.lineWidth = 1.1 * d; c.beginPath();
+        for (j = 0; j < VIS; j++) {
+          var y = cA - Math.max(-MAXV, Math.min(MAXV, raw[(o + j) % NS1])) * sA, x = px0 + j / (VIS - 1) * pw;
+          j ? c.lineTo(x, y) : c.moveTo(x, y);
+        }
+        c.stroke();
+        // rectified, as a filled trace from its baseline
+        c.globalAlpha = 0.9; c.lineWidth = 1 * d; c.beginPath();
+        for (j = 0; j < VIS; j++) {
+          var yr = yB1 - Math.min(MAXV, rect[(o + j) % NS1]) * sB, xr = px0 + j / (VIS - 1) * pw;
+          j ? c.lineTo(xr, yr) : c.moveTo(xr, yr);
         }
         c.stroke(); c.globalAlpha = 1;
-        c.strokeStyle = acc; c.lineWidth = 2.6 * d; c.lineCap = 'round';
-        [1, -1].forEach(function (sg, n) {
-          c.globalAlpha = n ? (1 - rect) : 1; if (!c.globalAlpha) return;
-          c.beginPath();
-          for (j = 0; j < VIS; j += 2) {
-            var r = rms[(o + j) % LEN] * sc, yy = sg > 0 ? base - r : base + r * (1 - rect);
-            j ? c.lineTo(j / (VIS - 1) * W, yy) : c.moveTo(0, yy);
-          }
-          c.stroke();
-        });
-        c.globalAlpha = 1; c.font = fontL(d); c.textBaseline = 'middle';
-        [[mark, L1[0]], [acc, L1[1] + ' · ' + win + ' ' + L1[3]]].forEach(function (it, n) {
-          var x = 12 * d + n * 0, y = 14 * d + n * 16 * d;
-          c.fillStyle = it[0]; c.fillRect(x, y - d, 18 * d, 2.4 * d);
-          c.fillStyle = ink; c.fillText(it[1], x + 26 * d, y);
-        });
+        // envelope: one line, above the baseline
+        c.strokeStyle = acc; c.lineWidth = 2.8 * d; c.beginPath();
+        for (j = 0; j < VIS; j++) {
+          var ye = yB1 - Math.min(MAXV * 1.05, env[(o + j) % NS1]) * sB, xe = px0 + j / (VIS - 1) * pw;
+          j ? c.lineTo(xe, ye) : c.moveTo(xe, ye);
+        }
+        c.stroke();
+        // the window itself, drawn to the same time scale
+        var bw = win / VIS * pw, bx = px0 + pw - bw - 6 * d, by = yB0 + 4 * d;
+        c.fillStyle = acc; c.globalAlpha = 0.22; c.fillRect(bx, by, bw, 8 * d);
+        c.globalAlpha = 1; c.strokeStyle = acc; c.lineWidth = d; c.strokeRect(bx, by, bw, 8 * d);
+        c.textAlign = 'right'; c.fillStyle = ink; c.fillText(L1[3] + ' ' + win + ' ' + L1[4], bx - 6 * d, by + 4 * d);
       });
       inWin.addEventListener('input', function () {
-        win = +inWin.value; inWin.nextElementSibling.textContent = win + ' ' + L1[3]; calc();
+        win = +inWin.value; inWin.nextElementSibling.textContent = win + ' ' + L1[4]; refresh();
         if (reduce) viz1.render();
       });
-      inRect.addEventListener('change', function () { if (reduce) { rect = inRect.checked ? 1 : 0; viz1.render(); } });
+      envBtns.forEach(function (b) {
+        b.addEventListener('click', function () {
+          useRms = b.dataset.env === '0';
+          envBtns.forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); });
+          refresh(); if (reduce) viz1.render();
+        });
+      });
+      emgLes.querySelector('.cp').addEventListener('click', function (e) { labCopy(pre1.textContent, e.currentTarget); });
     }
 
-    // Lesson 2: a force hold with adjustable variability and target
+    // Lesson 2: a force hold with adjustable variability and target. The trace
+    // is scaled to have exactly the chosen mean and SD, so the numbers are exact.
     var forLes = lab.querySelector('#lesson-steadiness');
     if (forLes) {
       var cv2 = forLes.querySelector('.lab-canvas'), L2 = cv2.dataset.labels.split('|');
       var inSd = forLes.querySelector('[data-k=sd]'), inTg = forLes.querySelector('[data-k=target]');
-      var readout = forLes.querySelector('.lab-read');
+      var rd2 = forLes.querySelector('.lab-read'), pre2 = forLes.querySelector('.pane[data-lang=m] .code');
+      var out2 = forLes.querySelector('.mout');
       var NS = 300, zs = [], acc2 = 0, zz = 0, sdv = +inSd.value, tgv = +inTg.value;
       for (var q = 0; q < NS; q++) { zz = 0.93 * zz + 0.368 * gaussL(); zs.push(zz); }
+      labCode(pre2, pre2.textContent);
+      var forTrace = function () {                     // the displayed force, mean tgv and SD (n-1) sdv exactly
+        var m = 0, v = 0, i, f = new Array(NS);
+        for (i = 0; i < NS; i++) m += zs[i]; m /= NS;
+        for (i = 0; i < NS; i++) v += (zs[i] - m) * (zs[i] - m);
+        var sdz = Math.sqrt(v / (NS - 1)) || 1;
+        for (i = 0; i < NS; i++) f[i] = tgv + (zs[i] - m) / sdz * sdv;
+        return f;
+      };
       var forShow = function () {
         var cov = sdv / tgv * 100;
-        readout.innerHTML = L2[4] + ' <b>' + cov.toFixed(1) + ' %</b> &nbsp;=&nbsp; ' + L2[6] + ' ' + sdv.toFixed(1) +
-          ' / ' + L2[7].toLowerCase() + ' ' + tgv + ' × 100';
+        rd2.innerHTML = '<span>' + L2[4] + ' <b>' + cov.toFixed(1) + ' %</b></span><span>' + L2[6] + ' ' + sdv.toFixed(1) +
+          ' / ' + L2[7].toLowerCase() + ' ' + tgv + ' × 100</span>';
         inSd.nextElementSibling.textContent = sdv.toFixed(1);
         inTg.nextElementSibling.textContent = tgv + ' ' + L2[5];
+        out2.textContent = 'm = ' + m4(tgv) + '\ns = ' + m4(sdv) + '\ncv = ' + m4(cov);
       };
       forShow();
       var viz2 = labViz(cv2, function (dt) {
         acc2 += dt;
         while (acc2 > 0.02) { acc2 -= 0.02; zz = 0.93 * zz + 0.368 * gaussL(); zs.push(zz); zs.shift(); }
       }, function (c, W, H, d) {
-        var mark = css('--mark'), grid = css('--rule'), ink = css('--ink-2'), ink3 = css('--ink-3');
-        var m = 0, v = 0, i;
-        for (i = 0; i < NS; i++) m += zs[i]; m /= NS;
-        for (i = 0; i < NS; i++) v += (zs[i] - m) * (zs[i] - m);
-        var sdz = Math.sqrt(v / (NS - 1)) || 1;            // normalised, so the trace has exactly the chosen SD
+        var mark = css('--mark'), ink = css('--ink-2'), ink3 = css('--ink-3');
+        var f = forTrace(), i;
         var lo = tgv - 12, hi = tgv + 12, px0 = 52 * d, pw = W - px0 - 14 * d;
-        var yv = function (f) { return H * 0.1 + (hi - f) / (hi - lo) * H * 0.8; };
+        var yv = function (v) { return H * 0.1 + (hi - v) / (hi - lo) * H * 0.8; };
         c.clearRect(0, 0, W, H);
         c.fillStyle = mark; c.globalAlpha = 0.13;                 // ±1 SD band
         c.fillRect(px0, yv(tgv + sdv), pw, yv(tgv - sdv) - yv(tgv + sdv));
@@ -3648,7 +3776,7 @@ round(c(mean = m, sd = s, cv = cv), 2)</textarea>
         c.setLineDash([]); c.globalAlpha = 1;
         c.strokeStyle = mark; c.lineWidth = 2.2 * d; c.lineJoin = 'round'; c.beginPath();
         for (i = 0; i < NS; i++) {
-          var f = tgv + (zs[i] - m) / sdz * sdv, y = Math.max(H * 0.03, Math.min(H * 0.97, yv(f)));
+          var y = Math.max(H * 0.03, Math.min(H * 0.97, yv(f[i])));
           i ? c.lineTo(px0 + i / (NS - 1) * pw, y) : c.moveTo(px0, y);
         }
         c.stroke();
@@ -3660,7 +3788,70 @@ round(c(mean = m, sd = s, cv = cv), 2)</textarea>
       });
       var upd = function () { sdv = +inSd.value; tgv = +inTg.value; forShow(); if (reduce) viz2.render(); };
       inSd.addEventListener('input', upd); inTg.addEventListener('input', upd);
+      forLes.querySelector('.cp').addEventListener('click', function (e) { labCopy(pre2.textContent, e.currentTarget); });
+      forLes.labGen = function () {};
+      forLes.labExpect = function () { return out2.textContent; };
+      forLes.labCsv = function () { return forTrace().map(function (v) { return v.toFixed(6); }); };
     }
+
+    // ---- language switch, and R in the page (webR, fetched only when someone presses Run)
+    var rLoad = null;
+    var getR = function () {
+      if (!rLoad) {
+        var base = 'https://webr.r-wasm.org/v0.5.0/';
+        rLoad = import(base + 'webr.mjs').then(function (m) {
+          var w = new m.WebR({ baseUrl: base });
+          return w.init().then(function () { return w; });
+        });
+        rLoad.catch(function () { rLoad = null; });
+      }
+      return rLoad;
+    };
+    labLessons.forEach(function (les) {
+      var langBtns = Array.prototype.slice.call(les.querySelectorAll('.lang-btn'));
+      var panes = Array.prototype.slice.call(les.querySelectorAll('.pane'));
+      langBtns.forEach(function (b) {
+        b.addEventListener('click', function () {
+          langBtns.forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); });
+          panes.forEach(function (p) { p.classList.toggle('on', p.dataset.lang === b.dataset.lang); });
+        });
+      });
+      Array.prototype.forEach.call(les.querySelectorAll('.dl'), function (b) {
+        b.addEventListener('click', function () { labSave(les.dataset.file, les.labCsv()); });
+      });
+      var ta = les.querySelector('.pane[data-lang=r] .code'), run = les.querySelector('.go'), rs = les.querySelector('.rs');
+      var out = les.querySelector('.rout'), status = les.querySelector('.lab-status');
+      ta.addEventListener('input', function () { ta.dataset.dirty = '1'; });
+      rs.addEventListener('click', function () { delete ta.dataset.dirty; ta.value = ta.defaultValue; les.labGen(); out.textContent = ''; });
+      var go = function () {
+        if (run.disabled) return;
+        run.disabled = true; out.classList.remove('err');
+        status.textContent = rLoad ? lab.dataset.running : lab.dataset.loading;
+        var csv = les.labCsv().join('\n') + '\n';
+        getR().then(function (webR) {
+          status.textContent = lab.dataset.running;
+          return webR.FS.writeFile('/home/web_user/' + les.dataset.file, new TextEncoder().encode(csv)).then(function () {
+            return new webR.Shelter();
+          }).then(function (sh) {
+            return sh.captureR(ta.value, { withAutoprint: true }).then(function (res) {
+              out.textContent = res.output.map(function (o) { return o.data; }).join('\n');
+              out.classList.toggle('err', res.output.some(function (o) { return o.type === 'stderr'; }));
+              sh.purge();
+            }, function (err) {
+              out.classList.add('err');
+              out.textContent = lab.dataset.error + ' ' + (err && err.message ? err.message : err);
+              sh.purge();
+            });
+          });
+        }).then(function () { status.textContent = lab.dataset.edit; }, function () {
+          out.classList.remove('err');
+          out.textContent = lab.dataset.offline + '\n\n' + les.labExpect();
+          status.textContent = lab.dataset.edit;
+        }).then(function () { run.disabled = false; });
+      };
+      run.addEventListener('click', go);
+      ta.addEventListener('keydown', function (e) { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); go(); } });
+    });
   }
 
   /* ---------- Collaboration map tooltip ---------- */
