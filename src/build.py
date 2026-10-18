@@ -14,6 +14,7 @@ from i18n import STRINGS, MONTHS  # noqa: E402
 from scholar import SCHOLAR, BY_YEAR, PAPERS  # noqa: E402
 from collab import HOME, CITIES  # noqa: E402
 import worldmap  # noqa: E402
+from lessons import UI as LAB_UI, LESSONS  # noqa: E402
 
 HERE = Path(__file__).parent
 
@@ -218,6 +219,66 @@ def render_map(lang):
     </figure>"""
 
 
+def render_lessons(lang):
+    """The interactive lessons (src/lessons.py): notebook cells with a live model,
+    R that runs in the page, and a question. One article per lesson."""
+    U, esc = LAB_UI[lang], html.escape
+
+    def controls(kind, L):
+        if kind == "emg":
+            return (f'<label class="ctl"><span>{esc(L["labels"][2])}</span>'
+                    f'<input type="range" data-k="win" min="10" max="400" step="5" value="100">'
+                    f'<output data-unit="{esc(L["labels"][3])}">100 {esc(L["labels"][3])}</output></label>'
+                    f'<label class="ctl chk"><input type="checkbox" data-k="rect"><span>{esc(L["rectify"])}</span></label>')
+        return (f'<label class="ctl"><span>{esc(L["labels"][2])}</span>'
+                f'<input type="range" data-k="sd" min="0.2" max="3" step="0.1" value="1">'
+                f'<output>1.0</output></label>'
+                f'<label class="ctl"><span>{esc(L["labels"][3])}</span>'
+                f'<input type="range" data-k="target" min="10" max="40" step="1" value="20">'
+                f'<output>20 {esc(L["labels"][5])}</output></label>'
+                f'<p class="lab-read" aria-live="off"></p>')
+
+    tabs, arts = [], []
+    for n, les in enumerate(LESSONS, 1):
+        L = les[lang]
+        tabs.append(f'<button class="sort lab-tab" type="button" data-lesson="{les["id"]}" '
+                    f'aria-pressed="{"true" if n == 1 else "false"}">{n} · {esc(L["title"])}</button>')
+        code = "\n".join(L["code"])
+        opts = "".join(
+            f'<button class="opt" type="button" data-ok="{1 if ok else 0}" data-fb="{esc(fb, quote=True)}">{esc(t)}</button>'
+            for t, ok, fb in L["options"])
+        arts.append(f"""      <article class="lesson" id="lesson-{les['id']}" data-kind="{les['kind']}">
+        <h4>{esc(L['title'])}</h4>
+        <div class="cell"><span class="cell-k">{esc(U['read'])}</span>
+          <div class="cell-b">{''.join(f'<p>{p}</p>' for p in L['read'])}</div></div>
+        <div class="cell viz"><span class="cell-k">{esc(U['explore'])}</span>
+          <div class="cell-b"><p class="lab-note">{esc(L['explore'])}</p>
+            <canvas class="lab-canvas" aria-hidden="true" data-labels="{esc('|'.join(L['labels']), quote=True)}"></canvas>
+            <div class="lab-ctl">{controls(les['kind'], L)}</div></div></div>
+        <div class="cell"><span class="cell-k">{esc(U['code'])}</span>
+          <div class="cell-b"><p class="lab-note">{esc(L['code_note'])}</p>
+            <textarea class="code" rows="{len(L['code']) + 1}" spellcheck="false" autocapitalize="off" autocorrect="off"
+              aria-label="{esc(U['code'])}" data-out="{esc(L['out'], quote=True)}">{esc(code)}</textarea>
+            <div class="lab-run"><button class="run" type="button">{esc(U['run'])}</button>
+              <button class="reset" type="button">{esc(U['reset'])}</button>
+              <span class="lab-status">{esc(U['edit'])}</span></div>
+            <pre class="out" aria-live="polite" aria-label="{esc(U['out'])}"></pre>
+            <p class="lab-note tip">{L['tip']}</p></div></div>
+        <div class="cell quiz"><span class="cell-k">{esc(U['quiz'])}</span>
+          <div class="cell-b"><p><b>{esc(L['question'])}</b></p>
+            <div class="opts">{opts}</div><p class="fb" role="status"></p></div></div>
+      </article>""")
+    data = " ".join(f'data-{k}="{esc(U[k], quote=True)}"' for k in
+                    ("loading", "running", "offline", "error", "correct", "wrong", "run", "edit"))
+    return f"""    <h3>{esc(U['heading'])}</h3>
+    <p class="lab-intro">{esc(U['intro'])}</p>
+    <div class="lab rise" {data}>
+      <div class="lab-tabs"><span class="sort-seg" role="group" aria-label="{esc(U['lesson'])}">{''.join(tabs)}</span></div>
+{chr(10).join(arts)}
+    </div>
+    <p class="lab-foot">{esc(U['webr']).replace("{link}", '<a href="https://docs.r-wasm.org/webr/latest/" target="_blank" rel="noopener">webR</a>')}</p>"""
+
+
 def cite_chart(lang):
     """Citations per year from Scholar: thin bars, the latest year labelled,
     every bar with a tooltip, and the figures as text for screen readers."""
@@ -287,6 +348,8 @@ def fill(doc, lang):
               .replace("__N_FIRST__", str(sum(1 for p in published if p["first"])))
               .replace("__N_PENDING__", str(len(PUBS) - len(published))))
     doc = doc.replace("__CITE_CHART__", cite_chart(lang))
+    assert "<!--LESSONS-->" in doc, "lessons marker missing"
+    doc = doc.replace("<!--LESSONS-->", render_lessons(lang))
     assert "<!--COLLAB-->" in doc, "collaboration marker missing"
     doc = doc.replace("<!--COLLAB-->", render_map(lang))
     if lang == "el":

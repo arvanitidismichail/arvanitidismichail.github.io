@@ -28,6 +28,21 @@ Add a dict to the list in `pubs.py` and run `build.py`. The counts in the page
 ("29 published · 7 in progress"), the year filters and the search index all
 update themselves — they are computed, not typed.
 
+## Adding an interactive lesson
+
+The lessons under Teaching are written in `src/lessons.py`: one entry per
+lesson, with the English text, the Greek text and the R code together. Each
+is a small notebook: **read**, **explore** (a live model with sliders),
+**R code** (runs in the visitor's browser with webR, nothing to install) and a
+one-question **check**. To add one, copy an entry, change the text and the
+code, set `kind` to one of the live models (`emg` or `force`; new models are
+added in the "Interactive lessons" block of `template.html`), then run
+`python3 build.py`.
+
+`out` is what R prints, shown only if R cannot load in the visitor's browser.
+Regenerate it with `Rscript` whenever you change a chunk. The first Run
+downloads R (about 10 MB, once); nothing else on the page depends on it.
+
 ## The weekly automatic update
 
 Every Monday a GitHub Action (`.github/workflows/weekly-update.yml`) runs

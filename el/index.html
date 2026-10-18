@@ -1213,10 +1213,109 @@ h1 .c { display: inline-block; }
 ::view-transition-new(root) { z-index: 1; }
 
 /* ============================================================
+   Interactive lessons — notebooks: read, explore, run R, check
+   ============================================================ */
+.lab-intro { max-width: var(--measure); margin: 0 0 1.2rem; color: var(--ink-2); font-size: 1.05rem; }
+.lab {
+  background: var(--surface); border: 1px solid var(--rule); border-radius: 16px;
+  padding: 1.2rem 1.6rem 1.6rem;
+}
+main > section:nth-of-type(odd) .lab { background: var(--paper); }
+.lab-tabs { padding-bottom: 1rem; overflow-x: auto; }
+.lab-tabs .sort-seg { flex-wrap: wrap; }
+.lab-tab { white-space: normal; text-align: left; }
+html.js .lesson:not(.on) { display: none; }
+.lesson h4 {
+  margin: .4rem 0 .2rem; font-size: 1.35rem; font-weight: 500; color: var(--ink); letter-spacing: -.01em;
+}
+.cell {
+  display: grid; grid-template-columns: 5.2rem minmax(0, 1fr); gap: 0 1.2rem;
+  padding: 1.15rem 0; border-top: 1px solid var(--rule-soft);
+}
+.cell:first-of-type { border-top: 0; }
+.cell-b { min-width: 0; }
+.cell-k {
+  font-size: .66rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--mark); padding-top: .35rem;
+}
+.cell-b > p { margin: 0 0 .7rem; font-size: 1.02rem; max-width: 44rem; }
+.cell-b > p:last-child { margin-bottom: 0; }
+.cell-b code, .lab-note code {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: .88em;
+  background: var(--rule-soft); border-radius: 4px; padding: .05em .35em; color: var(--ink);
+}
+.lab-note { font-size: .92rem !important; color: var(--ink-3); }
+.lab-note.tip { margin-top: .6rem !important; }
+.lab-canvas {
+  width: 100%; aspect-ratio: 13 / 5; display: block; border-radius: 10px; background: var(--rule-soft);
+  touch-action: pan-y;
+}
+.lab-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1.6rem; margin-top: .8rem; }
+.ctl { display: flex; align-items: center; gap: .6rem; flex: 1 1 15rem; font-size: .88rem; color: var(--ink-2); }
+.ctl span { font-size: .66rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); white-space: nowrap; }
+.ctl input[type=range] { flex: 1; min-width: 6rem; accent-color: var(--mark); height: 24px; }
+.ctl output { min-width: 3.4rem; text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); }
+.ctl.chk { flex: 0 0 auto; gap: .5rem; cursor: pointer; }
+.ctl.chk input { width: 18px; height: 18px; accent-color: var(--mark); }
+.lab-read { flex-basis: 100%; margin: .2rem 0 0 !important; font-size: 1rem !important; color: var(--ink-2);
+  font-variant-numeric: tabular-nums; }
+.lab-read b { font-size: 1.5rem; font-weight: 500; color: var(--ink); letter-spacing: -.02em; }
+.code {
+  display: block; width: 100%; resize: vertical; box-sizing: border-box;
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: .86rem; line-height: 1.55;
+  color: var(--ink); background: var(--rule-soft); border: 1px solid var(--rule); border-radius: 10px;
+  padding: .8rem 1rem; tab-size: 2; white-space: pre; overflow-x: auto;
+}
+.code:focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; }
+.lab-run { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin-top: .6rem; }
+.run, .reset {
+  font: inherit; font-size: .85rem; font-weight: 600; border-radius: 999px; padding: .4rem 1.1rem;
+  cursor: pointer; min-height: 34px; border: 1px solid var(--accent);
+}
+.run { background: var(--accent); color: var(--on-accent); }
+.run:hover { filter: brightness(1.1); }
+.run[disabled] { opacity: .6; cursor: progress; }
+.reset { background: none; color: var(--accent); }
+.reset:hover { background: var(--accent-soft); }
+.run:focus-visible, .reset:focus-visible, .opt:focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; }
+.lab-status { font-size: .8rem; color: var(--ink-3); }
+.out {
+  margin: .7rem 0 0; padding: .7rem 1rem; min-height: 0; white-space: pre-wrap;
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: .86rem; line-height: 1.5;
+  color: var(--ink); background: var(--paper); border-left: 3px solid var(--mark); border-radius: 0 8px 8px 0;
+}
+main > section:nth-of-type(odd) .out { background: var(--surface); }
+.out:empty { display: none; }
+.out.err { border-left-color: #d9534f; }
+.opts { display: grid; gap: .5rem; max-width: 44rem; }
+.opt {
+  font: inherit; font-size: .95rem; text-align: left; color: var(--ink-2); cursor: pointer;
+  background: none; border: 1px solid var(--rule); border-radius: 10px; padding: .6rem .9rem; line-height: 1.4;
+  transition: border-color .2s, background-color .2s;
+}
+.opt:hover { border-color: var(--ink-3); color: var(--ink); }
+.opt.ok { border-color: var(--mark); background: var(--mark-soft); color: var(--ink); }
+.opt.no { border-color: #d9534f; background: rgba(217, 83, 79, .1); color: var(--ink); }
+.fb { margin: .7rem 0 0 !important; font-size: .95rem !important; min-height: 1.4em; }
+.lab-foot { margin: .9rem 0 0; font-size: .76rem; color: var(--ink-3); }
+.lab-foot a { color: var(--ink-3); text-decoration: underline; }
+html:not(.js) .lab-tabs, html:not(.js) .viz, html:not(.js) .lab-run, html:not(.js) .quiz { display: none; }
+@media (max-width: 760px) {
+  .lab { padding: 1rem 1rem 1.3rem; }
+  .cell { grid-template-columns: minmax(0, 1fr); gap: .2rem; }
+  .cell-k { padding-top: 0; }
+  .lab-canvas { aspect-ratio: 13 / 7; }
+  .lab-tabs .sort-seg { display: grid; width: 100%; border-radius: 14px; }
+  .lab-tab { border-radius: 11px; }
+  .ctl { flex: 1 1 100%; flex-wrap: wrap; row-gap: 0; }
+  .ctl span { flex: 1 1 100%; white-space: normal; }
+}
+
+/* ============================================================
    Print
    ============================================================ */
 @media print {
-  .nav, .tools, .links, .theme-btn, .nav-lang, .nav-cta, .spine, .emg, .cchart, .cmap-wrap { display: none !important; }
+  .nav, .tools, .links, .theme-btn, .nav-lang, .nav-cta, .spine, .emg, .cchart, .cmap-wrap, .lab { display: none !important; }
   body { background: #fff; color: #14181d; font-size: 10.5pt; }
   .page { max-width: 100%; padding: 0; }
   h1 { font-size: 22pt; }
@@ -2269,6 +2368,70 @@ h1 .c { display: inline-block; }
         </div>
       </div>
     </div>
+
+    <h3>Διαδραστικά μαθήματα</h3>
+    <p class="lab-intro">Σύντομα notebooks για τους φοιτητές μου: διαβάστε, παίξτε με το μοντέλο και μετά τρέξτε μόνοι σας τον κώδικα R. Τρέχουν εξ ολοκλήρου στον browser σας· τίποτα δεν εγκαθίσταται και τίποτα δεν στέλνεται.</p>
+    <div class="lab rise" data-loading="Φόρτωση της R στον browser σας (μόνο την πρώτη φορά, λίγα δευτερόλεπτα)…" data-running="Εκτέλεση…" data-offline="Η R δεν φόρτωσε σε αυτόν τον browser. Αναμενόμενο αποτέλεσμα:" data-error="Η R επέστρεψε σφάλμα:" data-correct="Σωστά." data-wrong="Όχι ακριβώς." data-run="Εκτέλεση" data-edit="Αλλάξτε τον κώδικα και πατήστε Εκτέλεση.">
+      <div class="lab-tabs"><span class="sort-seg" role="group" aria-label="Μάθημα"><button class="sort lab-tab" type="button" data-lesson="emg" aria-pressed="true">1 · Από το ακατέργαστο EMG σε ένα μέτρο πλάτους</button><button class="sort lab-tab" type="button" data-lesson="steadiness" aria-pressed="false">2 · Σταθερότητα δύναμης και συντελεστής μεταβλητότητας</button></span></div>
+      <article class="lesson" id="lesson-emg" data-kind="emg">
+        <h4>Από το ακατέργαστο EMG σε ένα μέτρο πλάτους</h4>
+        <div class="cell"><span class="cell-k">Διαβάστε</span>
+          <div class="cell-b"><p>Το επιφανειακό EMG κυμαίνεται πάνω και κάτω από το μηδέν, επειδή το ηλεκτρόδιο «βλέπει» την ηλεκτρική δραστηριότητα πολλών μυϊκών ινών ως θετικές και αρνητικές φάσεις. Έτσι ο <b>μέσος όρος του ακατέργαστου σήματος είναι κοντά στο μηδέν</b>, όσο έντονα κι αν εργάζεται ο μυς.</p><p>Δύο βασικές λύσεις: <b>ανόρθωση</b> του σήματος (απόλυτες τιμές) και μέσος όρος, ή το <b>RMS</b> (τετραγωνική ρίζα του μέσου τετραγώνου). Υπολογισμένα σε ένα κινούμενο παράθυρο, δίνουν ένα <b>περίβλημα (envelope)</b> που ακολουθεί πόσο εργάζεται ο μυς.</p></div></div>
+        <div class="cell viz"><span class="cell-k">Δοκιμάστε</span>
+          <div class="cell-b"><p class="lab-note">Σύρετε το παράθυρο: ένα μικρό ακολουθεί κάθε λεπτομέρεια, ένα μεγάλο είναι ομαλό αλλά αργό. Ενεργοποιήστε την ανόρθωση για να δείτε το αρνητικό μισό να διπλώνει προς τα πάνω.</p>
+            <canvas class="lab-canvas" aria-hidden="true" data-labels="Ακατέργαστο EMG|Περίβλημα (RMS)|Παράθυρο|ms"></canvas>
+            <div class="lab-ctl"><label class="ctl"><span>Παράθυρο</span><input type="range" data-k="win" min="10" max="400" step="5" value="100"><output data-unit="ms">100 ms</output></label><label class="ctl chk"><input type="checkbox" data-k="rect"><span>Ανόρθωση</span></label></div></div></div>
+        <div class="cell"><span class="cell-k">Κώδικας R</span>
+          <div class="cell-b"><p class="lab-note">Δέκα δείγματα ενός ακατέργαστου σήματος (µV). Συγκρίνετε τους τρεις τρόπους μέσου όρου:</p>
+            <textarea class="code" rows="8" spellcheck="false" autocapitalize="off" autocorrect="off"
+              aria-label="Κώδικας R" data-out="[1] 9.2
+[1] 53
+[1] 57.68189"># Δέκα δείγματα ακατέργαστου EMG (μV)
+emg &lt;- c(-42, 65, -18, 90, -75, 31, -58, 77, -26, 48)
+
+mean(emg)               # ακατέργαστο: θετικά και αρνητικά αλληλοαναιρούνται
+rectified &lt;- abs(emg)   # ανόρθωση πλήρους κύματος
+mean(rectified)         # μέση ανορθωμένη τιμή
+sqrt(mean(emg^2))       # RMS</textarea>
+            <div class="lab-run"><button class="run" type="button">Εκτέλεση</button>
+              <button class="reset" type="button">Επαναφορά</button>
+              <span class="lab-status">Αλλάξτε τον κώδικα και πατήστε Εκτέλεση.</span></div>
+            <pre class="out" aria-live="polite" aria-label="Αποτέλεσμα"></pre>
+            <p class="lab-note tip">Δοκιμάστε να αλλάξετε έναν αριθμό ή προσθέστε <code>max(rectified)</code> σε νέα γραμμή.</p></div></div>
+        <div class="cell quiz"><span class="cell-k">Έλεγχος</span>
+          <div class="cell-b"><p><b>Γιατί ανορθώνουμε το EMG πριν υπολογίσουμε τον μέσο όρο;</b></p>
+            <div class="opts"><button class="opt" type="button" data-ok="0" data-fb="Η ανόρθωση δεν αφαιρεί θόρυβο· αυτό το κάνει το φιλτράρισμα. Δείτε το πρώτο αποτέλεσμα: ο ακατέργαστος μέσος είναι σχεδόν 0.">Για να αφαιρέσουμε θόρυβο από την καταγραφή.</button><button class="opt" type="button" data-ok="1" data-fb="Ο ακατέργαστος μέσος παραπάνω είναι 9,2 μV, ενώ ο ανορθωμένος 53 μV.">Οι θετικές και οι αρνητικές φάσεις αλληλοαναιρούνται, οπότε ο ακατέργαστος μέσος είναι κοντά στο μηδέν ανεξάρτητα από την προσπάθεια.</button><button class="opt" type="button" data-ok="0" data-fb="Το πλάτος δεν είναι το ζητούμενο: χωρίς ανόρθωση ο μέσος όρος θα ήταν άνευ νοήματος, όχι μικρός.">Για να μεγαλώσει το σήμα.</button></div><p class="fb" role="status"></p></div></div>
+      </article>
+      <article class="lesson" id="lesson-steadiness" data-kind="force">
+        <h4>Σταθερότητα δύναμης και συντελεστής μεταβλητότητας</h4>
+        <div class="cell"><span class="cell-k">Διαβάστε</span>
+          <div class="cell-b"><p>Κρατήστε έναν μυ σε σταθερή δύναμη και η δύναμη εξακολουθεί να ταλαντώνεται. Πόσο ταλαντώνεται είναι η <b>σταθερότητα δύναμης</b>, ένας ευαίσθητος δείκτης του πόσο καλά ελέγχει το νευρικό σύστημα τον μυ· χειροτερεύει με την κόπωση, τη γήρανση και τον πόνο.</p><p>Συνήθως αναφέρεται ως <b>συντελεστής μεταβλητότητας</b> (CoV): η τυπική απόκλιση <i>σε σχέση με τον μέσο όρο</i>, <code>CoV = SD / μέσος × 100</code>. Η διαίρεση με τον μέσο καθιστά συγκρίσιμες τις συσπάσεις σε διαφορετικά επίπεδα δύναμης.</p></div></div>
+        <div class="cell viz"><span class="cell-k">Δοκιμάστε</span>
+          <div class="cell-b"><p class="lab-note">Αυξήστε τη μεταβλητότητα και η καμπύλη ταλαντώνεται περισσότερο. Μετά αλλάξτε το επίπεδο στόχου και δείτε τι γίνεται με τον CoV όταν η SD μένει ίδια.</p>
+            <canvas class="lab-canvas" aria-hidden="true" data-labels="Δύναμη|Στόχος|Μεταβλητότητα (SD)|Επίπεδο στόχου|CoV|% MVC|SD|Μέσος"></canvas>
+            <div class="lab-ctl"><label class="ctl"><span>Μεταβλητότητα (SD)</span><input type="range" data-k="sd" min="0.2" max="3" step="0.1" value="1"><output>1.0</output></label><label class="ctl"><span>Επίπεδο στόχου</span><input type="range" data-k="target" min="10" max="40" step="1" value="20"><output>20 % MVC</output></label><p class="lab-read" aria-live="off"></p></div></div></div>
+        <div class="cell"><span class="cell-k">Κώδικας R</span>
+          <div class="cell-b"><p class="lab-note">Δύναμη (% του μέγιστου) που καταγράφηκε κατά τη διατήρηση στόχου 20 %:</p>
+            <textarea class="code" rows="8" spellcheck="false" autocapitalize="off" autocorrect="off"
+              aria-label="Κώδικας R" data-out=" mean    sd    cv 
+20.00  0.99  4.97 "># Δύναμη (% του μέγιστου) κατά τη διατήρηση στόχου 20 %
+force &lt;- c(19.2, 20.5, 21.1, 18.8, 20.3, 19.6, 21.4, 18.5, 20.9, 19.7)
+
+m  &lt;- mean(force)
+s  &lt;- sd(force)
+cv &lt;- s / m * 100        # συντελεστής μεταβλητότητας (%)
+round(c(mean = m, sd = s, cv = cv), 2)</textarea>
+            <div class="lab-run"><button class="run" type="button">Εκτέλεση</button>
+              <button class="reset" type="button">Επαναφορά</button>
+              <span class="lab-status">Αλλάξτε τον κώδικα και πατήστε Εκτέλεση.</span></div>
+            <pre class="out" aria-live="polite" aria-label="Αποτέλεσμα"></pre>
+            <p class="lab-note tip">Αλλάξτε τον στόχο σε 40 (και τους αριθμούς μαζί του) και τρέξτε ξανά.</p></div></div>
+        <div class="cell quiz"><span class="cell-k">Έλεγχος</span>
+          <div class="cell-b"><p><b>Η SD της δύναμης μένει ίδια, αλλά το επίπεδο στόχου διπλασιάζεται. Τι γίνεται με τον CoV;</b></p>
+            <div class="opts"><button class="opt" type="button" data-ok="0" data-fb="Ο διπλασιασμός του μέσου στον παρονομαστή κάνει το αντίθετο.">Διπλασιάζεται.</button><button class="opt" type="button" data-ok="1" data-fb="CoV = SD / μέσος × 100: η ίδια SD πάνω από διπλάσιο μέσο δίνει μισό CoV.">Υποδιπλασιάζεται.</button><button class="opt" type="button" data-ok="0" data-fb="Θα έμενε ίδιος μόνο αν διπλασιαζόταν και η SD.">Μένει ίδιος.</button></div><p class="fb" role="status"></p></div></div>
+      </article>
+    </div>
+    <p class="lab-foot">Η R τρέχει στον browser σας με το <a href="https://docs.r-wasm.org/webr/latest/" target="_blank" rel="noopener">webR</a></p>
   </section>
 
   <!-- ===================== SERVICE ===================== -->
@@ -2397,7 +2560,7 @@ h1 .c { display: inline-block; }
         </a>
       </div>
       <span>&copy; 2026 Δρ Μιχαήλ Αρβανιτίδης. Με επιφύλαξη παντός δικαιώματος.</span>
-      <span>Τελευταία ενημέρωση: <time datetime="2026-10-16">16 Οκτωβρίου 2026</time></span>
+      <span>Τελευταία ενημέρωση: <time datetime="2026-10-18">18 Οκτωβρίου 2026</time></span>
     </div>
   </footer>
 
@@ -3275,6 +3438,228 @@ h1 .c { display: inline-block; }
         muVisible = es[0].isIntersecting;
         if (muVisible) muStart(); else muRunning = false;
       }, { threshold: 0.35 }).observe(muCanvas);
+    }
+  }
+
+  /* ---------- Interactive lessons ---------- */
+  // Tabs between lessons, a live model per lesson, R running in the page (webR,
+  // fetched only when someone presses Run) and a one-question check.
+  var lab = document.querySelector('.lab');
+  if (lab) {
+    var labTabs = Array.prototype.slice.call(lab.querySelectorAll('.lab-tab'));
+    var labLessons = Array.prototype.slice.call(lab.querySelectorAll('.lesson'));
+    var labShow = function (id) {
+      labLessons.forEach(function (l) { l.classList.toggle('on', l.id === 'lesson-' + id); });
+      labTabs.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.lesson === id)); });
+    };
+    labTabs.forEach(function (b) { b.addEventListener('click', function () { labShow(b.dataset.lesson); }); });
+    labShow(labTabs[0].dataset.lesson);
+
+    // ---- the check
+    Array.prototype.forEach.call(lab.querySelectorAll('.opts'), function (box) {
+      box.addEventListener('click', function (e) {
+        var b = e.target.closest('.opt');
+        if (!b) return;
+        var good = b.dataset.ok === '1';
+        Array.prototype.forEach.call(box.querySelectorAll('.opt'), function (o) { o.classList.remove('ok', 'no'); });
+        b.classList.add(good ? 'ok' : 'no');
+        box.parentNode.querySelector('.fb').textContent = (good ? lab.dataset.correct : lab.dataset.wrong) + ' ' + b.dataset.fb;
+      });
+    });
+
+    // ---- R in the page
+    var rLoad = null;
+    var getR = function () {
+      if (!rLoad) {
+        var base = 'https://webr.r-wasm.org/v0.5.0/';
+        rLoad = import(base + 'webr.mjs').then(function (m) {
+          var w = new m.WebR({ baseUrl: base });
+          return w.init().then(function () { return w; });
+        });
+        rLoad.catch(function () { rLoad = null; });
+      }
+      return rLoad;
+    };
+    Array.prototype.forEach.call(lab.querySelectorAll('.lesson'), function (les) {
+      var ta = les.querySelector('.code'), run = les.querySelector('.run'), reset = les.querySelector('.reset');
+      var out = les.querySelector('.out'), status = les.querySelector('.lab-status');
+      var go = function () {
+        if (run.disabled) return;
+        run.disabled = true; out.classList.remove('err');
+        status.textContent = rLoad ? lab.dataset.running : lab.dataset.loading;
+        getR().then(function (webR) {
+          status.textContent = lab.dataset.running;
+          return new webR.Shelter().then(function (sh) {
+            return sh.captureR(ta.value, { withAutoprint: true }).then(function (res) {
+              out.textContent = res.output.map(function (o) { return o.data; }).join('\n');
+              out.classList.toggle('err', res.output.some(function (o) { return o.type === 'stderr'; }));
+              sh.purge();
+            }, function (err) {
+              out.classList.add('err');
+              out.textContent = lab.dataset.error + ' ' + (err && err.message ? err.message : err);
+              sh.purge();
+            });
+          });
+        }).then(function () { status.textContent = lab.dataset.edit; }, function () {
+          out.classList.remove('err');
+          out.textContent = lab.dataset.offline + '\n\n' + ta.dataset.out;
+          status.textContent = lab.dataset.edit;
+        }).then(function () { run.disabled = false; });
+      };
+      run.addEventListener('click', go);
+      reset.addEventListener('click', function () { ta.value = ta.defaultValue; out.textContent = ''; });
+      ta.addEventListener('keydown', function (e) { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); go(); } });
+    });
+
+    // ---- live models: one canvas each, redrawn while on screen
+    var labViz = function (canvas, step, draw) {
+      var c = canvas.getContext('2d'), W = 1, H = 1, d = 1, running = false, visible = false, last = 0;
+      var render = function () { if (W > 1) draw(c, W, H, d); };
+      var size = function () {
+        var r = canvas.getBoundingClientRect();
+        if (!r.width) return;
+        d = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.round(r.width * d); canvas.height = Math.round(r.height * d);
+        W = canvas.width; H = canvas.height; render();
+      };
+      var tick = function (now) {
+        if (!running) return;
+        var dt = Math.min(0.05, (now - last) / 1000); last = now;
+        step(dt); render(); requestAnimationFrame(tick);
+      };
+      if ('ResizeObserver' in window) new ResizeObserver(size).observe(canvas); else addEventListener('resize', size);
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (es) {
+          visible = es[0].isIntersecting;
+          if (visible && !reduce && !running) { running = true; last = performance.now(); requestAnimationFrame(tick); }
+          if (!visible) running = false;
+        }).observe(canvas);
+      }
+      new MutationObserver(render).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+      size();
+      return { render: render };
+    };
+    var css = function (v) { return getComputedStyle(root).getPropertyValue(v).trim(); };
+    var gaussL = function () { return (Math.random() + Math.random() + Math.random() + Math.random() - 2) * 1.73; };
+    var fontL = function (d) { return Math.round(10.5 * d) + 'px ' + getComputedStyle(document.body).fontFamily; };
+
+    // Lesson 1: raw EMG, optional rectification, a moving-RMS envelope
+    var emgLes = lab.querySelector('#lesson-emg');
+    if (emgLes) {
+      var cv1 = emgLes.querySelector('.lab-canvas'), L1 = cv1.dataset.labels.split('|');
+      var inWin = emgLes.querySelector('[data-k=win]'), inRect = emgLes.querySelector('[data-k=rect]');
+      var LEN = 6000, VIS = 3000, off = 0, rect = 0, win = +inWin.value;
+      var raw = new Float32Array(LEN), rms = new Float32Array(LEN);
+      (function () {
+        var x1 = 0, x2 = 0, sq = 0, cyc = [], i;
+        for (i = 0; i < 4; i++) cyc.push(0.8 + 0.4 * Math.random());
+        for (i = 0; i < LEN; i++) {
+          var x0 = 1.05 * x1 - 0.55 * x2 + gaussL(); x2 = x1; x1 = x0;
+          var t = (i % 1500) / 1000, env = 0.12 + 0.88 * Math.exp(-Math.pow(t - 0.75, 2) / 0.08);
+          raw[i] = x0 * env * cyc[Math.floor(i / 1500)]; sq += raw[i] * raw[i];
+        }
+        var sd = Math.sqrt(sq / LEN) * 1.45;
+        for (i = 0; i < LEN; i++) raw[i] /= sd;
+      })();
+      var calc = function () {                // moving RMS, centred, circular
+        var cs = new Float64Array(2 * LEN + 1), i;
+        for (i = 0; i < 2 * LEN; i++) cs[i + 1] = cs[i] + raw[i % LEN] * raw[i % LEN];
+        var h = Math.round(win / 2);
+        for (i = 0; i < LEN; i++) {
+          var a = i + LEN - h, b = i + LEN + h + 1;
+          rms[i] = Math.sqrt((cs[b] - cs[a]) / (b - a));
+        }
+      };
+      calc();
+      var viz1 = labViz(cv1, function (dt) {
+        off = (off + dt * 420) % LEN;
+        rect += ((inRect.checked ? 1 : 0) - rect) * Math.min(1, dt * 7);
+      }, function (c, W, H, d) {
+        var mark = css('--mark'), acc = css('--accent'), grid = css('--rule'), ink = css('--ink-2');
+        var base = H * (0.5 + 0.38 * rect), sc = H * 0.34 / 3.2, o = Math.floor(off), j, k;
+        c.clearRect(0, 0, W, H);
+        c.strokeStyle = grid; c.lineWidth = d;
+        c.beginPath(); c.moveTo(0, base); c.lineTo(W, base); c.stroke();
+        c.lineJoin = 'round';
+        c.strokeStyle = mark; c.globalAlpha = 0.85; c.lineWidth = 1.2 * d; c.beginPath();
+        for (j = 0; j < VIS; j += 2) {
+          k = raw[(o + j) % LEN];
+          var y = base - ((1 - rect) * k + rect * Math.abs(k)) * sc;
+          j ? c.lineTo(j / (VIS - 1) * W, y) : c.moveTo(0, y);
+        }
+        c.stroke(); c.globalAlpha = 1;
+        c.strokeStyle = acc; c.lineWidth = 2.6 * d; c.lineCap = 'round';
+        [1, -1].forEach(function (sg, n) {
+          c.globalAlpha = n ? (1 - rect) : 1; if (!c.globalAlpha) return;
+          c.beginPath();
+          for (j = 0; j < VIS; j += 2) {
+            var r = rms[(o + j) % LEN] * sc, yy = sg > 0 ? base - r : base + r * (1 - rect);
+            j ? c.lineTo(j / (VIS - 1) * W, yy) : c.moveTo(0, yy);
+          }
+          c.stroke();
+        });
+        c.globalAlpha = 1; c.font = fontL(d); c.textBaseline = 'middle';
+        [[mark, L1[0]], [acc, L1[1] + ' · ' + win + ' ' + L1[3]]].forEach(function (it, n) {
+          var x = 12 * d + n * 0, y = 14 * d + n * 16 * d;
+          c.fillStyle = it[0]; c.fillRect(x, y - d, 18 * d, 2.4 * d);
+          c.fillStyle = ink; c.fillText(it[1], x + 26 * d, y);
+        });
+      });
+      inWin.addEventListener('input', function () {
+        win = +inWin.value; inWin.nextElementSibling.textContent = win + ' ' + L1[3]; calc();
+        if (reduce) viz1.render();
+      });
+      inRect.addEventListener('change', function () { if (reduce) { rect = inRect.checked ? 1 : 0; viz1.render(); } });
+    }
+
+    // Lesson 2: a force hold with adjustable variability and target
+    var forLes = lab.querySelector('#lesson-steadiness');
+    if (forLes) {
+      var cv2 = forLes.querySelector('.lab-canvas'), L2 = cv2.dataset.labels.split('|');
+      var inSd = forLes.querySelector('[data-k=sd]'), inTg = forLes.querySelector('[data-k=target]');
+      var readout = forLes.querySelector('.lab-read');
+      var NS = 300, zs = [], acc2 = 0, zz = 0, sdv = +inSd.value, tgv = +inTg.value;
+      for (var q = 0; q < NS; q++) { zz = 0.93 * zz + 0.368 * gaussL(); zs.push(zz); }
+      var forShow = function () {
+        var cov = sdv / tgv * 100;
+        readout.innerHTML = L2[4] + ' <b>' + cov.toFixed(1) + ' %</b> &nbsp;=&nbsp; ' + L2[6] + ' ' + sdv.toFixed(1) +
+          ' / ' + L2[7].toLowerCase() + ' ' + tgv + ' × 100';
+        inSd.nextElementSibling.textContent = sdv.toFixed(1);
+        inTg.nextElementSibling.textContent = tgv + ' ' + L2[5];
+      };
+      forShow();
+      var viz2 = labViz(cv2, function (dt) {
+        acc2 += dt;
+        while (acc2 > 0.02) { acc2 -= 0.02; zz = 0.93 * zz + 0.368 * gaussL(); zs.push(zz); zs.shift(); }
+      }, function (c, W, H, d) {
+        var mark = css('--mark'), grid = css('--rule'), ink = css('--ink-2'), ink3 = css('--ink-3');
+        var m = 0, v = 0, i;
+        for (i = 0; i < NS; i++) m += zs[i]; m /= NS;
+        for (i = 0; i < NS; i++) v += (zs[i] - m) * (zs[i] - m);
+        var sdz = Math.sqrt(v / (NS - 1)) || 1;            // normalised, so the trace has exactly the chosen SD
+        var lo = tgv - 12, hi = tgv + 12, px0 = 52 * d, pw = W - px0 - 14 * d;
+        var yv = function (f) { return H * 0.1 + (hi - f) / (hi - lo) * H * 0.8; };
+        c.clearRect(0, 0, W, H);
+        c.fillStyle = mark; c.globalAlpha = 0.13;                 // ±1 SD band
+        c.fillRect(px0, yv(tgv + sdv), pw, yv(tgv - sdv) - yv(tgv + sdv));
+        c.globalAlpha = 1;
+        c.strokeStyle = ink; c.globalAlpha = 0.5; c.lineWidth = d; c.setLineDash([5 * d, 5 * d]);
+        c.beginPath(); c.moveTo(px0, yv(tgv)); c.lineTo(px0 + pw, yv(tgv)); c.stroke();
+        c.setLineDash([]); c.globalAlpha = 1;
+        c.strokeStyle = mark; c.lineWidth = 2.2 * d; c.lineJoin = 'round'; c.beginPath();
+        for (i = 0; i < NS; i++) {
+          var f = tgv + (zs[i] - m) / sdz * sdv, y = Math.max(H * 0.03, Math.min(H * 0.97, yv(f)));
+          i ? c.lineTo(px0 + i / (NS - 1) * pw, y) : c.moveTo(px0, y);
+        }
+        c.stroke();
+        c.font = fontL(d); c.textBaseline = 'middle'; c.textAlign = 'right'; c.fillStyle = ink3;
+        c.fillText(String(tgv), px0 - 8 * d, yv(tgv));
+        c.fillText(String(tgv + 10), px0 - 8 * d, yv(tgv + 10)); c.fillText(String(tgv - 10), px0 - 8 * d, yv(tgv - 10));
+        c.textAlign = 'left'; c.fillStyle = ink;
+        c.fillText(L2[0] + ' (' + L2[5] + ')', px0, H * 0.045);
+      });
+      var upd = function () { sdv = +inSd.value; tgv = +inTg.value; forShow(); if (reduce) viz2.render(); };
+      inSd.addEventListener('input', upd); inTg.addEventListener('input', upd);
     }
   }
 
