@@ -224,7 +224,24 @@ def render_lessons(lang):
     MATLAB code that follows it, and a question. One article per lesson."""
     U, esc = LAB_UI[lang], html.escape
 
+    def generic_controls(L):
+        out = []
+        for c in L["ctl"]:
+            if c.get("check"):
+                out.append(f'<label class="ctl chk"><input type="checkbox" data-k="{c["k"]}"'
+                           f'{" checked" if c["value"] else ""}><span>{esc(c["label"])}</span></label>')
+            else:
+                dec = c.get("dec", 0)
+                unit = f' {esc(c["unit"])}' if c["unit"] else ""
+                out.append(f'<label class="ctl"><span>{esc(c["label"])}</span>'
+                           f'<input type="range" data-k="{c["k"]}" min="{c["min"]}" max="{c["max"]}" '
+                           f'step="{c["step"]}" value="{c["value"]}" data-dec="{dec}" data-unit="{esc(c["unit"], quote=True)}">'
+                           f'<output>{c["value"]:.{dec}f}{unit}</output></label>')
+        return "".join(out) + '<p class="lab-read" aria-live="off"></p>'
+
     def controls(kind, L):
+        if "ctl" in L:
+            return generic_controls(L)
         if kind == "emg":
             segs = "".join(
                 f'<button class="sort env-btn" type="button" data-env="{i}" aria-pressed="{"true" if i == 0 else "false"}">{esc(t)}</button>'
@@ -247,9 +264,17 @@ def render_lessons(lang):
         txt = "\n".join(L[key])
         if kind == "emg":
             txt = txt.replace("{win}", "100").replace("{env}", L[envkey][0])
+        elif "ctl" in L:                         # defaults of the sliders, for readers without JavaScript
+            for c in L["ctl"]:
+                v = c["value"]
+                shown = (("TRUE" if key == "rcode" else "true") if v else ("FALSE" if key == "rcode" else "false")) \
+                    if c.get("check") else f'{v:g}'
+                txt = txt.replace("{" + c["k"] + "}", shown)
         return txt
 
     def tpl_attrs(L, kind, key, envkey):
+        if "ctl" in L:
+            return f' data-tpl="{esc(chr(10).join(L[key]), quote=True)}"'
         if kind != "emg":
             return ""
         return (f' data-tpl="{esc(chr(10).join(L[key]), quote=True)}"'
@@ -259,12 +284,16 @@ def render_lessons(lang):
     for n, les in enumerate(LESSONS, 1):
         L, kind = les[lang], les["kind"]
         tabs.append(f'<button class="sort lab-tab" type="button" data-lesson="{les["id"]}" '
-                    f'aria-pressed="{"true" if n == 1 else "false"}">{n} · {esc(L["title"])}</button>')
+                    f'aria-pressed="{"true" if n == 1 else "false"}">{n} · {esc(L.get("short", L["title"]))}</button>')
         opts = "".join(
             f'<button class="opt" type="button" data-ok="{1 if ok else 0}" data-fb="{esc(fb, quote=True)}">{esc(t)}</button>'
             for t, ok, fb in L["options"])
         rrows = len(code_text(L, kind, "rcode", "renv_code").split("\n")) + 1
-        arts.append(f"""      <article class="lesson" id="lesson-{les['id']}" data-kind="{kind}" data-file="{les['file']}">
+        model = f' data-model="{kind}"' if "ctl" in L else ""
+        mout = (f'''<p class="lab-note outl">{esc(U['out'])}</p>
+              <pre class="out mout" aria-live="polite"></pre>''' if les.get("matlab_out", True)
+                else '<pre class="out mout" hidden></pre>')
+        arts.append(f"""      <article class="lesson" id="lesson-{les['id']}" data-kind="{kind}"{model} data-file="{les['file']}">
         <h4>{esc(L['title'])}</h4>
         <div class="cell"><span class="cell-k">{esc(U['read'])}</span>
           <div class="cell-b">{''.join(f'<p>{p}</p>' for p in L['read'])}</div></div>
@@ -290,8 +319,7 @@ def render_lessons(lang):
               <pre class="code" tabindex="0"{tpl_attrs(L, kind, "code", "env_code")}>{esc(code_text(L, kind, "code", "env_code"))}</pre>
               <div class="lab-run"><button class="run cp" type="button">{esc(U['copy'])}</button>
                 <button class="reset dl" type="button">{esc(U['download'])}</button></div>
-              <p class="lab-note outl">{esc(U['out'])}</p>
-              <pre class="out mout" aria-live="polite"></pre></div>
+              {mout}</div>
             <p class="lab-note tip">{L['tip']}</p></div></div>
         <div class="cell quiz"><span class="cell-k">{esc(U['quiz'])}</span>
           <div class="cell-b"><p><b>{esc(L['question'])}</b></p>

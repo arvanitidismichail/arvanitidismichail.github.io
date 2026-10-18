@@ -43,11 +43,25 @@ language on that file gives the numbers shown on the page. Both codes follow the
 sliders (the R box stops following once a student edits it; Reset brings it
 back).
 
-To add a lesson, copy an entry, change the text and the code, set `kind` to one
-of the live models (`emg` or `force`; new models are added in the "Interactive
-lessons" block of `template.html`), then run `python3 build.py`. If you change a
-chunk, check its numbers against Rscript / MATLAB: the page's own values come
-from the same maths in the model. The first Run downloads R (about 10 MB, once);
+There are seven lessons: EMG amplitude, force steadiness, filtering,
+normalising to MVC, the HD-sEMG map (centroid and peak), motor unit firing
+(discharge rate and variability from spike times) and a two-group comparison
+(Welch t-test, effect size, confidence interval).
+
+To add a lesson, copy an entry in `lessons.py`: the text, the code and a `ctl`
+list that describes its sliders (a range or a checkbox each; `{name}` in the
+code is replaced by the slider's current value). Then add a small model named
+after its `kind` to `labModels` in the "Interactive lessons" block of
+`template.html`: `setup()` builds the data once, `compute()` the numbers for the
+current sliders, `draw()` the picture, and `read()`, `out()`, `vals()` and
+`csv()` the readouts, the MATLAB-style output, the code values and the CSV. Run
+`python3 build.py`.
+
+Every number on the page comes from the model's own maths, so check a new
+lesson the same way the existing ones were checked: download the CSV, run the R
+code on it with Rscript and compare. Set `matlab_out=False` on a lesson whose
+MATLAB output cannot be matched exactly (filtering, because MATLAB's filtfilt
+pads the ends differently). The first Run of R downloads it (about 10 MB, once);
 nothing else on the page depends on it.
 
 ## The weekly automatic update

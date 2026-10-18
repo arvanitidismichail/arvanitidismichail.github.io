@@ -1221,8 +1221,8 @@ h1 .c { display: inline-block; }
   padding: 1.2rem 1.6rem 1.6rem;
 }
 main > section:nth-of-type(odd) .lab { background: var(--paper); }
-.lab-tabs { padding-bottom: 1rem; overflow-x: auto; }
-.lab-tabs .sort-seg { flex-wrap: wrap; }
+.lab-tabs { padding-bottom: 1rem; }
+.lab-tabs .sort-seg { flex-wrap: wrap; border-radius: 18px; }
 .lab-tab { white-space: normal; text-align: left; }
 html.js .lesson:not(.on) { display: none; }
 .lesson h4 {
@@ -2976,7 +2976,7 @@ html:not(.js) .lab-tabs, html:not(.js) .viz, html:not(.js) .lab-run, html:not(.j
       if ('IntersectionObserver' in window) {
         new IntersectionObserver(function (es) {
           visible = es[0].isIntersecting;
-          if (visible && !reduce && !running) { running = true; last = performance.now(); requestAnimationFrame(tick); }
+          if (visible && step && !reduce && !running) { running = true; last = performance.now(); requestAnimationFrame(tick); }
           if (!visible) running = false;
         }).observe(canvas);
       }
@@ -3172,6 +3172,471 @@ html:not(.js) .lab-tabs, html:not(.js) .viz, html:not(.js) .lab-run, html:not(.j
       forLes.labExpect = function () { return out2.textContent; };
       forLes.labCsv = function () { return forTrace().map(function (v) { return v.toFixed(6); }); };
     }
+
+
+    // ===== the other lessons: one small model each (static pictures, redrawn when a control moves) =====
+    var labRng = function (seed) {                       // mulberry32: the same numbers for every visitor
+      return function () {
+        seed = (seed + 0x6D2B79F5) | 0; var t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    };
+    var labGz = function (rand) { return Math.sqrt(-2 * Math.log(1 - rand())) * Math.cos(2 * Math.PI * rand()); };
+    var labNoise = function (seed, N) {                  // white noise without the slow drift, unit variance
+      var rand = labRng(seed), lp = 0, tot = 0, h = new Float64Array(N), i;
+      for (i = 0; i < N; i++) { var w = labGz(rand); lp += 0.12 * (w - lp); h[i] = w - lp; tot += h[i] * h[i]; }
+      var k = 1 / Math.sqrt(tot / N); for (i = 0; i < N; i++) h[i] *= k;
+      return h;
+    };
+    var labSS = function (x) { return x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x); };
+    var labBurst = function (t, on, rise, hold, fall, amp) { return amp * labSS((t - on) / rise) * (1 - labSS((t - (on + rise + hold)) / fall)); };
+    var labTurbo = function (v) {
+      var t = 0.1 + 0.8 * (v < 0 ? 0 : v > 1 ? 1 : v);
+      return [34.61 + t * (1172.33 - t * (10793.56 - t * (33300.12 - t * (38394.49 - t * 14825.05)))),
+              23.31 + t * (557.33 + t * (1225.33 - t * (3574.96 - t * (1073.77 + t * 707.56)))),
+              27.2 + t * (3211.1 - t * (15327.97 - t * (27814 - t * (22569.18 - t * 6838.66))))].map(function (x) { return Math.max(0, Math.min(255, Math.round(x))); });
+    };
+    var mInt = function (v) { return String(Math.round(v)); };                 // MATLAB prints whole numbers without decimals
+    var mP = function (v) {                                                    // ... and tiny ones in exponent form
+      return v !== 0 && Math.abs(v) < 1e-4 ? v.toExponential(4).replace(/e([+-])(\d)$/, 'e$10$2') : m4(v);
+    };
+    var labLines = function (pairs) { return pairs.map(function (q) { return q[0] + ' = ' + q[1]; }).join('\n'); };
+
+    // second-order Butterworth and notch filters, applied forwards then backwards (zero phase)
+    var labBiquad = function (b, a, x) {
+      var n = x.length, y = new Float64Array(n), x1 = 0, x2 = 0, y1 = 0, y2 = 0, i;
+      for (i = 0; i < n; i++) {
+        var yi = b[0] * x[i] + b[1] * x1 + b[2] * x2 - a[1] * y1 - a[2] * y2;
+        y[i] = yi; x2 = x1; x1 = x[i]; y2 = y1; y1 = yi;
+      }
+      return y;
+    };
+    var labZero = function (f, x) {
+      var n = x.length, r = new Float64Array(n), o = new Float64Array(n), y, i;
+      y = labBiquad(f.b, f.a, x);
+      for (i = 0; i < n; i++) r[i] = y[n - 1 - i];
+      y = labBiquad(f.b, f.a, r);
+      for (i = 0; i < n; i++) o[i] = y[n - 1 - i];
+      return o;
+    };
+    var labButter = function (fc, fs, high) {
+      var K = Math.tan(Math.PI * fc / fs), n = 1 / (1 + Math.SQRT2 * K + K * K);
+      return { b: high ? [n, -2 * n, n] : [K * K * n, 2 * K * K * n, K * K * n],
+               a: [1, 2 * (K * K - 1) * n, (1 - Math.SQRT2 * K + K * K) * n] };
+    };
+    var labNotch = function (f0, fs, Q) {
+      var w0 = 2 * Math.PI * f0 / fs, be = Math.tan(w0 / Q / 2), c = Math.cos(w0);
+      return { b: [1 / (1 + be), -2 * c / (1 + be), 1 / (1 + be)], a: [1, -2 * c / (1 + be), (1 - be) / (1 + be)] };
+    };
+    // Student's t: the two-sided p-value through the regularised incomplete beta function
+    var labLogGamma = function (x) {
+      var c = [76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5];
+      var y = x, t = x + 5.5, s = 1.000000000190015, j;
+      t -= (x + 0.5) * Math.log(t);
+      for (j = 0; j < 6; j++) s += c[j] / ++y;
+      return -t + Math.log(2.5066282746310005 * s / x);
+    };
+    var labBetaCF = function (a, b, x) {
+      var qab = a + b, qap = a + 1, qam = a - 1, c = 1, d = 1 - qab * x / qap, m;
+      if (Math.abs(d) < 1e-300) d = 1e-300;
+      d = 1 / d; var h = d;
+      for (m = 1; m <= 400; m++) {
+        var m2 = 2 * m, aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+        d = 1 + aa * d; if (Math.abs(d) < 1e-300) d = 1e-300;
+        c = 1 + aa / c; if (Math.abs(c) < 1e-300) c = 1e-300;
+        d = 1 / d; h *= d * c;
+        aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+        d = 1 + aa * d; if (Math.abs(d) < 1e-300) d = 1e-300;
+        c = 1 + aa / c; if (Math.abs(c) < 1e-300) c = 1e-300;
+        d = 1 / d; var del = d * c; h *= del;
+        if (Math.abs(del - 1) < 1e-15) break;
+      }
+      return h;
+    };
+    var labBetaI = function (a, b, x) {
+      if (x <= 0) return 0; if (x >= 1) return 1;
+      var bt = Math.exp(labLogGamma(a + b) - labLogGamma(a) - labLogGamma(b) + a * Math.log(x) + b * Math.log(1 - x));
+      return x < (a + 1) / (a + b + 2) ? bt * labBetaCF(a, b, x) / a : 1 - bt * labBetaCF(b, a, 1 - x) / b;
+    };
+    var labPT2 = function (t, df) { return labBetaI(df / 2, 0.5, df / (df + t * t)); };   // two-sided p
+    var labQT = function (df) {                                                           // t with two-sided p = 0.05
+      var lo = 0, hi = 60, k;
+      for (k = 0; k < 80; k++) { var mid = (lo + hi) / 2; if (labPT2(mid, df) > 0.05) lo = mid; else hi = mid; }
+      return (lo + hi) / 2;
+    };
+
+    var labModels = {};
+
+    // ---- 3. filtering
+    labModels.filter = {
+      setup: function () {
+        var N = 5000, h = labNoise(7001, N), x = new Float64Array(N), i;
+        for (i = 0; i < N; i++) {
+          var t = i / 1000, A = 0.05 + labBurst(t, 0.55, 0.45, 0.9, 0.5, 1) + labBurst(t, 3.2, 0.45, 0.7, 0.5, 0.62);
+          x[i] = +(h[i] * A * 150 + 80 * Math.sin(2 * Math.PI * 50 * t) + 300 * Math.sin(2 * Math.PI * 0.4 * t + 0.5) +
+                   150 * Math.sin(2 * Math.PI * 1.1 * t + 2)).toFixed(6);
+        }
+        var NN = 2000, cs = new Float64Array(NN), sn = new Float64Array(NN), wn = new Float64Array(NN);
+        for (i = 0; i < NN; i++) { cs[i] = Math.cos(2 * Math.PI * i / NN); sn[i] = Math.sin(2 * Math.PI * i / NN); wn[i] = 0.5 - 0.5 * Math.cos(2 * Math.PI * i / (NN - 1)); }
+        var D = { N: N, x: x };
+        D.spec = function (v) {                         // Hann-windowed power at 0.5 Hz steps, from 1.0 s
+          var P = new Float64Array(1001), seg = new Float64Array(NN), k, n;
+          for (n = 0; n < NN; n++) seg[n] = v[1000 + n] * wn[n];
+          for (k = 0; k <= 1000; k++) {
+            var re = 0, im = 0;
+            for (n = 0; n < NN; n++) { var ix = (k * n) % NN; re += seg[n] * cs[ix]; im -= seg[n] * sn[ix]; }
+            P[k] = re * re + im * im;
+          }
+          return P;
+        };
+        D.pX = D.spec(x);
+        var mx = 0; for (i = 0; i < 250; i++) { var q = (D.pX[4 * i] + D.pX[4 * i + 1] + D.pX[4 * i + 2] + D.pX[4 * i + 3]) / 4; if (q > mx) mx = q; }
+        D.maxP = mx;
+        return D;
+      },
+      compute: function (p, D) {
+        var y = D.x, fs = 1000, i;
+        if (p.notch) y = labZero(labNotch(50, fs, 35), y);
+        y = labZero(labButter(p.hp, fs, true), y);
+        y = labZero(labButter(p.lp, fs, false), y);
+        var k0 = 500, k1 = 4500, n = k1 - k0, sx = 0, sy = 0, rx = 0, ix = 0, ry = 0, iy = 0;
+        for (i = k0; i < k1; i++) {
+          var ph = 2 * Math.PI * 50 * (i - k0) / fs, c = Math.cos(ph), s = Math.sin(ph);
+          sx += D.x[i] * D.x[i]; sy += y[i] * y[i];
+          rx += D.x[i] * c; ix -= D.x[i] * s; ry += y[i] * c; iy -= y[i] * s;
+        }
+        return { D: D, y: y, rmsX: Math.sqrt(sx / n), rmsY: Math.sqrt(sy / n),
+                 a50X: 2 * Math.hypot(rx, ix) / n, a50Y: 2 * Math.hypot(ry, iy) / n, pY: D.spec(y) };
+      },
+      read: function (S, L) {
+        return [[L[7], S.rmsX.toFixed(1) + ' ' + L[3]], [L[8], S.rmsY.toFixed(1) + ' ' + L[3]],
+                [L[9], S.a50X.toFixed(1) + ' ' + L[3]], [L[10], S.a50Y.toFixed(1) + ' ' + L[3]]];
+      },
+      vals: function (p, r) { return { hp: p.hp, lp: p.lp, notch: r ? (p.notch ? 'TRUE' : 'FALSE') : (p.notch ? 'true' : 'false') }; },
+      out: function (S) {
+        return labLines([['rms_before', m4(S.rmsX)], ['rms_after', m4(S.rmsY)], ['amp50_before', m4(S.a50X)], ['amp50_after', m4(S.a50Y)]]);
+      },
+      csv: function (S) { var r = [], i; for (i = 0; i < S.D.N; i++) r.push(S.D.x[i].toFixed(6)); return r; },
+      draw: function (c, W, H, d, S, L, p) {
+        var D = S.D, mark = css('--mark'), grid = css('--rule'), ink = css('--ink-2'), ink3 = css('--ink-3'), acc = css('--accent');
+        var px0 = 56 * d, pw = W - px0 - 14 * d, MAXV = 900, j, k;
+        c.clearRect(0, 0, W, H); c.lineJoin = 'round'; c.font = fontL(d); c.textBaseline = 'middle';
+        var panel = function (y0, y1, arr, colour, title) {
+          var cy = (y0 + y1) / 2, sc = (y1 - y0) / 2 / MAXV;
+          c.strokeStyle = grid; c.lineWidth = d; c.globalAlpha = 0.6; c.beginPath(); c.moveTo(px0, cy); c.lineTo(px0 + pw, cy); c.stroke(); c.globalAlpha = 1;
+          c.strokeStyle = colour; c.lineWidth = 1.1 * d; c.beginPath();
+          for (j = 0; j < 1500; j++) {
+            var y = cy - Math.max(-MAXV, Math.min(MAXV, arr[1500 + j])) * sc, x = px0 + j / 1499 * pw;
+            j ? c.lineTo(x, y) : c.moveTo(x, y);
+          }
+          c.stroke();
+          c.fillStyle = ink; c.textAlign = 'left'; c.fillText(title, px0, y0 - 9 * d);
+          c.fillStyle = ink3; c.textAlign = 'right'; c.fillText('0', px0 - 8 * d, cy);
+        };
+        panel(H * 0.1, H * 0.3, D.x, ink3, L[0]);
+        panel(H * 0.41, H * 0.61, S.y, mark, L[1]);
+        // spectrum, in dB relative to the strongest part of the recording
+        var s0 = H * 0.75, s1 = H * 0.92, dbMin = -70;
+        var fx = function (f) { return px0 + f / 500 * pw; }, dy = function (db) { return s0 + (0 - db) / (0 - dbMin) * (s1 - s0); };
+        c.strokeStyle = grid; c.lineWidth = d; c.globalAlpha = 0.6; c.beginPath();
+        [0, -35, -70].forEach(function (db) { c.moveTo(px0, dy(db)); c.lineTo(px0 + pw, dy(db)); });
+        c.stroke(); c.globalAlpha = 1;
+        c.fillStyle = ink3; c.textAlign = 'right';
+        [0, -35, -70].forEach(function (db) { c.fillText(String(db).replace('-', '−'), px0 - 8 * d, dy(db)); });
+        c.textAlign = 'center';
+        [0, 100, 200, 300, 400].forEach(function (f) { c.fillText(String(f), fx(f), s1 + 11 * d); });
+        c.textAlign = 'right'; c.fillText('500 ' + L[4], fx(500), s1 + 11 * d);
+        c.textAlign = 'left'; c.fillStyle = ink; c.fillText(L[2], px0, s0 - 9 * d);
+        var curve = function (P, colour, lw) {
+          c.strokeStyle = colour; c.lineWidth = lw * d; c.beginPath();
+          for (k = 0; k < 250; k++) {
+            var q = (P[4 * k] + P[4 * k + 1] + P[4 * k + 2] + P[4 * k + 3]) / 4;
+            var db = Math.max(dbMin, 10 * Math.log10(q / D.maxP + 1e-12)), x = fx((4 * k + 1.5) * 0.5), y = dy(db);
+            k ? c.lineTo(x, y) : c.moveTo(x, y);
+          }
+          c.stroke();
+        };
+        curve(D.pX, ink3, 1.2); curve(S.pY, mark, 2);
+        c.setLineDash([4 * d, 4 * d]); c.strokeStyle = acc; c.lineWidth = d; c.beginPath();
+        [p.hp, p.lp].forEach(function (f) { c.moveTo(fx(f), s0); c.lineTo(fx(f), s1); });
+        c.stroke(); c.setLineDash([]);
+        if (p.notch) { c.strokeStyle = acc; c.lineWidth = 2 * d; c.beginPath(); c.moveTo(fx(50), s1); c.lineTo(fx(50), s1 + 5 * d); c.stroke(); }
+        var legend = function (y, colour, text) {
+          var tw = c.measureText(text).width;
+          c.textAlign = 'right'; c.fillStyle = ink; c.fillText(text, px0 + pw - 6 * d, y);
+          c.fillStyle = colour; c.fillRect(px0 + pw - 6 * d - tw - 24 * d, y - d, 16 * d, 2.4 * d);
+        };
+        legend(s0 - 12 * d, ink3, L[5]); legend(s0 + 4 * d, mark, L[6]);
+      }
+    };
+
+    // ---- 4. normalising to a maximal contraction
+    labModels.mvc = {
+      setup: function () {
+        var N = 3000, A = new Float64Array(N), i;
+        for (i = 0; i < N; i++) A[i] = labBurst(i / 1000, 0.3, 0.5, 1.7, 0.5, 1);
+        return { N: N, h1: labNoise(8101, N), h2: labNoise(8102, N), A: A };
+      },
+      compute: function (p, D) {
+        var mvc = new Float64Array(D.N), task = new Float64Array(D.N), i, s1 = 0, s2 = 0;
+        for (i = 0; i < D.N; i++) {
+          mvc[i] = +(200 * p.gain * D.h1[i] * D.A[i]).toFixed(6);
+          task[i] = +(200 * p.gain * p.effort / 100 * D.h2[i] * D.A[i]).toFixed(6);
+        }
+        for (i = 1000; i < 2500; i++) { s1 += mvc[i] * mvc[i]; s2 += task[i] * task[i]; }
+        var r1 = Math.sqrt(s1 / 1500), r2 = Math.sqrt(s2 / 1500);
+        return { D: D, mvc: mvc, task: task, r1: r1, r2: r2, pct: r2 / r1 * 100 };
+      },
+      read: function (S, L) {
+        return [[L[4], S.r1.toFixed(1) + ' ' + L[3]], [L[5], S.r2.toFixed(1) + ' ' + L[3]], [L[6], S.pct.toFixed(1) + ' %']];
+      },
+      vals: function () { return {}; },
+      out: function (S) { return labLines([['rms_mvc', m4(S.r1)], ['rms_task', m4(S.r2)], ['pct_mvc', m4(S.pct)]]); },
+      csv: function (S) {
+        var r = ['mvc,task'], i; for (i = 0; i < S.D.N; i++) r.push(S.mvc[i].toFixed(6) + ',' + S.task[i].toFixed(6));
+        return r;
+      },
+      draw: function (c, W, H, d, S, L) {
+        var mark = css('--mark'), acc = css('--accent'), grid = css('--rule'), ink = css('--ink-2'), ink3 = css('--ink-3');
+        var px0 = 56 * d, pw = W - px0 - 14 * d, MAXV = 1800, N = S.D.N, j;
+        c.clearRect(0, 0, W, H); c.lineJoin = 'round'; c.font = fontL(d); c.textBaseline = 'middle';
+        var panel = function (y0, y1, arr, rms, colour, title) {
+          var cy = (y0 + y1) / 2, sc = (y1 - y0) / 2 / MAXV, xa = px0 + 1000 / (N - 1) * pw, xb = px0 + 2499 / (N - 1) * pw;
+          c.fillStyle = acc; c.globalAlpha = 0.08; c.fillRect(xa, y0, xb - xa, y1 - y0); c.globalAlpha = 1;
+          c.strokeStyle = grid; c.lineWidth = d; c.globalAlpha = 0.6; c.beginPath();
+          c.moveTo(px0, cy); c.lineTo(px0 + pw, cy); c.moveTo(px0, y0); c.lineTo(px0 + pw, y0); c.moveTo(px0, y1); c.lineTo(px0 + pw, y1);
+          c.stroke(); c.globalAlpha = 1;
+          c.strokeStyle = colour; c.lineWidth = 1.1 * d; c.beginPath();
+          for (j = 0; j < N; j++) {
+            var y = cy - Math.max(-MAXV, Math.min(MAXV, arr[j])) * sc, x = px0 + j / (N - 1) * pw;
+            j ? c.lineTo(x, y) : c.moveTo(x, y);
+          }
+          c.stroke();
+          c.strokeStyle = acc; c.lineWidth = 2.2 * d; c.beginPath();
+          c.moveTo(xa, cy - rms * sc); c.lineTo(xb, cy - rms * sc); c.moveTo(xa, cy + rms * sc); c.lineTo(xb, cy + rms * sc); c.stroke();
+          c.fillStyle = ink; c.textAlign = 'left'; c.fillText(title + '  ·  ' + L[2] + ' ' + rms.toFixed(1) + ' ' + L[3], px0, y0 - 9 * d);
+          c.fillStyle = ink3; c.textAlign = 'right';
+          c.fillText('0', px0 - 8 * d, cy); c.fillText('+' + MAXV, px0 - 8 * d, y0); c.fillText('−' + MAXV, px0 - 8 * d, y1);
+        };
+        panel(H * 0.11, H * 0.44, S.mvc, S.r1, mark, L[0]);
+        panel(H * 0.6, H * 0.93, S.task, S.r2, mark, L[1]);
+      }
+    };
+
+    // ---- 5. the HD-sEMG map: centroid and peak
+    labModels.map = {
+      setup: function () {
+        var rand = labRng(9101), nz = [], r, c;
+        for (r = 0; r < 4; r++) { var row = []; for (c = 0; c < 8; c++) row.push(labGz(rand)); nz.push(row); }
+        return { nz: nz };
+      },
+      compute: function (p, D) {
+        var M = [], sum = 0, sx = 0, sy = 0, peak = -1, pr = 0, pc = 0, r, c;
+        for (r = 0; r < 4; r++) {
+          M.push([]);
+          for (c = 0; c < 8; c++) {
+            var g = Math.exp(-(Math.pow(c + 1 - p.along, 2) / (2 * Math.pow(1.3 * p.spread, 2)) +
+                               Math.pow(r + 1 - p.across, 2) / (2 * Math.pow(0.9 * p.spread, 2))));
+            var v = +((20 + 180 * g) * (1 + 0.06 * D.nz[r][c])).toFixed(4);
+            M[r].push(v); sum += v; sx += v * (c + 1); sy += v * (r + 1);
+            if (v > peak) { peak = v; pr = r + 1; pc = c + 1; }
+          }
+        }
+        return { M: M, cx: sx / sum, cy: sy / sum, pr: pr, pc: pc, mean: sum / 32 };
+      },
+      read: function (S, L) {
+        return [[L[5], S.cx.toFixed(2)], [L[6], S.cy.toFixed(2)], [L[7], '(' + S.pr + ', ' + S.pc + ')'], [L[8], S.mean.toFixed(1) + ' ' + L[9]]];
+      },
+      vals: function () { return {}; },
+      out: function (S) {
+        return labLines([['cx', m4(S.cx)], ['cy', m4(S.cy)], ['peak_row', mInt(S.pr)], ['peak_col', mInt(S.pc)], ['mean_amp', m4(S.mean)]]);
+      },
+      csv: function (S) { return S.M.map(function (row) { return row.map(function (v) { return v.toFixed(4); }).join(','); }); },
+      draw: function (c, W, H, d, S, L) {
+        var ink = css('--ink-2'), ink3 = css('--ink-3'), paper = css('--paper');
+        var x0 = 44 * d, y0 = 26 * d, cw = (W - x0 - 14 * d) / 8, ch = (H - y0 - 30 * d) / 4, r, k;
+        c.clearRect(0, 0, W, H); c.font = fontL(d); c.textBaseline = 'middle';
+        for (r = 0; r < 4; r++) {
+          for (k = 0; k < 8; k++) {
+            var v = S.M[r][k], col = labTurbo(v / 220);
+            c.fillStyle = 'rgb(' + col.join(',') + ')'; c.fillRect(x0 + k * cw + d, y0 + r * ch + d, cw - 2 * d, ch - 2 * d);
+            c.fillStyle = (col[0] * 0.3 + col[1] * 0.59 + col[2] * 0.11) > 130 ? 'rgba(0,0,0,.72)' : 'rgba(255,255,255,.85)';
+            c.textAlign = 'center'; c.fillText(String(Math.round(v)), x0 + (k + 0.5) * cw, y0 + (r + 0.5) * ch);
+          }
+        }
+        c.fillStyle = ink3; c.textAlign = 'center';
+        for (k = 0; k < 8; k++) c.fillText(String(k + 1), x0 + (k + 0.5) * cw, y0 + 4 * ch + 11 * d);
+        c.textAlign = 'right'; for (r = 0; r < 4; r++) c.fillText(String(r + 1), x0 - 8 * d, y0 + (r + 0.5) * ch);
+        c.fillStyle = ink; c.textAlign = 'left'; c.fillText(L[0], x0, y0 - 12 * d);
+        c.save(); c.translate(11 * d, y0 + 2 * ch); c.rotate(-Math.PI / 2); c.textAlign = 'center'; c.fillText(L[1], 0, 0); c.restore();
+        // the peak electrode (ring) and the centroid (cross)
+        var pxx = x0 + (S.pc - 0.5) * cw, pyy = y0 + (S.pr - 0.5) * ch;
+        c.strokeStyle = '#fff'; c.lineWidth = 2.4 * d; c.beginPath(); c.arc(pxx, pyy, Math.min(cw, ch) * 0.42, 0, 6.283); c.stroke();
+        c.strokeStyle = '#000'; c.lineWidth = d; c.beginPath(); c.arc(pxx, pyy, Math.min(cw, ch) * 0.42 + 1.4 * d, 0, 6.283); c.stroke();
+        var cxx = x0 + (S.cx - 0.5) * cw, cyy = y0 + (S.cy - 0.5) * ch, a = 9 * d;
+        [['#000', 5.2], ['#fff', 2.6]].forEach(function (q) {
+          c.strokeStyle = q[0]; c.lineWidth = q[1] * d; c.lineCap = 'round'; c.beginPath();
+          c.moveTo(cxx - a, cyy); c.lineTo(cxx + a, cyy); c.moveTo(cxx, cyy - a); c.lineTo(cxx, cyy + a); c.stroke();
+        });
+        c.fillStyle = ink; c.textAlign = 'right';
+        c.fillText('+ ' + L[2] + '    ○ ' + L[3], W - 14 * d, y0 - 12 * d);
+      }
+    };
+
+    // ---- 6. motor unit firing: discharge rate and its variability
+    labModels.spikes = {
+      setup: function () { var rand = labRng(9201), z = [], i; for (i = 0; i < 700; i++) z.push(labGz(rand)); return { z: z }; },
+      compute: function (p, D) {
+        var T = 1 / p.rate, t = 0, st = [], i = 0, isi = [], k;
+        for (;;) {
+          t += Math.max(0.25 * T, T * (1 + p.cov / 100 * D.z[i])); i++;
+          if (t > 10) break; st.push(+t.toFixed(5));
+        }
+        for (k = 1; k < st.length; k++) isi.push(st[k] - st[k - 1]);
+        var n = isi.length, m = 0, v = 0; for (k = 0; k < n; k++) m += isi[k]; m /= n;
+        for (k = 0; k < n; k++) v += (isi[k] - m) * (isi[k] - m);
+        var sd = Math.sqrt(v / (n - 1));
+        return { st: st, isi: isi, mean: m, rate: 1 / m, cov: sd / m * 100 };
+      },
+      read: function (S, L) {
+        return [[L[5], String(S.st.length)], [L[6], S.rate.toFixed(1) + ' ' + L[4]], [L[7], S.cov.toFixed(1) + ' %']];
+      },
+      vals: function () { return {}; },
+      out: function (S) { return labLines([['n_spikes', mInt(S.st.length)], ['rate', m4(S.rate)], ['cov_isi', m4(S.cov)]]); },
+      csv: function (S) { return S.st.map(function (t) { return t.toFixed(5); }); },
+      draw: function (c, W, H, d, S, L) {
+        var mark = css('--mark'), acc = css('--accent'), grid = css('--rule'), ink = css('--ink-2'), ink3 = css('--ink-3');
+        var px0 = 56 * d, pw = W - px0 - 14 * d, k;
+        c.clearRect(0, 0, W, H); c.lineJoin = 'round'; c.font = fontL(d); c.textBaseline = 'middle';
+        // A: raster ticks and the instantaneous rate
+        var a0 = H * 0.17, a1 = H * 0.5, RMAX = Math.max(40, Math.ceil(S.rate * 2.4 / 10) * 10), tx = function (t) { return px0 + t / 10 * pw; }, ry = function (r) { return a1 - Math.min(r, RMAX) / RMAX * (a1 - a0); };
+        c.fillStyle = ink; c.textAlign = 'left'; c.fillText(L[0], px0, H * 0.06);
+        c.strokeStyle = grid; c.lineWidth = d; c.globalAlpha = 0.6; c.beginPath();
+        [0, RMAX / 2, RMAX].forEach(function (r) { c.moveTo(px0, ry(r)); c.lineTo(px0 + pw, ry(r)); }); c.stroke(); c.globalAlpha = 1;
+        c.fillStyle = ink3; c.textAlign = 'right'; [0, RMAX / 2, RMAX].forEach(function (r) { c.fillText(String(r), px0 - 8 * d, ry(r)); });
+        c.textAlign = 'center'; [0, 2, 4, 6, 8].forEach(function (t) { c.fillText(String(t), tx(t), a1 + 11 * d); });
+        c.textAlign = 'right'; c.fillText('10 ' + L[2], tx(10), a1 + 11 * d);
+        c.strokeStyle = mark; c.lineWidth = 1.6 * d; c.lineCap = 'round'; c.beginPath();
+        S.st.forEach(function (t) { c.moveTo(tx(t), H * 0.09); c.lineTo(tx(t), H * 0.14); }); c.stroke();
+        c.strokeStyle = mark; c.globalAlpha = 0.45; c.lineWidth = 1.2 * d; c.beginPath();
+        S.isi.forEach(function (v, i) { var x = tx(S.st[i + 1]), y = ry(1 / v); i ? c.lineTo(x, y) : c.moveTo(x, y); }); c.stroke();
+        c.globalAlpha = 1; c.fillStyle = mark;
+        S.isi.forEach(function (v, i) { c.beginPath(); c.arc(tx(S.st[i + 1]), ry(1 / v), 2.2 * d, 0, 6.283); c.fill(); });
+        c.setLineDash([5 * d, 5 * d]); c.strokeStyle = acc; c.lineWidth = d * 1.5; c.beginPath(); c.moveTo(px0, ry(S.rate)); c.lineTo(px0 + pw, ry(S.rate)); c.stroke(); c.setLineDash([]);
+        // B: histogram of the inter-spike intervals, 5 ms bins
+        var b0 = H * 0.68, b1 = H * 0.92, nb = 80, cnt = new Array(nb).fill(0), mx = 1;
+        S.isi.forEach(function (v) { var i = Math.floor(v * 1000 / 5); if (i < nb) { cnt[i]++; if (cnt[i] > mx) mx = cnt[i]; } });
+        c.fillStyle = ink; c.textAlign = 'left'; c.fillText(L[1], px0, H * 0.6);
+        c.strokeStyle = grid; c.lineWidth = d; c.beginPath(); c.moveTo(px0, b1); c.lineTo(px0 + pw, b1); c.stroke();
+        var bw = pw / nb; c.fillStyle = mark; c.globalAlpha = 0.85;
+        cnt.forEach(function (v, i) { if (v) c.fillRect(px0 + i * bw + d, b1 - v / mx * (b1 - b0), bw - 2 * d, v / mx * (b1 - b0)); });
+        c.globalAlpha = 1;
+        c.setLineDash([5 * d, 5 * d]); c.strokeStyle = acc; c.lineWidth = d * 1.5; c.beginPath();
+        c.moveTo(px0 + S.mean * 1000 / 5 * bw, b0); c.lineTo(px0 + S.mean * 1000 / 5 * bw, b1); c.stroke(); c.setLineDash([]);
+        c.fillStyle = ink3; c.textAlign = 'center'; [0, 100, 200, 300].forEach(function (ms) { c.fillText(String(ms), px0 + ms / 5 * bw, b1 + 11 * d); });
+        c.textAlign = 'right'; c.fillText('400 ' + L[3], px0 + pw, b1 + 11 * d);
+      }
+    };
+
+    // ---- 7. two groups: Welch t-test, effect size, confidence interval
+    labModels.stats = {
+      setup: function () {
+        var rand = labRng(9301), a = [], b = [], i; for (i = 0; i < 30; i++) { a.push(labGz(rand)); b.push(labGz(rand)); }
+        return { za: a, zb: b };
+      },
+      compute: function (p, D) {
+        var n = p.n, a = [], b = [], i;
+        for (i = 0; i < n; i++) { a.push(+(5 + p.sd * D.za[i]).toFixed(3)); b.push(+(5 + p.diff + p.sd * D.zb[i]).toFixed(3)); }
+        var mean = function (v) { return v.reduce(function (s, x) { return s + x; }, 0) / v.length; };
+        var vr = function (v, m) { return v.reduce(function (s, x) { return s + (x - m) * (x - m); }, 0) / (v.length - 1); };
+        var m1 = mean(a), m2 = mean(b), v1 = vr(a, m1), v2 = vr(b, m2);
+        var se2 = v1 / n + v2 / n, se = Math.sqrt(se2), diff = m2 - m1, t = diff / se;
+        var df = se2 * se2 / ((v1 / n) * (v1 / n) / (n - 1) + (v2 / n) * (v2 / n) / (n - 1));
+        var crit = labQT(df);
+        return { a: a, b: b, m1: m1, m2: m2, s1: Math.sqrt(v1), s2: Math.sqrt(v2), diff: diff, t: t, df: df,
+                 p: labPT2(Math.abs(t), df), d: diff / Math.sqrt((v1 + v2) / 2), lo: diff - crit * se, hi: diff + crit * se };
+      },
+      read: function (S, L) {
+        var pTxt = S.p < 0.001 ? '< 0.001' : S.p.toFixed(3);
+        return [[L[5], S.t.toFixed(2)], [L[6], S.df.toFixed(1)], [L[7], pTxt], [L[8], S.d.toFixed(2)],
+                [L[9], '[' + S.lo.toFixed(2) + ', ' + S.hi.toFixed(2) + ']']];
+      },
+      vals: function () { return {}; },
+      out: function (S) {
+        return labLines([['t', m4(S.t)], ['df', m4(S.df)], ['p', mP(S.p)], ['dcohen', m4(S.d)], ['ci_low', m4(S.lo)], ['ci_high', m4(S.hi)]]);
+      },
+      csv: function (S) { var r = ['free,pain'], i; for (i = 0; i < S.a.length; i++) r.push(S.a[i].toFixed(3) + ',' + S.b[i].toFixed(3)); return r; },
+      draw: function (c, W, H, d, S, L) {
+        var mark = css('--mark'), acc = css('--accent'), grid = css('--rule'), ink = css('--ink-2'), ink3 = css('--ink-3');
+        c.clearRect(0, 0, W, H); c.lineJoin = 'round'; c.font = fontL(d); c.textBaseline = 'middle';
+        // left: the two groups
+        var lx0 = 56 * d, lw = W * 0.55 - lx0, y0 = H * 0.12, y1 = H * 0.86, YMAX = 14;
+        var yy = function (v) { return y1 - Math.max(0, Math.min(YMAX, v)) / YMAX * (y1 - y0); };
+        c.strokeStyle = grid; c.lineWidth = d; c.globalAlpha = 0.6; c.beginPath();
+        [0, 5, 10].forEach(function (v) { c.moveTo(lx0, yy(v)); c.lineTo(lx0 + lw, yy(v)); }); c.stroke(); c.globalAlpha = 1;
+        c.fillStyle = ink3; c.textAlign = 'right'; [0, 5, 10].forEach(function (v) { c.fillText(String(v), lx0 - 8 * d, yy(v)); });
+        c.fillStyle = ink; c.textAlign = 'left'; c.fillText(L[0], lx0, H * 0.05);
+        [[S.a, S.m1, S.s1, 0.27, ink3, L[1]], [S.b, S.m2, S.s2, 0.73, mark, L[2]]].forEach(function (g) {
+          var gx = lx0 + g[3] * lw;
+          g[0].forEach(function (v, i) {
+            var jit = (((i * 0.6180339887) % 1) - 0.5) * lw * 0.3;
+            c.fillStyle = g[4]; c.globalAlpha = 0.8; c.beginPath(); c.arc(gx + jit, yy(v), 3.4 * d, 0, 6.283); c.fill();
+          });
+          c.globalAlpha = 1; c.strokeStyle = ink; c.lineWidth = 2.4 * d; c.beginPath();
+          c.moveTo(gx - lw * 0.12, yy(g[1])); c.lineTo(gx + lw * 0.12, yy(g[1]));
+          c.moveTo(gx, yy(g[1] - g[2])); c.lineTo(gx, yy(g[1] + g[2])); c.stroke();
+          c.fillStyle = ink; c.textAlign = 'center'; c.fillText(g[5], gx, y1 + 14 * d);
+        });
+        // right: the difference and its 95% confidence interval
+        var rx0 = W * 0.62, rw = W - rx0 - 16 * d, DMIN = -4, DMAX = 10;
+        var dx = function (v) { return rx0 + (Math.max(DMIN, Math.min(DMAX, v)) - DMIN) / (DMAX - DMIN) * rw; }, cy = (y0 + y1) / 2;
+        c.fillStyle = ink; c.textAlign = 'left'; c.fillText(L[3], rx0, H * 0.05);
+        c.strokeStyle = grid; c.lineWidth = d; c.globalAlpha = 0.6; c.beginPath();
+        [-4, 0, 4, 8].forEach(function (v) { c.moveTo(dx(v), y0); c.lineTo(dx(v), y1); }); c.stroke(); c.globalAlpha = 1;
+        c.strokeStyle = ink; c.lineWidth = 1.6 * d; c.setLineDash([4 * d, 4 * d]); c.beginPath(); c.moveTo(dx(0), y0); c.lineTo(dx(0), y1); c.stroke(); c.setLineDash([]);
+        c.fillStyle = ink3; c.textAlign = 'center'; [-4, 0, 4, 8].forEach(function (v) { c.fillText(String(v).replace('-', '−'), dx(v), y1 + 14 * d); });
+        var sig = S.lo > 0 || S.hi < 0, col = sig ? acc : ink3;
+        c.strokeStyle = col; c.lineWidth = 3 * d; c.lineCap = 'round'; c.beginPath(); c.moveTo(dx(S.lo), cy); c.lineTo(dx(S.hi), cy); c.stroke();
+        c.fillStyle = col; c.beginPath(); c.arc(dx(S.diff), cy, 6 * d, 0, 6.283); c.fill();
+        c.fillStyle = ink; c.textAlign = 'center'; c.fillText(L[4] + ' [' + S.lo.toFixed(1) + ', ' + S.hi.toFixed(1) + ']', rx0 + rw / 2, cy - 22 * d);
+      }
+    };
+
+    // ---- the wiring, shared by every model above
+    Array.prototype.forEach.call(lab.querySelectorAll('.lesson[data-model]'), function (les) {
+      var M = labModels[les.dataset.model];
+      if (!M) return;
+      var cv = les.querySelector('.lab-canvas'), L = cv.dataset.labels.split('|');
+      var inputs = Array.prototype.slice.call(les.querySelectorAll('.lab-ctl [data-k]'));
+      var rd = les.querySelector('.lab-read'), preM = les.querySelector('.pane[data-lang=m] .code');
+      var outM = les.querySelector('.mout'), taR = les.querySelector('.pane[data-lang=r] .code');
+      var D = M.setup(), P = {}, S = null, viz = null;
+      var fill = function (tpl, r) {
+        var v = M.vals(P, r);
+        return tpl.replace(/\{(\w+)\}/g, function (m0, k) { return v[k] === undefined ? m0 : v[k]; });
+      };
+      var run = function () {
+        inputs.forEach(function (i) {
+          if (i.type === 'checkbox') { P[i.dataset.k] = i.checked; return; }
+          P[i.dataset.k] = +i.value;
+          var o = i.nextElementSibling;
+          if (o && o.tagName === 'OUTPUT') o.textContent = (+i.value).toFixed(+i.dataset.dec) + (i.dataset.unit ? ' ' + i.dataset.unit : '');
+        });
+        S = M.compute(P, D);
+        rd.innerHTML = M.read(S, L).map(function (q) { return '<span>' + q[0] + ' <b>' + q[1] + '</b></span>'; }).join('');
+        labCode(preM, fill(preM.dataset.tpl, false));
+        labSetR(taR, fill(taR.dataset.tpl, true));
+        if (outM) outM.textContent = M.out(S);
+        if (viz) viz.render();
+      };
+      les.labGen = run;
+      les.labExpect = function () { return M.out(S); };
+      les.labCsv = function () { return M.csv(S); };
+      viz = labViz(cv, null, function (c, W, H, d) { if (S) M.draw(c, W, H, d, S, L, P); });
+      inputs.forEach(function (i) { i.addEventListener(i.type === 'checkbox' ? 'change' : 'input', run); });
+      les.querySelector('.cp').addEventListener('click', function (e) { labCopy(preM.textContent, e.currentTarget); });
+      run();
+    });
 
     // ---- language switch, and R in the page (webR, fetched only when someone presses Run)
     var rLoad = null;

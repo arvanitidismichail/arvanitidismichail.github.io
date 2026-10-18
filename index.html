@@ -1234,8 +1234,8 @@ h1 .c { display: inline-block; }
   padding: 1.2rem 1.6rem 1.6rem;
 }
 main > section:nth-of-type(odd) .lab { background: var(--paper); }
-.lab-tabs { padding-bottom: 1rem; overflow-x: auto; }
-.lab-tabs .sort-seg { flex-wrap: wrap; }
+.lab-tabs { padding-bottom: 1rem; }
+.lab-tabs .sort-seg { flex-wrap: wrap; border-radius: 18px; }
 .lab-tab { white-space: normal; text-align: left; }
 html.js .lesson:not(.on) { display: none; }
 .lesson h4 {
@@ -2389,7 +2389,7 @@ html:not(.js) .lab-tabs, html:not(.js) .viz, html:not(.js) .lab-run, html:not(.j
     <h3>Interactive lessons</h3>
     <p class="lab-intro">Short notebooks for my students: read, play with the model, then run the code on the data you have just seen: R right here, or MATLAB on your own computer. The model runs in your browser; nothing is sent anywhere.</p>
     <div class="lab rise" data-correct="Correct." data-wrong="Not quite." data-copied="Copied" data-loading="Loading R in your browser (first run only, a few seconds)…" data-running="Running…" data-edit="Edit the code, then press Run." data-offline="R could not be loaded in this browser. It would give:" data-error="R reported an error:">
-      <div class="lab-tabs"><span class="sort-seg" role="group" aria-label="Lesson"><button class="sort lab-tab" type="button" data-lesson="emg" aria-pressed="true">1 · From raw EMG to an amplitude</button><button class="sort lab-tab" type="button" data-lesson="steadiness" aria-pressed="false">2 · Force steadiness and the coefficient of variation</button></span></div>
+      <div class="lab-tabs"><span class="sort-seg" role="group" aria-label="Lesson"><button class="sort lab-tab" type="button" data-lesson="emg" aria-pressed="true">1 · EMG amplitude</button><button class="sort lab-tab" type="button" data-lesson="steadiness" aria-pressed="false">2 · Force steadiness</button><button class="sort lab-tab" type="button" data-lesson="filter" aria-pressed="false">3 · Filtering</button><button class="sort lab-tab" type="button" data-lesson="mvc" aria-pressed="false">4 · Normalisation</button><button class="sort lab-tab" type="button" data-lesson="map" aria-pressed="false">5 · HD-sEMG map</button><button class="sort lab-tab" type="button" data-lesson="spikes" aria-pressed="false">6 · Motor unit firing</button><button class="sort lab-tab" type="button" data-lesson="stats" aria-pressed="false">7 · Statistics</button></span></div>
       <article class="lesson" id="lesson-emg" data-kind="emg" data-file="emg_demo.csv">
         <h4>From raw EMG to an amplitude</h4>
         <div class="cell"><span class="cell-k">Read</span>
@@ -2517,6 +2517,378 @@ cv = s / m * 100                % coefficient of variation (%)</pre>
         <div class="cell quiz"><span class="cell-k">Check</span>
           <div class="cell-b"><p><b>The SD of the force stays the same but the target level doubles. What happens to the CoV?</b></p>
             <div class="opts"><button class="opt" type="button" data-ok="0" data-fb="Doubling the mean in the denominator does the opposite.">It doubles.</button><button class="opt" type="button" data-ok="1" data-fb="CoV = SD / mean × 100: the same SD over twice the mean is half the CoV.">It halves.</button><button class="opt" type="button" data-ok="0" data-fb="It would only stay the same if the SD doubled as well.">It stays the same.</button></div><p class="fb" role="status"></p></div></div>
+      </article>
+      <article class="lesson" id="lesson-filter" data-kind="filter" data-model="filter" data-file="emg_filter_demo.csv">
+        <h4>Filtering EMG: keeping the muscle, removing the rest</h4>
+        <div class="cell"><span class="cell-k">Read</span>
+          <div class="cell-b"><p>A raw EMG recording carries more than muscle activity: slow <b>movement artefact</b> and cable sway (below about 10–20 Hz) and <b>mains interference</b>, a sharp spike at 50 Hz (60 Hz in some countries). The muscle signal itself lives mostly between about 20 and 450 Hz.</p><p>So the standard pipeline is a <b>high-pass</b> filter around 20 Hz, a <b>low-pass</b> filter near 450 Hz and, if needed, a <b>notch</b> at the mains frequency. Filtering forwards and then backwards (<i>zero-phase</i>) stops the signal being shifted in time.</p></div></div>
+        <div class="cell viz"><span class="cell-k">Explore</span>
+          <div class="cell-b"><p class="lab-note">The recording has slow drift and a 50 Hz hum added to the EMG. Move the cut-offs and watch the filtered trace and the spectrum change. Raise the high-pass too far and you start cutting into the EMG itself.</p>
+            <canvas class="lab-canvas" aria-hidden="true" data-labels="Recorded (µV)|Filtered (µV)|Spectrum (dB)|µV|Hz|Recorded|Filtered|RMS recorded|RMS filtered|50 Hz recorded|50 Hz filtered"></canvas>
+            <div class="lab-ctl"><label class="ctl"><span>High-pass</span><input type="range" data-k="hp" min="1" max="80" step="1" value="20" data-dec="0" data-unit="Hz"><output>20 Hz</output></label><label class="ctl"><span>Low-pass</span><input type="range" data-k="lp" min="100" max="450" step="10" value="450" data-dec="0" data-unit="Hz"><output>450 Hz</output></label><label class="ctl chk"><input type="checkbox" data-k="notch" checked><span>Notch 50 Hz</span></label><p class="lab-read" aria-live="off"></p></div></div></div>
+        <div class="cell"><span class="cell-k">Code</span>
+          <div class="cell-b"><p class="lab-note">Zero-phase second-order Butterworth filters. In R they are written out so you can see what they do; MATLAB&#x27;s butter and filtfilt (Signal Processing Toolbox) do the same job. Values are measured on the middle of the recording (0.5 to 4.5 s), away from the filter start-up. MATLAB pads the ends differently, so expect tiny differences there.</p>
+            <span class="sort-seg lang-seg" role="group" aria-label="Code">
+              <button class="sort lang-btn" type="button" data-lang="r" aria-pressed="true">R</button>
+              <button class="sort lang-btn" type="button" data-lang="m" aria-pressed="false">MATLAB</button></span>
+            <div class="pane on" data-lang="r">
+              <textarea class="code" rows="33" spellcheck="false" autocapitalize="off" autocorrect="off"
+                aria-label="R" data-tpl="fs &lt;- 1000
+x  &lt;- scan(&quot;emg_filter_demo.csv&quot;, quiet = TRUE)   # as recorded: EMG + drift + 50 Hz hum (µV)
+
+hp &lt;- {hp}                 # high-pass cut-off (Hz)
+lp &lt;- {lp}                # low-pass cut-off (Hz)
+use_notch &lt;- {notch}       # remove the 50 Hz mains?
+
+# second-order filters, applied forwards then backwards (zero phase)
+butter2 &lt;- function(fc, fs, type) {
+  K &lt;- tan(pi * fc / fs); n &lt;- 1 / (1 + sqrt(2) * K + K^2)
+  list(b = if (type == &quot;high&quot;) n * c(1, -2, 1) else n * K^2 * c(1, 2, 1),
+       a = c(1, 2 * (K^2 - 1) * n, (1 - sqrt(2) * K + K^2) * n))
+}
+notch &lt;- function(f0, fs, Q = 35) {
+  w0 &lt;- 2 * pi * f0 / fs; be &lt;- tan(w0 / Q / 2)
+  list(b = c(1, -2 * cos(w0), 1) / (1 + be), a = c(1, -2 * cos(w0) / (1 + be), (1 - be) / (1 + be)))
+}
+once &lt;- function(f, x) {
+  v &lt;- stats::filter(c(0, 0, x), f$b, sides = 1)[-(1:2)]
+  as.numeric(stats::filter(v, -f$a[2:3], method = &quot;recursive&quot;))
+}
+zerophase &lt;- function(f, x) rev(once(f, rev(once(f, x))))
+
+y &lt;- x
+if (use_notch) y &lt;- zerophase(notch(50, fs), y)
+y &lt;- zerophase(butter2(hp, fs, &quot;high&quot;), y)
+y &lt;- zerophase(butter2(lp, fs, &quot;low&quot;), y)
+
+keep &lt;- 501:4500            # skip the first and last 0.5 s, where the filters start up
+amp &lt;- function(v, f0) 2 * Mod(sum(v * exp(-2i * pi * f0 * (seq_along(v) - 1) / fs))) / length(v)
+round(c(rms_before = sqrt(mean(x[keep]^2)), rms_after = sqrt(mean(y[keep]^2)),
+        amp50_before = amp(x[keep], 50), amp50_after = amp(y[keep], 50)), 4)">fs &lt;- 1000
+x  &lt;- scan(&quot;emg_filter_demo.csv&quot;, quiet = TRUE)   # as recorded: EMG + drift + 50 Hz hum (µV)
+
+hp &lt;- 20                 # high-pass cut-off (Hz)
+lp &lt;- 450                # low-pass cut-off (Hz)
+use_notch &lt;- TRUE       # remove the 50 Hz mains?
+
+# second-order filters, applied forwards then backwards (zero phase)
+butter2 &lt;- function(fc, fs, type) {
+  K &lt;- tan(pi * fc / fs); n &lt;- 1 / (1 + sqrt(2) * K + K^2)
+  list(b = if (type == &quot;high&quot;) n * c(1, -2, 1) else n * K^2 * c(1, 2, 1),
+       a = c(1, 2 * (K^2 - 1) * n, (1 - sqrt(2) * K + K^2) * n))
+}
+notch &lt;- function(f0, fs, Q = 35) {
+  w0 &lt;- 2 * pi * f0 / fs; be &lt;- tan(w0 / Q / 2)
+  list(b = c(1, -2 * cos(w0), 1) / (1 + be), a = c(1, -2 * cos(w0) / (1 + be), (1 - be) / (1 + be)))
+}
+once &lt;- function(f, x) {
+  v &lt;- stats::filter(c(0, 0, x), f$b, sides = 1)[-(1:2)]
+  as.numeric(stats::filter(v, -f$a[2:3], method = &quot;recursive&quot;))
+}
+zerophase &lt;- function(f, x) rev(once(f, rev(once(f, x))))
+
+y &lt;- x
+if (use_notch) y &lt;- zerophase(notch(50, fs), y)
+y &lt;- zerophase(butter2(hp, fs, &quot;high&quot;), y)
+y &lt;- zerophase(butter2(lp, fs, &quot;low&quot;), y)
+
+keep &lt;- 501:4500            # skip the first and last 0.5 s, where the filters start up
+amp &lt;- function(v, f0) 2 * Mod(sum(v * exp(-2i * pi * f0 * (seq_along(v) - 1) / fs))) / length(v)
+round(c(rms_before = sqrt(mean(x[keep]^2)), rms_after = sqrt(mean(y[keep]^2)),
+        amp50_before = amp(x[keep], 50), amp50_after = amp(y[keep], 50)), 4)</textarea>
+              <div class="lab-run"><button class="run go" type="button">Run</button>
+                <button class="reset rs" type="button">Reset</button>
+                <button class="reset dl" type="button">Download the data (CSV)</button>
+                <span class="lab-status">Edit the code, then press Run.</span></div>
+              <p class="lab-note outl">Output in R</p>
+              <pre class="out rout" aria-live="polite"></pre></div>
+            <div class="pane" data-lang="m">
+              <pre class="code" tabindex="0" data-tpl="fs = 1000;
+x  = readmatrix(&#x27;emg_filter_demo.csv&#x27;);   % as recorded: EMG + drift + 50 Hz hum (µV)
+
+hp = {hp};                 % high-pass cut-off (Hz)
+lp = {lp};                % low-pass cut-off (Hz)
+use_notch = {notch};       % remove the 50 Hz mains?
+
+y = x;
+if use_notch
+    [b, a] = iirnotch(50/(fs/2), (50/(fs/2))/35);
+    y = filtfilt(b, a, y);
+end
+[b, a] = butter(2, hp/(fs/2), &#x27;high&#x27;);  y = filtfilt(b, a, y);
+[b, a] = butter(2, lp/(fs/2), &#x27;low&#x27;);   y = filtfilt(b, a, y);
+
+keep = 501:4500;           % skip the first and last 0.5 s
+amp = @(v, f0) 2 * abs(sum(v(:) .* exp(-2i*pi*f0*(0:numel(v)-1)&#x27;/fs))) / numel(v);
+rms_before   = sqrt(mean(x(keep).^2))
+rms_after    = sqrt(mean(y(keep).^2))
+amp50_before = amp(x(keep), 50)
+amp50_after  = amp(y(keep), 50)">fs = 1000;
+x  = readmatrix(&#x27;emg_filter_demo.csv&#x27;);   % as recorded: EMG + drift + 50 Hz hum (µV)
+
+hp = 20;                 % high-pass cut-off (Hz)
+lp = 450;                % low-pass cut-off (Hz)
+use_notch = true;       % remove the 50 Hz mains?
+
+y = x;
+if use_notch
+    [b, a] = iirnotch(50/(fs/2), (50/(fs/2))/35);
+    y = filtfilt(b, a, y);
+end
+[b, a] = butter(2, hp/(fs/2), &#x27;high&#x27;);  y = filtfilt(b, a, y);
+[b, a] = butter(2, lp/(fs/2), &#x27;low&#x27;);   y = filtfilt(b, a, y);
+
+keep = 501:4500;           % skip the first and last 0.5 s
+amp = @(v, f0) 2 * abs(sum(v(:) .* exp(-2i*pi*f0*(0:numel(v)-1)&#x27;/fs))) / numel(v);
+rms_before   = sqrt(mean(x(keep).^2))
+rms_after    = sqrt(mean(y(keep).^2))
+amp50_before = amp(x(keep), 50)
+amp50_after  = amp(y(keep), 50)</pre>
+              <div class="lab-run"><button class="run cp" type="button">Copy code</button>
+                <button class="reset dl" type="button">Download the data (CSV)</button></div>
+              <pre class="out mout" hidden></pre></div>
+            <p class="lab-note tip">Try <code>hp</code> = 5, 20 and 80 and compare <code>rms_after</code>: the 80 Hz high-pass removes real EMG as well.</p></div></div>
+        <div class="cell quiz"><span class="cell-k">Check</span>
+          <div class="cell-b"><p><b>You raise the high-pass cut-off from 20 Hz to 80 Hz. What happens?</b></p>
+            <div class="opts"><button class="opt" type="button" data-ok="0" data-fb="Most EMG power lies between about 20 and 150 Hz, so a lot of real signal goes too: watch the filtered RMS fall.">Nothing important: everything below 80 Hz was noise anyway.</button><button class="opt" type="button" data-ok="1" data-fb="That is why the high-pass sits near 20 Hz: it must remove the artefact without cutting into the muscle&#x27;s signal.">Part of the EMG itself is removed, so the filtered amplitude drops.</button><button class="opt" type="button" data-ok="0" data-fb="A higher cut-off removes even more of the slow drift, not less.">The slow movement artefact comes back.</button></div><p class="fb" role="status"></p></div></div>
+      </article>
+      <article class="lesson" id="lesson-mvc" data-kind="mvc" data-model="mvc" data-file="mvc_demo.csv">
+        <h4>Normalising EMG to a maximal contraction</h4>
+        <div class="cell"><span class="cell-k">Read</span>
+          <div class="cell-b"><p>The size of an EMG signal depends on things that have nothing to do with how hard the muscle works: electrode position, skin, the fat layer, even the amplifier gain. So raw amplitudes from different people, days or muscles <b>cannot be compared directly</b>.</p><p>The usual fix is to record a <b>maximal voluntary contraction</b> (MVC) and express the task as a percentage of it: <code>%MVC = RMS(task) / RMS(MVC) × 100</code>. A change of gain scales both recordings, so it cancels in the ratio.</p></div></div>
+        <div class="cell viz"><span class="cell-k">Explore</span>
+          <div class="cell-b"><p class="lab-note">Two trials: the maximal contraction and a submaximal task. Change the electrode gain and watch the raw amplitudes move while %MVC stays put; change the effort and %MVC follows.</p>
+            <canvas class="lab-canvas" aria-hidden="true" data-labels="MVC trial (µV)|Task (µV)|RMS|µV|RMS of MVC|RMS of task|Task as %MVC"></canvas>
+            <div class="lab-ctl"><label class="ctl"><span>Electrode gain</span><input type="range" data-k="gain" min="0.5" max="2" step="0.05" value="1" data-dec="2" data-unit="×"><output>1.00 ×</output></label><label class="ctl"><span>Effort</span><input type="range" data-k="effort" min="10" max="60" step="1" value="30" data-dec="0" data-unit="% MVC"><output>30 % MVC</output></label><p class="lab-read" aria-live="off"></p></div></div></div>
+        <div class="cell"><span class="cell-k">Code</span>
+          <div class="cell-b"><p class="lab-note">Download the two trials (3 s each, 1000 Hz) and compute the amplitude of the steady part of each.</p>
+            <span class="sort-seg lang-seg" role="group" aria-label="Code">
+              <button class="sort lang-btn" type="button" data-lang="r" aria-pressed="true">R</button>
+              <button class="sort lang-btn" type="button" data-lang="m" aria-pressed="false">MATLAB</button></span>
+            <div class="pane on" data-lang="r">
+              <textarea class="code" rows="10" spellcheck="false" autocapitalize="off" autocorrect="off"
+                aria-label="R" data-tpl="d &lt;- read.csv(&quot;mvc_demo.csv&quot;)      # two trials, 3 s at 1000 Hz (µV)
+plateau &lt;- 1001:2500                # the steady part of each contraction
+rms &lt;- function(x) sqrt(mean(x^2))
+
+rms_mvc  &lt;- rms(d$mvc[plateau])     # maximal voluntary contraction
+rms_task &lt;- rms(d$task[plateau])    # the task
+pct_mvc  &lt;- rms_task / rms_mvc * 100   # task amplitude as % of MVC
+
+round(c(rms_mvc = rms_mvc, rms_task = rms_task, pct_mvc = pct_mvc), 4)">d &lt;- read.csv(&quot;mvc_demo.csv&quot;)      # two trials, 3 s at 1000 Hz (µV)
+plateau &lt;- 1001:2500                # the steady part of each contraction
+rms &lt;- function(x) sqrt(mean(x^2))
+
+rms_mvc  &lt;- rms(d$mvc[plateau])     # maximal voluntary contraction
+rms_task &lt;- rms(d$task[plateau])    # the task
+pct_mvc  &lt;- rms_task / rms_mvc * 100   # task amplitude as % of MVC
+
+round(c(rms_mvc = rms_mvc, rms_task = rms_task, pct_mvc = pct_mvc), 4)</textarea>
+              <div class="lab-run"><button class="run go" type="button">Run</button>
+                <button class="reset rs" type="button">Reset</button>
+                <button class="reset dl" type="button">Download the data (CSV)</button>
+                <span class="lab-status">Edit the code, then press Run.</span></div>
+              <p class="lab-note outl">Output in R</p>
+              <pre class="out rout" aria-live="polite"></pre></div>
+            <div class="pane" data-lang="m">
+              <pre class="code" tabindex="0" data-tpl="d = readtable(&#x27;mvc_demo.csv&#x27;);     % two trials, 3 s at 1000 Hz (µV)
+plateau = 1001:2500;               % the steady part of each contraction
+
+rms_mvc  = sqrt(mean(d.mvc(plateau).^2))       % maximal voluntary contraction
+rms_task = sqrt(mean(d.task(plateau).^2))      % the task
+pct_mvc  = rms_task / rms_mvc * 100            % task amplitude as % of MVC">d = readtable(&#x27;mvc_demo.csv&#x27;);     % two trials, 3 s at 1000 Hz (µV)
+plateau = 1001:2500;               % the steady part of each contraction
+
+rms_mvc  = sqrt(mean(d.mvc(plateau).^2))       % maximal voluntary contraction
+rms_task = sqrt(mean(d.task(plateau).^2))      % the task
+pct_mvc  = rms_task / rms_mvc * 100            % task amplitude as % of MVC</pre>
+              <div class="lab-run"><button class="run cp" type="button">Copy code</button>
+                <button class="reset dl" type="button">Download the data (CSV)</button></div>
+              <p class="lab-note outl">Output in MATLAB</p>
+              <pre class="out mout" aria-live="polite"></pre></div>
+            <p class="lab-note tip">Move the gain, download again: the two RMS values change, but <code>pct_mvc</code> does not.</p></div></div>
+        <div class="cell quiz"><span class="cell-k">Check</span>
+          <div class="cell-b"><p><b>A second participant&#x27;s electrodes give twice the amplitude for the same muscle effort. After normalising to MVC, how do the two participants&#x27; task amplitudes compare?</b></p>
+            <div class="opts"><button class="opt" type="button" data-ok="0" data-fb="Both trials, the MVC and the task, are doubled, so the doubling cancels in the ratio.">Participant 2 shows twice the %MVC.</button><button class="opt" type="button" data-ok="1" data-fb="That is the point of normalising: %MVC does not depend on the gain.">They are the same: the gain cancels in the ratio.</button><button class="opt" type="button" data-ok="0" data-fb="Raw amplitudes cannot, but %MVC can.">They cannot be compared at all.</button></div><p class="fb" role="status"></p></div></div>
+      </article>
+      <article class="lesson" id="lesson-map" data-kind="map" data-model="map" data-file="hdemg_map.csv">
+        <h4>The HD-sEMG map: where is the muscle working?</h4>
+        <div class="cell"><span class="cell-k">Read</span>
+          <div class="cell-b"><p>High-density EMG records from a grid of electrodes, so the RMS amplitude at each electrode forms a <b>map</b> of activity across the muscle. Where that activity sits, and how it moves, changes with fatigue, pain and training.</p><p>Two simple summaries: the <b>peak</b> electrode, and the <b>centroid</b>, the amplitude-weighted mean position, <code>x̄ = Σ(amplitude × column) / Σ amplitude</code>. The centroid is less sensitive to one noisy electrode and moves smoothly.</p></div></div>
+        <div class="cell viz"><span class="cell-k">Explore</span>
+          <div class="cell-b"><p class="lab-note">A grid of 4 rows × 8 columns. Move the hotspot along and across the muscle and widen it; watch the peak (circle) and the centroid (cross) follow.</p>
+            <canvas class="lab-canvas" aria-hidden="true" data-labels="Column (along the muscle)|Row (across)|Centroid|Peak|Amplitude (µV)|Centroid column|Centroid row|Peak electrode (row, column)|Mean amplitude|µV"></canvas>
+            <div class="lab-ctl"><label class="ctl"><span>Hotspot along</span><input type="range" data-k="along" min="1" max="8" step="0.1" value="5" data-dec="1" data-unit=""><output>5.0</output></label><label class="ctl"><span>Hotspot across</span><input type="range" data-k="across" min="1" max="4" step="0.1" value="2" data-dec="1" data-unit=""><output>2.0</output></label><label class="ctl"><span>Spread</span><input type="range" data-k="spread" min="0.5" max="2.5" step="0.1" value="1" data-dec="1" data-unit=""><output>1.0</output></label><p class="lab-read" aria-live="off"></p></div></div></div>
+        <div class="cell"><span class="cell-k">Code</span>
+          <div class="cell-b"><p class="lab-note">The map as a 4 × 8 matrix (RMS in µV, one value per electrode). The centroid is a weighted mean of the column and row numbers.</p>
+            <span class="sort-seg lang-seg" role="group" aria-label="Code">
+              <button class="sort lang-btn" type="button" data-lang="r" aria-pressed="true">R</button>
+              <button class="sort lang-btn" type="button" data-lang="m" aria-pressed="false">MATLAB</button></span>
+            <div class="pane on" data-lang="r">
+              <textarea class="code" rows="8" spellcheck="false" autocapitalize="off" autocorrect="off"
+                aria-label="R" data-tpl="M &lt;- as.matrix(read.csv(&quot;hdemg_map.csv&quot;, header = FALSE))   # 4 rows x 8 columns, RMS (µV)
+
+cx &lt;- sum(M * col(M)) / sum(M)          # centroid: amplitude-weighted mean column
+cy &lt;- sum(M * row(M)) / sum(M)          # ... and mean row
+peak &lt;- which(M == max(M), arr.ind = TRUE)   # the electrode with the highest RMS
+
+round(c(cx = cx, cy = cy, peak_row = peak[1], peak_col = peak[2], mean_amp = mean(M)), 4)">M &lt;- as.matrix(read.csv(&quot;hdemg_map.csv&quot;, header = FALSE))   # 4 rows x 8 columns, RMS (µV)
+
+cx &lt;- sum(M * col(M)) / sum(M)          # centroid: amplitude-weighted mean column
+cy &lt;- sum(M * row(M)) / sum(M)          # ... and mean row
+peak &lt;- which(M == max(M), arr.ind = TRUE)   # the electrode with the highest RMS
+
+round(c(cx = cx, cy = cy, peak_row = peak[1], peak_col = peak[2], mean_amp = mean(M)), 4)</textarea>
+              <div class="lab-run"><button class="run go" type="button">Run</button>
+                <button class="reset rs" type="button">Reset</button>
+                <button class="reset dl" type="button">Download the data (CSV)</button>
+                <span class="lab-status">Edit the code, then press Run.</span></div>
+              <p class="lab-note outl">Output in R</p>
+              <pre class="out rout" aria-live="polite"></pre></div>
+            <div class="pane" data-lang="m">
+              <pre class="code" tabindex="0" data-tpl="M = readmatrix(&#x27;hdemg_map.csv&#x27;);       % 4 rows x 8 columns, RMS (µV)
+[col_no, row_no] = meshgrid(1:size(M, 2), 1:size(M, 1));
+
+cx = sum(M(:) .* col_no(:)) / sum(M(:))     % centroid: amplitude-weighted mean column
+cy = sum(M(:) .* row_no(:)) / sum(M(:))     % ... and mean row
+[~, k] = max(M(:));
+[peak_row, peak_col] = ind2sub(size(M), k) % the electrode with the highest RMS
+mean_amp = mean(M(:))">M = readmatrix(&#x27;hdemg_map.csv&#x27;);       % 4 rows x 8 columns, RMS (µV)
+[col_no, row_no] = meshgrid(1:size(M, 2), 1:size(M, 1));
+
+cx = sum(M(:) .* col_no(:)) / sum(M(:))     % centroid: amplitude-weighted mean column
+cy = sum(M(:) .* row_no(:)) / sum(M(:))     % ... and mean row
+[~, k] = max(M(:));
+[peak_row, peak_col] = ind2sub(size(M), k) % the electrode with the highest RMS
+mean_amp = mean(M(:))</pre>
+              <div class="lab-run"><button class="run cp" type="button">Copy code</button>
+                <button class="reset dl" type="button">Download the data (CSV)</button></div>
+              <p class="lab-note outl">Output in MATLAB</p>
+              <pre class="out mout" aria-live="polite"></pre></div>
+            <p class="lab-note tip">Move the hotspot to column 7, download again and compare <code>cx</code> with <code>peak_col</code>: close, but not the same.</p></div></div>
+        <div class="cell quiz"><span class="cell-k">Check</span>
+          <div class="cell-b"><p><b>After fatigue the centroid column moves from 3.2 to 5.1. What has changed?</b></p>
+            <div class="opts"><button class="opt" type="button" data-ok="1" data-fb="The centroid is where the activity is centred: a higher column number means it moved that way.">Activity has shifted along the muscle towards the higher-numbered columns.</button><button class="opt" type="button" data-ok="0" data-fb="The centroid says where the activity is, not how much: that is the mean amplitude.">The muscle is producing more force.</button><button class="opt" type="button" data-ok="0" data-fb="A failed electrode changes one value; the centroid shifts smoothly with the whole pattern.">One electrode has failed.</button></div><p class="fb" role="status"></p></div></div>
+      </article>
+      <article class="lesson" id="lesson-spikes" data-kind="spikes" data-model="spikes" data-file="spikes_demo.csv">
+        <h4>From spike times to discharge rate and variability</h4>
+        <div class="cell"><span class="cell-k">Read</span>
+          <div class="cell-b"><p>Decomposing high-density EMG gives, for each motor unit, a list of <b>discharge times</b>. Two numbers summarise how a unit fires: the <b>mean discharge rate</b> (pulses per second, <code>1 / mean ISI</code>) and the <b>variability</b> of the <b>inter-spike intervals</b> (ISI), usually as a coefficient of variation.</p><p>Variability matters because a motor unit's firing is the neural drive to the muscle: more variable firing goes with a less steady force, and it can increase in people with pain.</p></div></div>
+        <div class="cell viz"><span class="cell-k">Explore</span>
+          <div class="cell-b"><p class="lab-note">Ten seconds of one motor unit. Change the mean rate and the variability: the spikes become more irregular, the instantaneous rate scatters and the ISI histogram widens.</p>
+            <canvas class="lab-canvas" aria-hidden="true" data-labels="Discharge times and instantaneous rate (pps)|Inter-spike intervals (ISI)|s|ms|pps|Spikes|Mean rate|CoV of ISI"></canvas>
+            <div class="lab-ctl"><label class="ctl"><span>Mean rate</span><input type="range" data-k="rate" min="6" max="30" step="1" value="12" data-dec="0" data-unit="pps"><output>12 pps</output></label><label class="ctl"><span>Variability (CoV)</span><input type="range" data-k="cov" min="3" max="40" step="1" value="15" data-dec="0" data-unit="%"><output>15 %</output></label><p class="lab-read" aria-live="off"></p></div></div></div>
+        <div class="cell"><span class="cell-k">Code</span>
+          <div class="cell-b"><p class="lab-note">The discharge times of one motor unit over 10 s, as a decomposition would give you.</p>
+            <span class="sort-seg lang-seg" role="group" aria-label="Code">
+              <button class="sort lang-btn" type="button" data-lang="r" aria-pressed="true">R</button>
+              <button class="sort lang-btn" type="button" data-lang="m" aria-pressed="false">MATLAB</button></span>
+            <div class="pane on" data-lang="r">
+              <textarea class="code" rows="8" spellcheck="false" autocapitalize="off" autocorrect="off"
+                aria-label="R" data-tpl="spikes &lt;- scan(&quot;spikes_demo.csv&quot;, quiet = TRUE)   # discharge times (s)
+isi &lt;- diff(spikes)                          # inter-spike intervals (s)
+
+rate    &lt;- 1 / mean(isi)                     # mean discharge rate (pulses per second)
+cov_isi &lt;- sd(isi) / mean(isi) * 100         # variability of the intervals (%)
+
+round(c(n_spikes = length(spikes), rate = rate, cov_isi = cov_isi), 4)">spikes &lt;- scan(&quot;spikes_demo.csv&quot;, quiet = TRUE)   # discharge times (s)
+isi &lt;- diff(spikes)                          # inter-spike intervals (s)
+
+rate    &lt;- 1 / mean(isi)                     # mean discharge rate (pulses per second)
+cov_isi &lt;- sd(isi) / mean(isi) * 100         # variability of the intervals (%)
+
+round(c(n_spikes = length(spikes), rate = rate, cov_isi = cov_isi), 4)</textarea>
+              <div class="lab-run"><button class="run go" type="button">Run</button>
+                <button class="reset rs" type="button">Reset</button>
+                <button class="reset dl" type="button">Download the data (CSV)</button>
+                <span class="lab-status">Edit the code, then press Run.</span></div>
+              <p class="lab-note outl">Output in R</p>
+              <pre class="out rout" aria-live="polite"></pre></div>
+            <div class="pane" data-lang="m">
+              <pre class="code" tabindex="0" data-tpl="spikes = readmatrix(&#x27;spikes_demo.csv&#x27;);   % discharge times (s)
+isi = diff(spikes);                       % inter-spike intervals (s)
+
+n_spikes = numel(spikes)
+rate     = 1 / mean(isi)                  % mean discharge rate (pulses per second)
+cov_isi  = std(isi) / mean(isi) * 100     % variability of the intervals (%)">spikes = readmatrix(&#x27;spikes_demo.csv&#x27;);   % discharge times (s)
+isi = diff(spikes);                       % inter-spike intervals (s)
+
+n_spikes = numel(spikes)
+rate     = 1 / mean(isi)                  % mean discharge rate (pulses per second)
+cov_isi  = std(isi) / mean(isi) * 100     % variability of the intervals (%)</pre>
+              <div class="lab-run"><button class="run cp" type="button">Copy code</button>
+                <button class="reset dl" type="button">Download the data (CSV)</button></div>
+              <p class="lab-note outl">Output in MATLAB</p>
+              <pre class="out mout" aria-live="polite"></pre></div>
+            <p class="lab-note tip">Set the variability to 5 % and then 35 %, download each time and compare <code>cov_isi</code>.</p></div></div>
+        <div class="cell quiz"><span class="cell-k">Check</span>
+          <div class="cell-b"><p><b>Two motor units fire at the same mean rate, but one has a higher CoV of the ISI. What does that mean?</b></p>
+            <div class="opts"><button class="opt" type="button" data-ok="1" data-fb="Same rate, different regularity: that is what the CoV of the ISI captures.">Its firing is less regular: the intervals vary more around the same mean.</button><button class="opt" type="button" data-ok="0" data-fb="The mean rate is the same by definition here.">It fires at a higher rate.</button><button class="opt" type="button" data-ok="0" data-fb="The CoV describes how regular the timing is, not the size of the unit.">It is made of more muscle fibres.</button></div><p class="fb" role="status"></p></div></div>
+      </article>
+      <article class="lesson" id="lesson-stats" data-kind="stats" data-model="stats" data-file="groups_demo.csv">
+        <h4>Comparing two groups: t-test, p-value and effect size</h4>
+        <div class="cell"><span class="cell-k">Read</span>
+          <div class="cell-b"><p>Suppose force steadiness (CoV, %) is measured in people without and with pain. The <b>t-test</b> asks whether the difference between the group means is bigger than chance alone would produce: <code>t = difference / standard error</code>. The <b>p-value</b> is the probability of a difference at least this big if there were no real difference.</p><p>A p-value does not say how <i>big</i> the difference is. The <b>effect size</b> (Cohen's <i>d</i>, the difference in SDs) and the <b>95% confidence interval</b> of the difference do. Report them together.</p></div></div>
+        <div class="cell viz"><span class="cell-k">Explore</span>
+          <div class="cell-b"><p class="lab-note">Left: the two groups (dots) with mean ± SD. Right: the difference between the means and its 95% confidence interval; when the interval excludes zero, p is below 0.05. Increase the sample size with the same true difference and watch the interval narrow.</p>
+            <canvas class="lab-canvas" aria-hidden="true" data-labels="Force CoV (%)|Without pain|With pain|Difference in means (%)|95% CI|t|df|p|Cohen&#x27;s d|95% CI of the difference"></canvas>
+            <div class="lab-ctl"><label class="ctl"><span>True difference</span><input type="range" data-k="diff" min="0" max="6" step="0.1" value="2" data-dec="1" data-unit="%"><output>2.0 %</output></label><label class="ctl"><span>SD</span><input type="range" data-k="sd" min="0.5" max="4" step="0.1" value="1.5" data-dec="1" data-unit="%"><output>1.5 %</output></label><label class="ctl"><span>Per group</span><input type="range" data-k="n" min="6" max="30" step="1" value="12" data-dec="0" data-unit="n"><output>12 n</output></label><p class="lab-read" aria-live="off"></p></div></div></div>
+        <div class="cell"><span class="cell-k">Code</span>
+          <div class="cell-b"><p class="lab-note">Welch&#x27;s t-test on the values shown (one column per group).</p>
+            <span class="sort-seg lang-seg" role="group" aria-label="Code">
+              <button class="sort lang-btn" type="button" data-lang="r" aria-pressed="true">R</button>
+              <button class="sort lang-btn" type="button" data-lang="m" aria-pressed="false">MATLAB</button></span>
+            <div class="pane on" data-lang="r">
+              <textarea class="code" rows="10" spellcheck="false" autocapitalize="off" autocorrect="off"
+                aria-label="R" data-tpl="d &lt;- read.csv(&quot;groups_demo.csv&quot;)      # force CoV (%), one value per participant
+
+r  &lt;- t.test(d$pain, d$free)            # Welch two-sample t-test
+sp &lt;- sqrt((var(d$pain) + var(d$free)) / 2)     # pooled SD (equal group sizes)
+dcohen &lt;- (mean(d$pain) - mean(d$free)) / sp    # effect size
+ci &lt;- r$conf.int                          # 95% CI of the difference
+
+round(c(t = unname(r$statistic), df = unname(r$parameter), p = r$p.value,
+        dcohen = dcohen, ci_low = ci[1], ci_high = ci[2]), 4)">d &lt;- read.csv(&quot;groups_demo.csv&quot;)      # force CoV (%), one value per participant
+
+r  &lt;- t.test(d$pain, d$free)            # Welch two-sample t-test
+sp &lt;- sqrt((var(d$pain) + var(d$free)) / 2)     # pooled SD (equal group sizes)
+dcohen &lt;- (mean(d$pain) - mean(d$free)) / sp    # effect size
+ci &lt;- r$conf.int                          # 95% CI of the difference
+
+round(c(t = unname(r$statistic), df = unname(r$parameter), p = r$p.value,
+        dcohen = dcohen, ci_low = ci[1], ci_high = ci[2]), 4)</textarea>
+              <div class="lab-run"><button class="run go" type="button">Run</button>
+                <button class="reset rs" type="button">Reset</button>
+                <button class="reset dl" type="button">Download the data (CSV)</button>
+                <span class="lab-status">Edit the code, then press Run.</span></div>
+              <p class="lab-note outl">Output in R</p>
+              <pre class="out rout" aria-live="polite"></pre></div>
+            <div class="pane" data-lang="m">
+              <pre class="code" tabindex="0" data-tpl="d = readtable(&#x27;groups_demo.csv&#x27;);      % force CoV (%), one value per participant
+
+[~, p, ci, st] = ttest2(d.pain, d.free, &#x27;Vartype&#x27;, &#x27;unequal&#x27;);   % Welch t-test
+t  = st.tstat
+df = st.df
+p
+dcohen = (mean(d.pain) - mean(d.free)) / sqrt((var(d.pain) + var(d.free)) / 2)
+ci_low  = ci(1)
+ci_high = ci(2)">d = readtable(&#x27;groups_demo.csv&#x27;);      % force CoV (%), one value per participant
+
+[~, p, ci, st] = ttest2(d.pain, d.free, &#x27;Vartype&#x27;, &#x27;unequal&#x27;);   % Welch t-test
+t  = st.tstat
+df = st.df
+p
+dcohen = (mean(d.pain) - mean(d.free)) / sqrt((var(d.pain) + var(d.free)) / 2)
+ci_low  = ci(1)
+ci_high = ci(2)</pre>
+              <div class="lab-run"><button class="run cp" type="button">Copy code</button>
+                <button class="reset dl" type="button">Download the data (CSV)</button></div>
+              <p class="lab-note outl">Output in MATLAB</p>
+              <pre class="out mout" aria-live="polite"></pre></div>
+            <p class="lab-note tip">Double the sample size, download again: <code>dcohen</code> stays similar while <code>p</code> gets smaller.</p></div></div>
+        <div class="cell quiz"><span class="cell-k">Check</span>
+          <div class="cell-b"><p><b>You double the number of participants, keeping the same true difference and variability. What typically happens?</b></p>
+            <div class="opts"><button class="opt" type="button" data-ok="1" data-fb="More participants shrink the standard error, so the same difference is easier to detect; d describes the size of the difference, which has not changed.">The p-value gets smaller, while the effect size stays about the same.</button><button class="opt" type="button" data-ok="0" data-fb="Effect size does not depend on how many people you test.">The effect size doubles.</button><button class="opt" type="button" data-ok="0" data-fb="p depends on both the size of the difference and the sample size.">The p-value cannot change.</button></div><p class="fb" role="status"></p></div></div>
       </article>
     </div>
     <p class="lab-foot">R runs in your browser with <a href="https://docs.r-wasm.org/webr/latest/" target="_blank" rel="noopener">webR</a></p>
@@ -3601,7 +3973,7 @@ cv = s / m * 100                % coefficient of variation (%)</pre>
       if ('IntersectionObserver' in window) {
         new IntersectionObserver(function (es) {
           visible = es[0].isIntersecting;
-          if (visible && !reduce && !running) { running = true; last = performance.now(); requestAnimationFrame(tick); }
+          if (visible && step && !reduce && !running) { running = true; last = performance.now(); requestAnimationFrame(tick); }
           if (!visible) running = false;
         }).observe(canvas);
       }
@@ -3797,6 +4169,471 @@ cv = s / m * 100                % coefficient of variation (%)</pre>
       forLes.labExpect = function () { return out2.textContent; };
       forLes.labCsv = function () { return forTrace().map(function (v) { return v.toFixed(6); }); };
     }
+
+
+    // ===== the other lessons: one small model each (static pictures, redrawn when a control moves) =====
+    var labRng = function (seed) {                       // mulberry32: the same numbers for every visitor
+      return function () {
+        seed = (seed + 0x6D2B79F5) | 0; var t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    };
+    var labGz = function (rand) { return Math.sqrt(-2 * Math.log(1 - rand())) * Math.cos(2 * Math.PI * rand()); };
+    var labNoise = function (seed, N) {                  // white noise without the slow drift, unit variance
+      var rand = labRng(seed), lp = 0, tot = 0, h = new Float64Array(N), i;
+      for (i = 0; i < N; i++) { var w = labGz(rand); lp += 0.12 * (w - lp); h[i] = w - lp; tot += h[i] * h[i]; }
+      var k = 1 / Math.sqrt(tot / N); for (i = 0; i < N; i++) h[i] *= k;
+      return h;
+    };
+    var labSS = function (x) { return x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x); };
+    var labBurst = function (t, on, rise, hold, fall, amp) { return amp * labSS((t - on) / rise) * (1 - labSS((t - (on + rise + hold)) / fall)); };
+    var labTurbo = function (v) {
+      var t = 0.1 + 0.8 * (v < 0 ? 0 : v > 1 ? 1 : v);
+      return [34.61 + t * (1172.33 - t * (10793.56 - t * (33300.12 - t * (38394.49 - t * 14825.05)))),
+              23.31 + t * (557.33 + t * (1225.33 - t * (3574.96 - t * (1073.77 + t * 707.56)))),
+              27.2 + t * (3211.1 - t * (15327.97 - t * (27814 - t * (22569.18 - t * 6838.66))))].map(function (x) { return Math.max(0, Math.min(255, Math.round(x))); });
+    };
+    var mInt = function (v) { return String(Math.round(v)); };                 // MATLAB prints whole numbers without decimals
+    var mP = function (v) {                                                    // ... and tiny ones in exponent form
+      return v !== 0 && Math.abs(v) < 1e-4 ? v.toExponential(4).replace(/e([+-])(\d)$/, 'e$10$2') : m4(v);
+    };
+    var labLines = function (pairs) { return pairs.map(function (q) { return q[0] + ' = ' + q[1]; }).join('\n'); };
+
+    // second-order Butterworth and notch filters, applied forwards then backwards (zero phase)
+    var labBiquad = function (b, a, x) {
+      var n = x.length, y = new Float64Array(n), x1 = 0, x2 = 0, y1 = 0, y2 = 0, i;
+      for (i = 0; i < n; i++) {
+        var yi = b[0] * x[i] + b[1] * x1 + b[2] * x2 - a[1] * y1 - a[2] * y2;
+        y[i] = yi; x2 = x1; x1 = x[i]; y2 = y1; y1 = yi;
+      }
+      return y;
+    };
+    var labZero = function (f, x) {
+      var n = x.length, r = new Float64Array(n), o = new Float64Array(n), y, i;
+      y = labBiquad(f.b, f.a, x);
+      for (i = 0; i < n; i++) r[i] = y[n - 1 - i];
+      y = labBiquad(f.b, f.a, r);
+      for (i = 0; i < n; i++) o[i] = y[n - 1 - i];
+      return o;
+    };
+    var labButter = function (fc, fs, high) {
+      var K = Math.tan(Math.PI * fc / fs), n = 1 / (1 + Math.SQRT2 * K + K * K);
+      return { b: high ? [n, -2 * n, n] : [K * K * n, 2 * K * K * n, K * K * n],
+               a: [1, 2 * (K * K - 1) * n, (1 - Math.SQRT2 * K + K * K) * n] };
+    };
+    var labNotch = function (f0, fs, Q) {
+      var w0 = 2 * Math.PI * f0 / fs, be = Math.tan(w0 / Q / 2), c = Math.cos(w0);
+      return { b: [1 / (1 + be), -2 * c / (1 + be), 1 / (1 + be)], a: [1, -2 * c / (1 + be), (1 - be) / (1 + be)] };
+    };
+    // Student's t: the two-sided p-value through the regularised incomplete beta function
+    var labLogGamma = function (x) {
+      var c = [76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5];
+      var y = x, t = x + 5.5, s = 1.000000000190015, j;
+      t -= (x + 0.5) * Math.log(t);
+      for (j = 0; j < 6; j++) s += c[j] / ++y;
+      return -t + Math.log(2.5066282746310005 * s / x);
+    };
+    var labBetaCF = function (a, b, x) {
+      var qab = a + b, qap = a + 1, qam = a - 1, c = 1, d = 1 - qab * x / qap, m;
+      if (Math.abs(d) < 1e-300) d = 1e-300;
+      d = 1 / d; var h = d;
+      for (m = 1; m <= 400; m++) {
+        var m2 = 2 * m, aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+        d = 1 + aa * d; if (Math.abs(d) < 1e-300) d = 1e-300;
+        c = 1 + aa / c; if (Math.abs(c) < 1e-300) c = 1e-300;
+        d = 1 / d; h *= d * c;
+        aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+        d = 1 + aa * d; if (Math.abs(d) < 1e-300) d = 1e-300;
+        c = 1 + aa / c; if (Math.abs(c) < 1e-300) c = 1e-300;
+        d = 1 / d; var del = d * c; h *= del;
+        if (Math.abs(del - 1) < 1e-15) break;
+      }
+      return h;
+    };
+    var labBetaI = function (a, b, x) {
+      if (x <= 0) return 0; if (x >= 1) return 1;
+      var bt = Math.exp(labLogGamma(a + b) - labLogGamma(a) - labLogGamma(b) + a * Math.log(x) + b * Math.log(1 - x));
+      return x < (a + 1) / (a + b + 2) ? bt * labBetaCF(a, b, x) / a : 1 - bt * labBetaCF(b, a, 1 - x) / b;
+    };
+    var labPT2 = function (t, df) { return labBetaI(df / 2, 0.5, df / (df + t * t)); };   // two-sided p
+    var labQT = function (df) {                                                           // t with two-sided p = 0.05
+      var lo = 0, hi = 60, k;
+      for (k = 0; k < 80; k++) { var mid = (lo + hi) / 2; if (labPT2(mid, df) > 0.05) lo = mid; else hi = mid; }
+      return (lo + hi) / 2;
+    };
+
+    var labModels = {};
+
+    // ---- 3. filtering
+    labModels.filter = {
+      setup: function () {
+        var N = 5000, h = labNoise(7001, N), x = new Float64Array(N), i;
+        for (i = 0; i < N; i++) {
+          var t = i / 1000, A = 0.05 + labBurst(t, 0.55, 0.45, 0.9, 0.5, 1) + labBurst(t, 3.2, 0.45, 0.7, 0.5, 0.62);
+          x[i] = +(h[i] * A * 150 + 80 * Math.sin(2 * Math.PI * 50 * t) + 300 * Math.sin(2 * Math.PI * 0.4 * t + 0.5) +
+                   150 * Math.sin(2 * Math.PI * 1.1 * t + 2)).toFixed(6);
+        }
+        var NN = 2000, cs = new Float64Array(NN), sn = new Float64Array(NN), wn = new Float64Array(NN);
+        for (i = 0; i < NN; i++) { cs[i] = Math.cos(2 * Math.PI * i / NN); sn[i] = Math.sin(2 * Math.PI * i / NN); wn[i] = 0.5 - 0.5 * Math.cos(2 * Math.PI * i / (NN - 1)); }
+        var D = { N: N, x: x };
+        D.spec = function (v) {                         // Hann-windowed power at 0.5 Hz steps, from 1.0 s
+          var P = new Float64Array(1001), seg = new Float64Array(NN), k, n;
+          for (n = 0; n < NN; n++) seg[n] = v[1000 + n] * wn[n];
+          for (k = 0; k <= 1000; k++) {
+            var re = 0, im = 0;
+            for (n = 0; n < NN; n++) { var ix = (k * n) % NN; re += seg[n] * cs[ix]; im -= seg[n] * sn[ix]; }
+            P[k] = re * re + im * im;
+          }
+          return P;
+        };
+        D.pX = D.spec(x);
+        var mx = 0; for (i = 0; i < 250; i++) { var q = (D.pX[4 * i] + D.pX[4 * i + 1] + D.pX[4 * i + 2] + D.pX[4 * i + 3]) / 4; if (q > mx) mx = q; }
+        D.maxP = mx;
+        return D;
+      },
+      compute: function (p, D) {
+        var y = D.x, fs = 1000, i;
+        if (p.notch) y = labZero(labNotch(50, fs, 35), y);
+        y = labZero(labButter(p.hp, fs, true), y);
+        y = labZero(labButter(p.lp, fs, false), y);
+        var k0 = 500, k1 = 4500, n = k1 - k0, sx = 0, sy = 0, rx = 0, ix = 0, ry = 0, iy = 0;
+        for (i = k0; i < k1; i++) {
+          var ph = 2 * Math.PI * 50 * (i - k0) / fs, c = Math.cos(ph), s = Math.sin(ph);
+          sx += D.x[i] * D.x[i]; sy += y[i] * y[i];
+          rx += D.x[i] * c; ix -= D.x[i] * s; ry += y[i] * c; iy -= y[i] * s;
+        }
+        return { D: D, y: y, rmsX: Math.sqrt(sx / n), rmsY: Math.sqrt(sy / n),
+                 a50X: 2 * Math.hypot(rx, ix) / n, a50Y: 2 * Math.hypot(ry, iy) / n, pY: D.spec(y) };
+      },
+      read: function (S, L) {
+        return [[L[7], S.rmsX.toFixed(1) + ' ' + L[3]], [L[8], S.rmsY.toFixed(1) + ' ' + L[3]],
+                [L[9], S.a50X.toFixed(1) + ' ' + L[3]], [L[10], S.a50Y.toFixed(1) + ' ' + L[3]]];
+      },
+      vals: function (p, r) { return { hp: p.hp, lp: p.lp, notch: r ? (p.notch ? 'TRUE' : 'FALSE') : (p.notch ? 'true' : 'false') }; },
+      out: function (S) {
+        return labLines([['rms_before', m4(S.rmsX)], ['rms_after', m4(S.rmsY)], ['amp50_before', m4(S.a50X)], ['amp50_after', m4(S.a50Y)]]);
+      },
+      csv: function (S) { var r = [], i; for (i = 0; i < S.D.N; i++) r.push(S.D.x[i].toFixed(6)); return r; },
+      draw: function (c, W, H, d, S, L, p) {
+        var D = S.D, mark = css('--mark'), grid = css('--rule'), ink = css('--ink-2'), ink3 = css('--ink-3'), acc = css('--accent');
+        var px0 = 56 * d, pw = W - px0 - 14 * d, MAXV = 900, j, k;
+        c.clearRect(0, 0, W, H); c.lineJoin = 'round'; c.font = fontL(d); c.textBaseline = 'middle';
+        var panel = function (y0, y1, arr, colour, title) {
+          var cy = (y0 + y1) / 2, sc = (y1 - y0) / 2 / MAXV;
+          c.strokeStyle = grid; c.lineWidth = d; c.globalAlpha = 0.6; c.beginPath(); c.moveTo(px0, cy); c.lineTo(px0 + pw, cy); c.stroke(); c.globalAlpha = 1;
+          c.strokeStyle = colour; c.lineWidth = 1.1 * d; c.beginPath();
+          for (j = 0; j < 1500; j++) {
+            var y = cy - Math.max(-MAXV, Math.min(MAXV, arr[1500 + j])) * sc, x = px0 + j / 1499 * pw;
+            j ? c.lineTo(x, y) : c.moveTo(x, y);
+          }
+          c.stroke();
+          c.fillStyle = ink; c.textAlign = 'left'; c.fillText(title, px0, y0 - 9 * d);
+          c.fillStyle = ink3; c.textAlign = 'right'; c.fillText('0', px0 - 8 * d, cy);
+        };
+        panel(H * 0.1, H * 0.3, D.x, ink3, L[0]);
+        panel(H * 0.41, H * 0.61, S.y, mark, L[1]);
+        // spectrum, in dB relative to the strongest part of the recording
+        var s0 = H * 0.75, s1 = H * 0.92, dbMin = -70;
+        var fx = function (f) { return px0 + f / 500 * pw; }, dy = function (db) { return s0 + (0 - db) / (0 - dbMin) * (s1 - s0); };
+        c.strokeStyle = grid; c.lineWidth = d; c.globalAlpha = 0.6; c.beginPath();
+        [0, -35, -70].forEach(function (db) { c.moveTo(px0, dy(db)); c.lineTo(px0 + pw, dy(db)); });
+        c.stroke(); c.globalAlpha = 1;
+        c.fillStyle = ink3; c.textAlign = 'right';
+        [0, -35, -70].forEach(function (db) { c.fillText(String(db).replace('-', '−'), px0 - 8 * d, dy(db)); });
+        c.textAlign = 'center';
+        [0, 100, 200, 300, 400].forEach(function (f) { c.fillText(String(f), fx(f), s1 + 11 * d); });
+        c.textAlign = 'right'; c.fillText('500 ' + L[4], fx(500), s1 + 11 * d);
+        c.textAlign = 'left'; c.fillStyle = ink; c.fillText(L[2], px0, s0 - 9 * d);
+        var curve = function (P, colour, lw) {
+          c.strokeStyle = colour; c.lineWidth = lw * d; c.beginPath();
+          for (k = 0; k < 250; k++) {
+            var q = (P[4 * k] + P[4 * k + 1] + P[4 * k + 2] + P[4 * k + 3]) / 4;
+            var db = Math.max(dbMin, 10 * Math.log10(q / D.maxP + 1e-12)), x = fx((4 * k + 1.5) * 0.5), y = dy(db);
+            k ? c.lineTo(x, y) : c.moveTo(x, y);
+          }
+          c.stroke();
+        };
+        curve(D.pX, ink3, 1.2); curve(S.pY, mark, 2);
+        c.setLineDash([4 * d, 4 * d]); c.strokeStyle = acc; c.lineWidth = d; c.beginPath();
+        [p.hp, p.lp].forEach(function (f) { c.moveTo(fx(f), s0); c.lineTo(fx(f), s1); });
+        c.stroke(); c.setLineDash([]);
+        if (p.notch) { c.strokeStyle = acc; c.lineWidth = 2 * d; c.beginPath(); c.moveTo(fx(50), s1); c.lineTo(fx(50), s1 + 5 * d); c.stroke(); }
+        var legend = function (y, colour, text) {
+          var tw = c.measureText(text).width;
+          c.textAlign = 'right'; c.fillStyle = ink; c.fillText(text, px0 + pw - 6 * d, y);
+          c.fillStyle = colour; c.fillRect(px0 + pw - 6 * d - tw - 24 * d, y - d, 16 * d, 2.4 * d);
+        };
+        legend(s0 - 12 * d, ink3, L[5]); legend(s0 + 4 * d, mark, L[6]);
+      }
+    };
+
+    // ---- 4. normalising to a maximal contraction
+    labModels.mvc = {
+      setup: function () {
+        var N = 3000, A = new Float64Array(N), i;
+        for (i = 0; i < N; i++) A[i] = labBurst(i / 1000, 0.3, 0.5, 1.7, 0.5, 1);
+        return { N: N, h1: labNoise(8101, N), h2: labNoise(8102, N), A: A };
+      },
+      compute: function (p, D) {
+        var mvc = new Float64Array(D.N), task = new Float64Array(D.N), i, s1 = 0, s2 = 0;
+        for (i = 0; i < D.N; i++) {
+          mvc[i] = +(200 * p.gain * D.h1[i] * D.A[i]).toFixed(6);
+          task[i] = +(200 * p.gain * p.effort / 100 * D.h2[i] * D.A[i]).toFixed(6);
+        }
+        for (i = 1000; i < 2500; i++) { s1 += mvc[i] * mvc[i]; s2 += task[i] * task[i]; }
+        var r1 = Math.sqrt(s1 / 1500), r2 = Math.sqrt(s2 / 1500);
+        return { D: D, mvc: mvc, task: task, r1: r1, r2: r2, pct: r2 / r1 * 100 };
+      },
+      read: function (S, L) {
+        return [[L[4], S.r1.toFixed(1) + ' ' + L[3]], [L[5], S.r2.toFixed(1) + ' ' + L[3]], [L[6], S.pct.toFixed(1) + ' %']];
+      },
+      vals: function () { return {}; },
+      out: function (S) { return labLines([['rms_mvc', m4(S.r1)], ['rms_task', m4(S.r2)], ['pct_mvc', m4(S.pct)]]); },
+      csv: function (S) {
+        var r = ['mvc,task'], i; for (i = 0; i < S.D.N; i++) r.push(S.mvc[i].toFixed(6) + ',' + S.task[i].toFixed(6));
+        return r;
+      },
+      draw: function (c, W, H, d, S, L) {
+        var mark = css('--mark'), acc = css('--accent'), grid = css('--rule'), ink = css('--ink-2'), ink3 = css('--ink-3');
+        var px0 = 56 * d, pw = W - px0 - 14 * d, MAXV = 1800, N = S.D.N, j;
+        c.clearRect(0, 0, W, H); c.lineJoin = 'round'; c.font = fontL(d); c.textBaseline = 'middle';
+        var panel = function (y0, y1, arr, rms, colour, title) {
+          var cy = (y0 + y1) / 2, sc = (y1 - y0) / 2 / MAXV, xa = px0 + 1000 / (N - 1) * pw, xb = px0 + 2499 / (N - 1) * pw;
+          c.fillStyle = acc; c.globalAlpha = 0.08; c.fillRect(xa, y0, xb - xa, y1 - y0); c.globalAlpha = 1;
+          c.strokeStyle = grid; c.lineWidth = d; c.globalAlpha = 0.6; c.beginPath();
+          c.moveTo(px0, cy); c.lineTo(px0 + pw, cy); c.moveTo(px0, y0); c.lineTo(px0 + pw, y0); c.moveTo(px0, y1); c.lineTo(px0 + pw, y1);
+          c.stroke(); c.globalAlpha = 1;
+          c.strokeStyle = colour; c.lineWidth = 1.1 * d; c.beginPath();
+          for (j = 0; j < N; j++) {
+            var y = cy - Math.max(-MAXV, Math.min(MAXV, arr[j])) * sc, x = px0 + j / (N - 1) * pw;
+            j ? c.lineTo(x, y) : c.moveTo(x, y);
+          }
+          c.stroke();
+          c.strokeStyle = acc; c.lineWidth = 2.2 * d; c.beginPath();
+          c.moveTo(xa, cy - rms * sc); c.lineTo(xb, cy - rms * sc); c.moveTo(xa, cy + rms * sc); c.lineTo(xb, cy + rms * sc); c.stroke();
+          c.fillStyle = ink; c.textAlign = 'left'; c.fillText(title + '  ·  ' + L[2] + ' ' + rms.toFixed(1) + ' ' + L[3], px0, y0 - 9 * d);
+          c.fillStyle = ink3; c.textAlign = 'right';
+          c.fillText('0', px0 - 8 * d, cy); c.fillText('+' + MAXV, px0 - 8 * d, y0); c.fillText('−' + MAXV, px0 - 8 * d, y1);
+        };
+        panel(H * 0.11, H * 0.44, S.mvc, S.r1, mark, L[0]);
+        panel(H * 0.6, H * 0.93, S.task, S.r2, mark, L[1]);
+      }
+    };
+
+    // ---- 5. the HD-sEMG map: centroid and peak
+    labModels.map = {
+      setup: function () {
+        var rand = labRng(9101), nz = [], r, c;
+        for (r = 0; r < 4; r++) { var row = []; for (c = 0; c < 8; c++) row.push(labGz(rand)); nz.push(row); }
+        return { nz: nz };
+      },
+      compute: function (p, D) {
+        var M = [], sum = 0, sx = 0, sy = 0, peak = -1, pr = 0, pc = 0, r, c;
+        for (r = 0; r < 4; r++) {
+          M.push([]);
+          for (c = 0; c < 8; c++) {
+            var g = Math.exp(-(Math.pow(c + 1 - p.along, 2) / (2 * Math.pow(1.3 * p.spread, 2)) +
+                               Math.pow(r + 1 - p.across, 2) / (2 * Math.pow(0.9 * p.spread, 2))));
+            var v = +((20 + 180 * g) * (1 + 0.06 * D.nz[r][c])).toFixed(4);
+            M[r].push(v); sum += v; sx += v * (c + 1); sy += v * (r + 1);
+            if (v > peak) { peak = v; pr = r + 1; pc = c + 1; }
+          }
+        }
+        return { M: M, cx: sx / sum, cy: sy / sum, pr: pr, pc: pc, mean: sum / 32 };
+      },
+      read: function (S, L) {
+        return [[L[5], S.cx.toFixed(2)], [L[6], S.cy.toFixed(2)], [L[7], '(' + S.pr + ', ' + S.pc + ')'], [L[8], S.mean.toFixed(1) + ' ' + L[9]]];
+      },
+      vals: function () { return {}; },
+      out: function (S) {
+        return labLines([['cx', m4(S.cx)], ['cy', m4(S.cy)], ['peak_row', mInt(S.pr)], ['peak_col', mInt(S.pc)], ['mean_amp', m4(S.mean)]]);
+      },
+      csv: function (S) { return S.M.map(function (row) { return row.map(function (v) { return v.toFixed(4); }).join(','); }); },
+      draw: function (c, W, H, d, S, L) {
+        var ink = css('--ink-2'), ink3 = css('--ink-3'), paper = css('--paper');
+        var x0 = 44 * d, y0 = 26 * d, cw = (W - x0 - 14 * d) / 8, ch = (H - y0 - 30 * d) / 4, r, k;
+        c.clearRect(0, 0, W, H); c.font = fontL(d); c.textBaseline = 'middle';
+        for (r = 0; r < 4; r++) {
+          for (k = 0; k < 8; k++) {
+            var v = S.M[r][k], col = labTurbo(v / 220);
+            c.fillStyle = 'rgb(' + col.join(',') + ')'; c.fillRect(x0 + k * cw + d, y0 + r * ch + d, cw - 2 * d, ch - 2 * d);
+            c.fillStyle = (col[0] * 0.3 + col[1] * 0.59 + col[2] * 0.11) > 130 ? 'rgba(0,0,0,.72)' : 'rgba(255,255,255,.85)';
+            c.textAlign = 'center'; c.fillText(String(Math.round(v)), x0 + (k + 0.5) * cw, y0 + (r + 0.5) * ch);
+          }
+        }
+        c.fillStyle = ink3; c.textAlign = 'center';
+        for (k = 0; k < 8; k++) c.fillText(String(k + 1), x0 + (k + 0.5) * cw, y0 + 4 * ch + 11 * d);
+        c.textAlign = 'right'; for (r = 0; r < 4; r++) c.fillText(String(r + 1), x0 - 8 * d, y0 + (r + 0.5) * ch);
+        c.fillStyle = ink; c.textAlign = 'left'; c.fillText(L[0], x0, y0 - 12 * d);
+        c.save(); c.translate(11 * d, y0 + 2 * ch); c.rotate(-Math.PI / 2); c.textAlign = 'center'; c.fillText(L[1], 0, 0); c.restore();
+        // the peak electrode (ring) and the centroid (cross)
+        var pxx = x0 + (S.pc - 0.5) * cw, pyy = y0 + (S.pr - 0.5) * ch;
+        c.strokeStyle = '#fff'; c.lineWidth = 2.4 * d; c.beginPath(); c.arc(pxx, pyy, Math.min(cw, ch) * 0.42, 0, 6.283); c.stroke();
+        c.strokeStyle = '#000'; c.lineWidth = d; c.beginPath(); c.arc(pxx, pyy, Math.min(cw, ch) * 0.42 + 1.4 * d, 0, 6.283); c.stroke();
+        var cxx = x0 + (S.cx - 0.5) * cw, cyy = y0 + (S.cy - 0.5) * ch, a = 9 * d;
+        [['#000', 5.2], ['#fff', 2.6]].forEach(function (q) {
+          c.strokeStyle = q[0]; c.lineWidth = q[1] * d; c.lineCap = 'round'; c.beginPath();
+          c.moveTo(cxx - a, cyy); c.lineTo(cxx + a, cyy); c.moveTo(cxx, cyy - a); c.lineTo(cxx, cyy + a); c.stroke();
+        });
+        c.fillStyle = ink; c.textAlign = 'right';
+        c.fillText('+ ' + L[2] + '    ○ ' + L[3], W - 14 * d, y0 - 12 * d);
+      }
+    };
+
+    // ---- 6. motor unit firing: discharge rate and its variability
+    labModels.spikes = {
+      setup: function () { var rand = labRng(9201), z = [], i; for (i = 0; i < 700; i++) z.push(labGz(rand)); return { z: z }; },
+      compute: function (p, D) {
+        var T = 1 / p.rate, t = 0, st = [], i = 0, isi = [], k;
+        for (;;) {
+          t += Math.max(0.25 * T, T * (1 + p.cov / 100 * D.z[i])); i++;
+          if (t > 10) break; st.push(+t.toFixed(5));
+        }
+        for (k = 1; k < st.length; k++) isi.push(st[k] - st[k - 1]);
+        var n = isi.length, m = 0, v = 0; for (k = 0; k < n; k++) m += isi[k]; m /= n;
+        for (k = 0; k < n; k++) v += (isi[k] - m) * (isi[k] - m);
+        var sd = Math.sqrt(v / (n - 1));
+        return { st: st, isi: isi, mean: m, rate: 1 / m, cov: sd / m * 100 };
+      },
+      read: function (S, L) {
+        return [[L[5], String(S.st.length)], [L[6], S.rate.toFixed(1) + ' ' + L[4]], [L[7], S.cov.toFixed(1) + ' %']];
+      },
+      vals: function () { return {}; },
+      out: function (S) { return labLines([['n_spikes', mInt(S.st.length)], ['rate', m4(S.rate)], ['cov_isi', m4(S.cov)]]); },
+      csv: function (S) { return S.st.map(function (t) { return t.toFixed(5); }); },
+      draw: function (c, W, H, d, S, L) {
+        var mark = css('--mark'), acc = css('--accent'), grid = css('--rule'), ink = css('--ink-2'), ink3 = css('--ink-3');
+        var px0 = 56 * d, pw = W - px0 - 14 * d, k;
+        c.clearRect(0, 0, W, H); c.lineJoin = 'round'; c.font = fontL(d); c.textBaseline = 'middle';
+        // A: raster ticks and the instantaneous rate
+        var a0 = H * 0.17, a1 = H * 0.5, RMAX = Math.max(40, Math.ceil(S.rate * 2.4 / 10) * 10), tx = function (t) { return px0 + t / 10 * pw; }, ry = function (r) { return a1 - Math.min(r, RMAX) / RMAX * (a1 - a0); };
+        c.fillStyle = ink; c.textAlign = 'left'; c.fillText(L[0], px0, H * 0.06);
+        c.strokeStyle = grid; c.lineWidth = d; c.globalAlpha = 0.6; c.beginPath();
+        [0, RMAX / 2, RMAX].forEach(function (r) { c.moveTo(px0, ry(r)); c.lineTo(px0 + pw, ry(r)); }); c.stroke(); c.globalAlpha = 1;
+        c.fillStyle = ink3; c.textAlign = 'right'; [0, RMAX / 2, RMAX].forEach(function (r) { c.fillText(String(r), px0 - 8 * d, ry(r)); });
+        c.textAlign = 'center'; [0, 2, 4, 6, 8].forEach(function (t) { c.fillText(String(t), tx(t), a1 + 11 * d); });
+        c.textAlign = 'right'; c.fillText('10 ' + L[2], tx(10), a1 + 11 * d);
+        c.strokeStyle = mark; c.lineWidth = 1.6 * d; c.lineCap = 'round'; c.beginPath();
+        S.st.forEach(function (t) { c.moveTo(tx(t), H * 0.09); c.lineTo(tx(t), H * 0.14); }); c.stroke();
+        c.strokeStyle = mark; c.globalAlpha = 0.45; c.lineWidth = 1.2 * d; c.beginPath();
+        S.isi.forEach(function (v, i) { var x = tx(S.st[i + 1]), y = ry(1 / v); i ? c.lineTo(x, y) : c.moveTo(x, y); }); c.stroke();
+        c.globalAlpha = 1; c.fillStyle = mark;
+        S.isi.forEach(function (v, i) { c.beginPath(); c.arc(tx(S.st[i + 1]), ry(1 / v), 2.2 * d, 0, 6.283); c.fill(); });
+        c.setLineDash([5 * d, 5 * d]); c.strokeStyle = acc; c.lineWidth = d * 1.5; c.beginPath(); c.moveTo(px0, ry(S.rate)); c.lineTo(px0 + pw, ry(S.rate)); c.stroke(); c.setLineDash([]);
+        // B: histogram of the inter-spike intervals, 5 ms bins
+        var b0 = H * 0.68, b1 = H * 0.92, nb = 80, cnt = new Array(nb).fill(0), mx = 1;
+        S.isi.forEach(function (v) { var i = Math.floor(v * 1000 / 5); if (i < nb) { cnt[i]++; if (cnt[i] > mx) mx = cnt[i]; } });
+        c.fillStyle = ink; c.textAlign = 'left'; c.fillText(L[1], px0, H * 0.6);
+        c.strokeStyle = grid; c.lineWidth = d; c.beginPath(); c.moveTo(px0, b1); c.lineTo(px0 + pw, b1); c.stroke();
+        var bw = pw / nb; c.fillStyle = mark; c.globalAlpha = 0.85;
+        cnt.forEach(function (v, i) { if (v) c.fillRect(px0 + i * bw + d, b1 - v / mx * (b1 - b0), bw - 2 * d, v / mx * (b1 - b0)); });
+        c.globalAlpha = 1;
+        c.setLineDash([5 * d, 5 * d]); c.strokeStyle = acc; c.lineWidth = d * 1.5; c.beginPath();
+        c.moveTo(px0 + S.mean * 1000 / 5 * bw, b0); c.lineTo(px0 + S.mean * 1000 / 5 * bw, b1); c.stroke(); c.setLineDash([]);
+        c.fillStyle = ink3; c.textAlign = 'center'; [0, 100, 200, 300].forEach(function (ms) { c.fillText(String(ms), px0 + ms / 5 * bw, b1 + 11 * d); });
+        c.textAlign = 'right'; c.fillText('400 ' + L[3], px0 + pw, b1 + 11 * d);
+      }
+    };
+
+    // ---- 7. two groups: Welch t-test, effect size, confidence interval
+    labModels.stats = {
+      setup: function () {
+        var rand = labRng(9301), a = [], b = [], i; for (i = 0; i < 30; i++) { a.push(labGz(rand)); b.push(labGz(rand)); }
+        return { za: a, zb: b };
+      },
+      compute: function (p, D) {
+        var n = p.n, a = [], b = [], i;
+        for (i = 0; i < n; i++) { a.push(+(5 + p.sd * D.za[i]).toFixed(3)); b.push(+(5 + p.diff + p.sd * D.zb[i]).toFixed(3)); }
+        var mean = function (v) { return v.reduce(function (s, x) { return s + x; }, 0) / v.length; };
+        var vr = function (v, m) { return v.reduce(function (s, x) { return s + (x - m) * (x - m); }, 0) / (v.length - 1); };
+        var m1 = mean(a), m2 = mean(b), v1 = vr(a, m1), v2 = vr(b, m2);
+        var se2 = v1 / n + v2 / n, se = Math.sqrt(se2), diff = m2 - m1, t = diff / se;
+        var df = se2 * se2 / ((v1 / n) * (v1 / n) / (n - 1) + (v2 / n) * (v2 / n) / (n - 1));
+        var crit = labQT(df);
+        return { a: a, b: b, m1: m1, m2: m2, s1: Math.sqrt(v1), s2: Math.sqrt(v2), diff: diff, t: t, df: df,
+                 p: labPT2(Math.abs(t), df), d: diff / Math.sqrt((v1 + v2) / 2), lo: diff - crit * se, hi: diff + crit * se };
+      },
+      read: function (S, L) {
+        var pTxt = S.p < 0.001 ? '< 0.001' : S.p.toFixed(3);
+        return [[L[5], S.t.toFixed(2)], [L[6], S.df.toFixed(1)], [L[7], pTxt], [L[8], S.d.toFixed(2)],
+                [L[9], '[' + S.lo.toFixed(2) + ', ' + S.hi.toFixed(2) + ']']];
+      },
+      vals: function () { return {}; },
+      out: function (S) {
+        return labLines([['t', m4(S.t)], ['df', m4(S.df)], ['p', mP(S.p)], ['dcohen', m4(S.d)], ['ci_low', m4(S.lo)], ['ci_high', m4(S.hi)]]);
+      },
+      csv: function (S) { var r = ['free,pain'], i; for (i = 0; i < S.a.length; i++) r.push(S.a[i].toFixed(3) + ',' + S.b[i].toFixed(3)); return r; },
+      draw: function (c, W, H, d, S, L) {
+        var mark = css('--mark'), acc = css('--accent'), grid = css('--rule'), ink = css('--ink-2'), ink3 = css('--ink-3');
+        c.clearRect(0, 0, W, H); c.lineJoin = 'round'; c.font = fontL(d); c.textBaseline = 'middle';
+        // left: the two groups
+        var lx0 = 56 * d, lw = W * 0.55 - lx0, y0 = H * 0.12, y1 = H * 0.86, YMAX = 14;
+        var yy = function (v) { return y1 - Math.max(0, Math.min(YMAX, v)) / YMAX * (y1 - y0); };
+        c.strokeStyle = grid; c.lineWidth = d; c.globalAlpha = 0.6; c.beginPath();
+        [0, 5, 10].forEach(function (v) { c.moveTo(lx0, yy(v)); c.lineTo(lx0 + lw, yy(v)); }); c.stroke(); c.globalAlpha = 1;
+        c.fillStyle = ink3; c.textAlign = 'right'; [0, 5, 10].forEach(function (v) { c.fillText(String(v), lx0 - 8 * d, yy(v)); });
+        c.fillStyle = ink; c.textAlign = 'left'; c.fillText(L[0], lx0, H * 0.05);
+        [[S.a, S.m1, S.s1, 0.27, ink3, L[1]], [S.b, S.m2, S.s2, 0.73, mark, L[2]]].forEach(function (g) {
+          var gx = lx0 + g[3] * lw;
+          g[0].forEach(function (v, i) {
+            var jit = (((i * 0.6180339887) % 1) - 0.5) * lw * 0.3;
+            c.fillStyle = g[4]; c.globalAlpha = 0.8; c.beginPath(); c.arc(gx + jit, yy(v), 3.4 * d, 0, 6.283); c.fill();
+          });
+          c.globalAlpha = 1; c.strokeStyle = ink; c.lineWidth = 2.4 * d; c.beginPath();
+          c.moveTo(gx - lw * 0.12, yy(g[1])); c.lineTo(gx + lw * 0.12, yy(g[1]));
+          c.moveTo(gx, yy(g[1] - g[2])); c.lineTo(gx, yy(g[1] + g[2])); c.stroke();
+          c.fillStyle = ink; c.textAlign = 'center'; c.fillText(g[5], gx, y1 + 14 * d);
+        });
+        // right: the difference and its 95% confidence interval
+        var rx0 = W * 0.62, rw = W - rx0 - 16 * d, DMIN = -4, DMAX = 10;
+        var dx = function (v) { return rx0 + (Math.max(DMIN, Math.min(DMAX, v)) - DMIN) / (DMAX - DMIN) * rw; }, cy = (y0 + y1) / 2;
+        c.fillStyle = ink; c.textAlign = 'left'; c.fillText(L[3], rx0, H * 0.05);
+        c.strokeStyle = grid; c.lineWidth = d; c.globalAlpha = 0.6; c.beginPath();
+        [-4, 0, 4, 8].forEach(function (v) { c.moveTo(dx(v), y0); c.lineTo(dx(v), y1); }); c.stroke(); c.globalAlpha = 1;
+        c.strokeStyle = ink; c.lineWidth = 1.6 * d; c.setLineDash([4 * d, 4 * d]); c.beginPath(); c.moveTo(dx(0), y0); c.lineTo(dx(0), y1); c.stroke(); c.setLineDash([]);
+        c.fillStyle = ink3; c.textAlign = 'center'; [-4, 0, 4, 8].forEach(function (v) { c.fillText(String(v).replace('-', '−'), dx(v), y1 + 14 * d); });
+        var sig = S.lo > 0 || S.hi < 0, col = sig ? acc : ink3;
+        c.strokeStyle = col; c.lineWidth = 3 * d; c.lineCap = 'round'; c.beginPath(); c.moveTo(dx(S.lo), cy); c.lineTo(dx(S.hi), cy); c.stroke();
+        c.fillStyle = col; c.beginPath(); c.arc(dx(S.diff), cy, 6 * d, 0, 6.283); c.fill();
+        c.fillStyle = ink; c.textAlign = 'center'; c.fillText(L[4] + ' [' + S.lo.toFixed(1) + ', ' + S.hi.toFixed(1) + ']', rx0 + rw / 2, cy - 22 * d);
+      }
+    };
+
+    // ---- the wiring, shared by every model above
+    Array.prototype.forEach.call(lab.querySelectorAll('.lesson[data-model]'), function (les) {
+      var M = labModels[les.dataset.model];
+      if (!M) return;
+      var cv = les.querySelector('.lab-canvas'), L = cv.dataset.labels.split('|');
+      var inputs = Array.prototype.slice.call(les.querySelectorAll('.lab-ctl [data-k]'));
+      var rd = les.querySelector('.lab-read'), preM = les.querySelector('.pane[data-lang=m] .code');
+      var outM = les.querySelector('.mout'), taR = les.querySelector('.pane[data-lang=r] .code');
+      var D = M.setup(), P = {}, S = null, viz = null;
+      var fill = function (tpl, r) {
+        var v = M.vals(P, r);
+        return tpl.replace(/\{(\w+)\}/g, function (m0, k) { return v[k] === undefined ? m0 : v[k]; });
+      };
+      var run = function () {
+        inputs.forEach(function (i) {
+          if (i.type === 'checkbox') { P[i.dataset.k] = i.checked; return; }
+          P[i.dataset.k] = +i.value;
+          var o = i.nextElementSibling;
+          if (o && o.tagName === 'OUTPUT') o.textContent = (+i.value).toFixed(+i.dataset.dec) + (i.dataset.unit ? ' ' + i.dataset.unit : '');
+        });
+        S = M.compute(P, D);
+        rd.innerHTML = M.read(S, L).map(function (q) { return '<span>' + q[0] + ' <b>' + q[1] + '</b></span>'; }).join('');
+        labCode(preM, fill(preM.dataset.tpl, false));
+        labSetR(taR, fill(taR.dataset.tpl, true));
+        if (outM) outM.textContent = M.out(S);
+        if (viz) viz.render();
+      };
+      les.labGen = run;
+      les.labExpect = function () { return M.out(S); };
+      les.labCsv = function () { return M.csv(S); };
+      viz = labViz(cv, null, function (c, W, H, d) { if (S) M.draw(c, W, H, d, S, L, P); });
+      inputs.forEach(function (i) { i.addEventListener(i.type === 'checkbox' ? 'change' : 'input', run); });
+      les.querySelector('.cp').addEventListener('click', function (e) { labCopy(preM.textContent, e.currentTarget); });
+      run();
+    });
 
     // ---- language switch, and R in the page (webR, fetched only when someone presses Run)
     var rLoad = null;
