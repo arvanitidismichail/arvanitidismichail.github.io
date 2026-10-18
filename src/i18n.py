@@ -140,8 +140,14 @@ STRINGS = [
     ('aria-label="Show the neck"', 'aria-label="Εμφάνιση του αυχένα"', 1),
     ('data-space="0" aria-pressed="true">On Earth</button>', 'data-space="0" aria-pressed="true">Στη Γη</button>', 1),
     ('data-space="1" aria-pressed="false">After spaceflight</button>', 'data-space="1" aria-pressed="false">Μετά την πτήση</button>', 1),
-    ('<p class="emg-note">Drag to turn the model. Simplified, with the changes exaggerated for illustration.</p>',
-     '<p class="emg-note">Σύρετε για να περιστρέψετε το μοντέλο. Απλοποιημένο, με τις αλλαγές μεγεθυμένες για επεξήγηση.</p>', 1),
+    ('<p class="emg-note">Drag either model to turn it. Simplified, with the changes exaggerated for illustration.</p>',
+     '<p class="emg-note">Σύρετε οποιοδήποτε μοντέλο για να το περιστρέψετε. Απλοποιημένο, με τις αλλαγές μεγεθυμένες για επεξήγηση.</p>', 1),
+    ('<p class="neck-fallback">The 3D scene needs WebGL, which this browser has turned off.</p>',
+     '<p class="neck-fallback">Η τρισδιάστατη σκηνή χρειάζεται WebGL, το οποίο είναι απενεργοποιημένο σε αυτόν τον περιηγητή.</p>', 1),
+    ('aria-label="3D model of an astronaut in a spacesuit. Use the arrow keys to turn it."',
+     'aria-label="Τρισδιάστατο μοντέλο αστροναύτη με διαστημική στολή. Χρησιμοποιήστε τα βέλη για να το περιστρέψετε."', 1),
+    ('data-earth="Gravity compresses the discs" data-space="No load: the spine lengthens">Gravity compresses the discs</div>',
+     'data-earth="Η βαρύτητα συμπιέζει τους δίσκους" data-space="Χωρίς φορτίο: η σπονδυλική στήλη επιμηκύνεται">Η βαρύτητα συμπιέζει τους δίσκους</div>', 1),
 
     # ---------- research ----------
     ("<h2>Research</h2>", "<h2>Έρευνα</h2>", 1),
