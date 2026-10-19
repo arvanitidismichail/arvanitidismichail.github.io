@@ -85,10 +85,11 @@ automatically.
 Google Scholar refuses GitHub's servers, so the Scholar figures are refreshed
 from the Mac instead: a launchd job
 (`~/Library/LaunchAgents/com.arvanitidismichail.scholar.plist`) runs
-`~/.site-scholar/update.sh` on Mondays at 09:00 (or on waking, if asleep).
-It works in its own copy of the site at `~/.site-scholar/site`, runs
-`update_scholar.py`, and pushes if the numbers changed. Log:
-`~/Library/Logs/site-scholar.log`. To stop it:
+`~/.site-scholar/update.sh` every day at 09:00 and 15:00 (or on waking, if the
+Mac was asleep). It waits up to ten minutes for the network, retries if a push
+is refused, and works in its own copy of the site at `~/.site-scholar/site`.
+It runs `update_scholar.py` and publishes only if the numbers changed, so most
+runs do nothing. Log: `~/Library/Logs/site-scholar.log`. To stop it:
 `launchctl bootout gui/$(id -u)/com.arvanitidismichail.scholar`.
 
 ## Updating the Google Scholar figures

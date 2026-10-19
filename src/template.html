@@ -1007,6 +1007,11 @@ html:not(.js) .emg { display: none; }
 }
 .in-space .astro-stage::before { opacity: 1; }
 .astro-stage:active { cursor: grabbing; }
+.astro-poster {
+  position: absolute; left: 50%; top: 50%; height: 74%; width: auto; transform: translate(-50%, -52%);
+  transition: opacity .9s ease; pointer-events: none;
+}
+.astro-stage.ready .astro-poster { opacity: 0; }
 .astro-stage:focus-visible { outline: 2px solid var(--mark); outline-offset: 3px; }
 .astro-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .astro-stage::after {
@@ -1033,6 +1038,7 @@ html:not(.js) .emg { display: none; }
 .astro-controls .sort { color: #cdd8e5; }
 .astro-controls .sort:hover { color: #fff; }
 .astro-controls .sort[aria-pressed="true"] { background: rgba(63, 201, 192, .22); color: #94f2ea; }
+.astro-stage .neck-fallback { top: 1rem; bottom: auto; right: 1rem; }
 .astro-stage.no-gl .neck-fallback { display: block; color: #9fb0c3; }
 .neck-stage {
   position: relative; aspect-ratio: 1 / .92; border-radius: 12px; overflow: hidden;
@@ -1055,7 +1061,7 @@ html:not(.js) .emg { display: none; }
 .neck-copy p { margin: 0; }
 @media (max-width: 900px) {
   .space-feature { grid-template-columns: 1fr; }
-  .astro-stage { min-height: 0; aspect-ratio: 1 / 1.12; }
+  .astro-stage { min-height: 27rem; }
   .neck-stage { aspect-ratio: 1 / 1; }
 }
 
@@ -1571,6 +1577,30 @@ html:not(.js) .lab-tabs, html:not(.js) .viz, html:not(.js) .lab-run, html:not(.j
 
     <div class="emg space-feature rise">
       <div class="astro-stage" tabindex="0" role="img" aria-label="3D model of an astronaut in a spacesuit. Use the arrow keys to turn it.">
+        <svg class="astro-poster" viewBox="0 0 200 300" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="ap-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe3a0"/><stop offset=".55" stop-color="#e0a73e"/><stop offset="1" stop-color="#a86d16"/></linearGradient>
+            <linearGradient id="ap-suit" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e6e7ea"/><stop offset=".5" stop-color="#fbfaf7"/><stop offset="1" stop-color="#cfd3d9"/></linearGradient>
+          </defs>
+          <ellipse cx="100" cy="282" rx="62" ry="9" fill="#000" opacity=".35"/>
+          <rect x="62" y="110" width="76" height="64" rx="16" fill="#aeb4bc"/>
+          <rect x="44" y="116" width="19" height="66" rx="9.5" fill="url(#ap-suit)" transform="rotate(6 53 116)"/>
+          <rect x="137" y="116" width="19" height="66" rx="9.5" fill="url(#ap-suit)" transform="rotate(-6 147 116)"/>
+          <rect x="44" y="136" width="19" height="5" fill="#ff6a2b" transform="rotate(6 53 138)"/>
+          <rect x="137" y="136" width="19" height="5" fill="#ff6a2b" transform="rotate(-6 147 138)"/>
+          <rect x="40" y="178" width="19" height="19" rx="7" fill="#7d838b"/><rect x="141" y="178" width="19" height="19" rx="7" fill="#7d838b"/>
+          <rect x="66" y="106" width="68" height="76" rx="24" fill="url(#ap-suit)"/>
+          <rect x="84" y="126" width="32" height="22" rx="5" fill="#14171c"/>
+          <rect x="89" y="131" width="6" height="4" fill="#ff6a2b"/><rect x="97" y="131" width="6" height="4" fill="#3fc9c0"/><rect x="105" y="131" width="6" height="4" fill="#fff6dd"/>
+          <rect x="77" y="178" width="22" height="86" rx="11" fill="url(#ap-suit)"/><rect x="101" y="178" width="22" height="86" rx="11" fill="url(#ap-suit)"/>
+          <rect x="70" y="260" width="31" height="15" rx="6" fill="#c7ccd2"/><rect x="99" y="260" width="31" height="15" rx="6" fill="#c7ccd2"/>
+          <rect x="70" y="265" width="31" height="3.5" fill="#ff6a2b"/><rect x="99" y="265" width="31" height="3.5" fill="#ff6a2b"/>
+          <ellipse cx="100" cy="106" rx="23" ry="5.5" fill="none" stroke="#3fc9c0" stroke-width="2.4" opacity=".9"/>
+          <circle cx="100" cy="64" r="40" fill="url(#ap-suit)"/>
+          <ellipse cx="100" cy="66" rx="28" ry="23" fill="#15181d"/>
+          <ellipse cx="100" cy="66" rx="25.5" ry="20.5" fill="url(#ap-gold)"/>
+          <ellipse cx="91" cy="58" rx="9" ry="5" fill="#fff" opacity=".55" transform="rotate(-22 91 58)"/>
+        </svg>
         <canvas class="astro-canvas" aria-hidden="true"></canvas>
         <div class="astro-tag" aria-hidden="true" data-earth="Gravity compresses the discs" data-space="No load: the spine lengthens">Gravity compresses the discs</div>
         <div class="astro-controls">
@@ -3625,7 +3655,9 @@ const watch = (el, fn) => {
     if (!es[0].isIntersecting) return;
     io.disconnect();
     // wait for a quiet moment: the page's first paint matters more than the 3D scene
-    const go = () => loadThree().then(fn, () => el.classList.add('no-gl'));
+    const go = () => loadThree().then(THREE => {
+      try { fn(THREE); } catch (err) { el.classList.add('no-gl'); el.classList.remove('ready'); console.error(err); }
+    }, () => el.classList.add('no-gl'));
     'requestIdleCallback' in window ? requestIdleCallback(go, { timeout: 2500 }) : setTimeout(go, 400);
   }, { rootMargin: '500px 0px' });
   io.observe(el);
@@ -3637,7 +3669,7 @@ function buildAstronaut(THREE) {
   try {
     renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
   } catch (e) { stage.classList.add('no-gl'); return; }
-  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, matchMedia('(max-width: 900px)').matches ? 1.75 : 2));
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -3646,7 +3678,8 @@ function buildAstronaut(THREE) {
   const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 400);
 
   // reflections: a small studio-and-sun picture drawn on a canvas, turned into an environment map
-  {
+  let hasEnv = false;
+  try {
     const c = document.createElement('canvas'); c.width = 512; c.height = 256;
     const g = c.getContext('2d'), gr = g.createLinearGradient(0, 0, 0, 256);
     gr.addColorStop(0, '#22385e'); gr.addColorStop(0.5, '#0e1a30'); gr.addColorStop(1, '#1a3b6a');
@@ -3660,20 +3693,21 @@ function buildAstronaut(THREE) {
     const tex = new THREE.CanvasTexture(c);
     tex.mapping = THREE.EquirectangularReflectionMapping; tex.colorSpace = THREE.SRGBColorSpace;
     const pm = new THREE.PMREMGenerator(renderer);
-    scene.environment = pm.fromEquirectangular(tex).texture; tex.dispose(); pm.dispose();
-  }
+    scene.environment = pm.fromEquirectangular(tex).texture; tex.dispose(); pm.dispose(); hasEnv = true;
+  } catch (err) { console.warn('environment map unavailable', err); }
   const sun = new THREE.DirectionalLight(0xfff1de, 3.4); sun.position.set(4, 5, 3.5); scene.add(sun);
   const shine = new THREE.DirectionalLight(0x4a8ce0, 1.1); shine.position.set(-4, -3, -2); scene.add(shine);
   const fill = new THREE.HemisphereLight(0x9ab6e0, 0x101826, 0.6); scene.add(fill);
 
   // ---- materials
-  const PM = o => new THREE.MeshPhysicalMaterial(o);
-  const suit = PM({ color: 0xf2f1ed, roughness: 0.52, clearcoat: 0.25, clearcoatRoughness: 0.45 });
+  const PM = o => new THREE.MeshStandardMaterial(o);
+  const suit = PM({ color: 0xf2f1ed, roughness: 0.5, metalness: 0.02 });
   const suit2 = PM({ color: 0xc7ccd2, roughness: 0.55 });
   const glove = PM({ color: 0x80868e, roughness: 0.78 });
   const dark = PM({ color: 0x14171c, roughness: 0.42, metalness: 0.35 });
   const gold = PM({ color: 0xd9a33b, metalness: 1, roughness: 0.07, envMapIntensity: 1.7 });
   const accent = PM({ color: 0xff6a2b, roughness: 0.45 });
+  if (!hasEnv) { gold.metalness = 0.35; gold.roughness = 0.3; gold.emissive.set(0x3a2808); }
   const lamp = new THREE.MeshBasicMaterial({ color: 0xfff6dd });
   const mesh = (geo, mat, x = 0, y = 0, z = 0) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); return m; };
   const cap = (r, len) => new THREE.CapsuleGeometry(r, len, 10, 24);
@@ -3868,9 +3902,20 @@ function buildAstronaut(THREE) {
     camera.lookAt(0, 1.0, 0);
     if (reduce || !visible) draw();
   };
+  let probed = false, dead = false;
+  const fail = () => { dead = true; stage.classList.add('no-gl'); stage.classList.remove('ready'); };
+  renderer.debug.onShaderError = fail;
   function draw() {
+    if (dead) return;
     pose(time);
     renderer.render(scene, camera);
+    if (!probed) {                                       // is there really a figure in the middle of the picture?
+      probed = true;
+      const gl = renderer.getContext(), px = new Uint8Array(4);
+      gl.readPixels(gl.drawingBufferWidth >> 1, gl.drawingBufferHeight >> 1, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);
+      if (!px[3]) { fail(); return; }
+      stage.classList.add('ready');
+    }
     // the label follows the collar on screen, flipping to the other side near the edge
     nr1.getWorldPosition(v3); v3.project(camera);
     const r = stage.getBoundingClientRect(), x = (v3.x * 0.5 + 0.5) * r.width, y = (-v3.y * 0.5 + 0.5) * r.height;
@@ -3888,7 +3933,7 @@ function buildAstronaut(THREE) {
     if (visible && !reduce) { last = performance.now(); requestAnimationFrame(frame); }
   }).observe(stage);
   function frame(now) {
-    if (!visible) return;
+    if (!visible || dead) return;
     const dt = Math.min(0.05, (now - last) / 1000); last = now; time += dt;
     t += (S.v - t) * Math.min(1, dt * 1.7);
     if (!drag) { idle += dt; yaw += dt * 0.16 * Math.min(1, idle / 2); }
