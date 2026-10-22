@@ -454,6 +454,21 @@ def leftover_english(doc):
     return [w for w in suspects if w in body]
 
 
+def check_css(doc):
+    """A stray brace in the stylesheet makes the browser silently drop the next rule, which once
+    broke every chart on phones. Stop the build instead."""
+    css = doc[doc.index("<style>") + 7:doc.index("</style>")]
+    css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+    css = re.sub(r'"[^"\n]*"|\'[^\'\n]*\'', '""', css)
+    depth = 0
+    for n, line in enumerate(css.splitlines(), 1):
+        depth += line.count("{") - line.count("}")
+        if depth < 0:
+            raise SystemExit(f"CSS: an extra }} near stylesheet line {n}: {line.strip()[:80]!r}")
+    if depth:
+        raise SystemExit(f"CSS: {depth} unclosed {{ at the end of the stylesheet")
+
+
 def main():
     pending = [p for p in PUBS if p["status"] != "published"]
     published = [p for p in PUBS if p["status"] == "published"]
@@ -489,6 +504,7 @@ def main():
                     .replace("__H_INDEX__", str(SCHOLAR["h_index"]))
                     .replace("__I10__", str(SCHOLAR["i10_index"])))
 
+    check_css(result)
     en = fill(result, "en")
     dest = HERE.parent / "index.html"
     el = to_subdir(fill(to_greek(result), "el"))
