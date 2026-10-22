@@ -2,7 +2,7 @@
 # chart beside it, and the citation count on each publication.
 # Refresh with:  python3 update_scholar.py   (fetches the profile, rewrites this file, rebuilds)
 # Or edit the numbers by hand and run build.py.
-SCHOLAR = dict(citations=379, h_index=11, i10_index=11, as_of="2026-10-21")
+SCHOLAR = dict(citations=379, h_index=11, i10_index=11, as_of="2026-10-22")
 
 BY_YEAR = {2017: 2, 2018: 2, 2019: 2, 2020: 3, 2021: 11, 2022: 35, 2023: 19, 2024: 61, 2025: 115, 2026: 127}
 
@@ -35,6 +35,7 @@ PAPERS = [
     ('Evaluating the efficacy of wearable biofeedback on the outcomes of exercise interventions in people with chronic non-specific spinal pain: protocol for a systematic review and\xa0…', 2),
     ('Does pain alter the spatial distribution of muscle activity in people experiencing spinal pain? A systematic review and meta-analysis', 1),
     ('Eccentric and Concentric Torque Feedback Training Induce Similar Clinical Improvements but Distinct Triceps Surae Motor Unit Adaptations in Non-Insertional Achilles\xa0…', 1),
+    ('ERECTOR SPINAE MUSCLE FIBRE SIZE ESTIMATION USING HIGH-DENSITY SURFACE ELECTROMYOGRAPHY IN PEOPLE WITH AND WITHOUT NON-SPECIFIC CHRONIC LOW BACK PAIN', 0),
     ('Spaceflight-Associated Changes in Cervical Spine Structure, Muscle Function, and Disc Health in Astronauts', 0),
     ('Interactions between motor unit firing and fascicle dynamics during shortening and lengthening contractions', 0),
     ('The effect of eccentric exercise-induced delayed onset neck muscle soreness on force steadiness and the spatial distribution of neck extensor muscle activity', 0),
