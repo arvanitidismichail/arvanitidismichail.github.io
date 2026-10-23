@@ -2911,7 +2911,7 @@ mean_amp = mean(M(:))</pre>
     var px = new Float32Array(NX * NY), py = new Float32Array(NX * NY), pd = new Float32Array(NX * NY);
     var quads = [];
     for (var qy = 0; qy < NY - 1; qy++) for (var qx = 0; qx < NX - 1; qx++) quads.push({ i: qy * NX + qx, d: 0 });
-    var cx = 4, cy = 2, tx = 4, ty = 2, pointer = false, t0 = performance.now();
+    var cx = 4, cy = 2, tx = 4, ty = 2, pointer = false, t0 = performance.now(), cam = null;
     var view = reduce ? 1 : 0, sig = view ? 1 : 0, tilt = 0;
     var auto = !reduce, autoT = 0;
     var running = false, visible = false, lastT = 0;
@@ -2932,11 +2932,11 @@ mean_amp = mean(M(:))</pre>
         Math.max(0, Math.min(255, c[1] * k | 0)) + ',' + Math.max(0, Math.min(255, c[2] * k | 0)) + ')';
     };
     var turboLut = [], shadeLut = {};
-    for (var li = 0; li < 128; li++) turboLut.push(turbo(li / 127));
+    for (var li = 0; li < 256; li++) turboLut.push(turbo(li / 255));
     var quadColour = function (v, shade) {
-      var vi = Math.max(0, Math.min(127, Math.round(v * 127))), si = Math.max(0, Math.min(18, Math.round((shade - 0.6) / 0.04)));
-      var key = vi * 20 + si;
-      return shadeLut[key] || (shadeLut[key] = rgb(turboLut[vi], 0.6 + si * 0.04));
+      var vi = Math.max(0, Math.min(255, Math.round(v * 255))), si = Math.max(0, Math.min(36, Math.round((shade - 0.6) / 0.02)));
+      var key = vi * 40 + si;
+      return shadeLut[key] || (shadeLut[key] = rgb(turboLut[vi], 0.6 + si * 0.02));
     };
     var stops = [];
     for (var si = 0; si <= 6; si++) stops.push(rgb(turbo(si / 6)) + ' ' + Math.round(si / 6 * 100) + '%');
@@ -2962,9 +2962,9 @@ mean_amp = mean(M(:))</pre>
         tx = 6 + 4.2 * Math.sin(t * 0.45);
         ty = 2 + 1.4 * Math.sin(t * 0.9);
       }
-      var fk = 1 - Math.exp(-(dt || 1 / 60) / 0.05);             // follow the target with a ~50 ms time constant
+      var fk = 1 - Math.exp(-(dt || 1 / 60) / 0.08);             // follow the target with an ~80 ms time constant
       cx += (tx - cx) * fk; cy += (ty - cy) * fk;
-      var drive = 0.8 + 0.12 * Math.sin(t * 2.3) + 0.08 * Math.sin(t * 7.1);
+      var drive = 0.8 + 0.1 * Math.sin(t * 1.9) + 0.03 * Math.sin(t * 5.3);   // a slow breathing, not a flutter
       for (var y = 0; y < ROWS; y++) {
         for (var x = 0; x < COLS; x++) {
           var k = y * COLS + x;
@@ -2972,7 +2972,7 @@ mean_amp = mean(M(:))</pre>
           var d1 = (x - cx) * (x - cx) / 4 + (y - cy) * (y - cy) / 1.4;
           var x2 = 12 - cx * 0.6, y2 = 4 - cy;
           var d2 = (x - x2) * (x - x2) / 3.5 + (y - y2) * (y - y2) / 1.6;
-          var v = drive * 1.25 * Math.exp(-d1) + 0.35 * Math.exp(-d2) + 0.06 * jit[k] + 0.04;
+          var v = drive * 1.25 * Math.exp(-d1) + 0.35 * Math.exp(-d2) + (0.06 - 0.05 * sig) * jit[k] + 0.04;
           amp[k] = v < 0 ? 0 : v > 1 ? 1 : v;
         }
       }
@@ -3026,6 +3026,7 @@ mean_amp = mean(M(:))</pre>
       });
       var fit = Math.min(1, W * 0.94 / (x9 - x0), H * 0.9 / (y9 - y0));
       var offX = W / 2 - (x0 + x9) / 2 * fit, offY = H / 2 - (y0 + y9) / 2 * fit;
+      cam = { place: place, fit: fit, offX: offX, offY: offY, c: c, lift: lift };
 
       if (sig > 0.01) {
         emgRefine();
@@ -3159,10 +3160,16 @@ mean_amp = mean(M(:))</pre>
     var emgAim = function (e) {
       var r = emg.getBoundingClientRect(), dpr = emg.width / r.width;
       var mx = (e.clientX - r.left) * dpr, my = (e.clientY - r.top) * dpr;
-      if (tilt > 0.5 && sig > 0.5) {            // tilted view: the nearest point of the drawn surface
-        var best = 1e18, bk = 0, k;
-        for (k = 0; k < px.length; k++) { var ddx = px[k] - mx, ddy = py[k] - my, dd = ddx * ddx + ddy * ddy; if (dd < best) { best = dd; bk = k; } }
-        tx = (bk % NX) / K - 0.5; ty = ((bk / NX) | 0) / K - 0.5;
+      if (tilt > 0.5 && sig > 0.5 && cam) {     // tilted view: the point of a fixed plane under the pointer
+        var best = 1e18, bi = 0, bj = 0, i2, j2;
+        for (j2 = 0; j2 < NY; j2++) {
+          for (i2 = 0; i2 < NX; i2++) {
+            var pp = cam.place((i2 / K - COLS / 2) * cam.c, (j2 / K - ROWS / 2) * cam.c, cam.lift * 0.3);
+            var ddx = cam.offX + pp[0] * cam.fit - mx, ddy = cam.offY + pp[1] * cam.fit - my, dd = ddx * ddx + ddy * ddy;
+            if (dd < best) { best = dd; bi = i2; bj = j2; }
+          }
+        }
+        tx = bi / K - 0.5; ty = bj / K - 0.5;
       } else {
         tx = (mx - W / 2) / cell + COLS / 2 - 0.5;
         ty = (my - H / 2) / cell + ROWS / 2 - 0.5;
