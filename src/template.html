@@ -2218,7 +2218,7 @@ html:not(.js) .lab-tabs, html:not(.js) .viz, html:not(.js) .lab-run, html:not(.j
   // time, it plays through all three; the buttons switch between them.
   var emg = document.querySelector('.emg-canvas');
   if (emg && emg.getContext) {
-    var COLS = 13, ROWS = 5, N_E = COLS * ROWS, SAMPLES = 96, K = 6;
+    var COLS = 13, ROWS = 5, N_E = COLS * ROWS, SAMPLES = 96, K = 4;
     var NX = COLS * K + 1, NY = ROWS * K + 1;       // vertices of the fine mesh
     var ctx = emg.getContext('2d');
     var views = Array.prototype.slice.call(document.querySelectorAll('.emg-view'));
@@ -2251,6 +2251,13 @@ html:not(.js) .lab-tabs, html:not(.js) .viz, html:not(.js) .lab-run, html:not(.j
       return 'rgb(' + Math.max(0, Math.min(255, c[0] * k | 0)) + ',' +
         Math.max(0, Math.min(255, c[1] * k | 0)) + ',' + Math.max(0, Math.min(255, c[2] * k | 0)) + ')';
     };
+    var turboLut = [], shadeLut = {};
+    for (var li = 0; li < 128; li++) turboLut.push(turbo(li / 127));
+    var quadColour = function (v, shade) {
+      var vi = Math.max(0, Math.min(127, Math.round(v * 127))), si = Math.max(0, Math.min(18, Math.round((shade - 0.6) / 0.04)));
+      var key = vi * 20 + si;
+      return shadeLut[key] || (shadeLut[key] = rgb(turboLut[vi], 0.6 + si * 0.04));
+    };
     var stops = [];
     for (var si = 0; si <= 6; si++) stops.push(rgb(turbo(si / 6)) + ' ' + Math.round(si / 6 * 100) + '%');
     var bar = document.querySelector('.emg-scale i');
@@ -2260,7 +2267,7 @@ html:not(.js) .lab-tabs, html:not(.js) .viz, html:not(.js) .lab-run, html:not(.j
       base = getComputedStyle(root).getPropertyValue('--rule').trim() || base;
     };
     var emgSize = function () {
-      var r = emg.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var r = emg.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 1.75);
       emg.width = Math.round(r.width * dpr); emg.height = Math.round(r.height * dpr);
       W = emg.width; H = emg.height;
       cell = Math.min(W * 0.92 / COLS, H * 0.86 / ROWS);
@@ -2270,12 +2277,13 @@ html:not(.js) .lab-tabs, html:not(.js) .viz, html:not(.js) .lab-run, html:not(.j
     };
 
     // activity at each electrode, and a few new samples of each raw signal
-    var emgSim = function (t, steps) {
+    var emgSim = function (t, steps, dt) {
       if (!pointer) {
         tx = 6 + 4.2 * Math.sin(t * 0.45);
         ty = 2 + 1.4 * Math.sin(t * 0.9);
       }
-      cx += (tx - cx) * 0.08; cy += (ty - cy) * 0.08;
+      var fk = 1 - Math.exp(-(dt || 1 / 60) / 0.05);             // follow the target with a ~50 ms time constant
+      cx += (tx - cx) * fk; cy += (ty - cy) * fk;
       var drive = 0.8 + 0.12 * Math.sin(t * 2.3) + 0.08 * Math.sin(t * 7.1);
       for (var y = 0; y < ROWS; y++) {
         for (var x = 0; x < COLS; x++) {
@@ -2379,7 +2387,7 @@ html:not(.js) .lab-tabs, html:not(.js) .viz, html:not(.js) .lab-run, html:not(.j
           var v = (fine[i0] + fine[i1] + fine[i2] + fine[i3]) / 4;
           // light from the upper left: brighter on slopes facing it
           var shade = 1 + tilt * Math.max(-0.35, Math.min(0.3, ((fine[i0] - fine[i1]) + (fine[i0] - fine[i3])) * 4));
-          var col = rgb(turbo(v), shade);
+          var col = quadColour(v, shade);
           ctx.fillStyle = col; ctx.strokeStyle = col;
           ctx.beginPath();
           ctx.moveTo(px[i0], py[i0]); ctx.lineTo(px[i1], py[i1]);
@@ -2434,6 +2442,7 @@ html:not(.js) .lab-tabs, html:not(.js) .viz, html:not(.js) .lab-run, html:not(.j
       }
     };
 
+    var sampAcc = 0;
     var emgFrame = function (now) {
       var dt = Math.min(0.05, (now - lastT) / 1000); lastT = now;
       var t = (now - t0) / 1000;
@@ -2445,7 +2454,8 @@ html:not(.js) .lab-tabs, html:not(.js) .viz, html:not(.js) .lab-run, html:not(.j
       }
       sig += ((view ? 1 : 0) - sig) * Math.min(1, dt * 5);
       tilt += ((view === 2 ? 1 : 0) - tilt) * Math.min(1, dt * 4);
-      emgSim(t, 3);
+      sampAcc += dt * 180; var nS = Math.floor(sampAcc); sampAcc -= nS;   // 180 new samples a second, whatever the frame rate
+      emgSim(t, nS, dt);
       emgDraw(t);
       if (running) requestAnimationFrame(emgFrame);
     };
@@ -2468,8 +2478,15 @@ html:not(.js) .lab-tabs, html:not(.js) .viz, html:not(.js) .lab-run, html:not(.j
 
     var emgAim = function (e) {
       var r = emg.getBoundingClientRect(), dpr = emg.width / r.width;
-      tx = ((e.clientX - r.left) * dpr - W / 2) / cell + COLS / 2 - 0.5;
-      ty = ((e.clientY - r.top) * dpr - H / 2) / cell + ROWS / 2 - 0.5;
+      var mx = (e.clientX - r.left) * dpr, my = (e.clientY - r.top) * dpr;
+      if (tilt > 0.5 && sig > 0.5) {            // tilted view: the nearest point of the drawn surface
+        var best = 1e18, bk = 0, k;
+        for (k = 0; k < px.length; k++) { var ddx = px[k] - mx, ddy = py[k] - my, dd = ddx * ddx + ddy * ddy; if (dd < best) { best = dd; bk = k; } }
+        tx = (bk % NX) / K - 0.5; ty = ((bk / NX) | 0) / K - 0.5;
+      } else {
+        tx = (mx - W / 2) / cell + COLS / 2 - 0.5;
+        ty = (my - H / 2) / cell + ROWS / 2 - 0.5;
+      }
       pointer = true;
       if (reduce) { cx = tx; cy = ty; emgSim(1, 0); emgStill(); }
     };
