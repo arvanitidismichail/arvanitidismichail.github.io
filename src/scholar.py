@@ -2,16 +2,16 @@
 # chart beside it, and the citation count on each publication.
 # Refresh with:  python3 update_scholar.py   (fetches the profile, rewrites this file, rebuilds)
 # Or edit the numbers by hand and run build.py.
-SCHOLAR = dict(citations=379, h_index=11, i10_index=11, as_of="2026-10-22")
+SCHOLAR = dict(citations=378, h_index=11, i10_index=11, as_of="2026-10-23")
 
-BY_YEAR = {2017: 2, 2018: 2, 2019: 2, 2020: 3, 2021: 11, 2022: 35, 2023: 19, 2024: 61, 2025: 115, 2026: 127}
+BY_YEAR = {2017: 2, 2018: 2, 2019: 2, 2020: 3, 2021: 11, 2022: 35, 2023: 19, 2024: 61, 2025: 115, 2026: 126}
 
 # (title on Scholar, citations)
 PAPERS = [
     ('Pain-induced changes in motor unit discharge depend on recruitment threshold and contraction speed', 49),
     ('People with chronic low back pain display spatial alterations in high-density surface EMG-torque oscillations', 45),
     ('Spatial distribution of lumbar erector spinae muscle activity in individuals with and without chronic low back pain during a dynamic isokinetic fatiguing task', 43),
-    ('Does pain influence control of muscle force? A systematic review and meta‐analysis', 31),
+    ('Does pain influence control of muscle force? A systematic review and meta‐analysis', 30),
     ('Bipolar versus high-density surface electromyography for evaluating risk in fatiguing frequency-dependent lifting activities', 28),
     ('EMG activity of the serratus anterior and trapezius muscles during the different phases of the push-up plus exercise on different support surfaces and different hand positions', 27),
     ('Low back pain–Induced dynamic trunk muscle control impairments are associated with altered spatial EMG–Torque relationships', 21),
