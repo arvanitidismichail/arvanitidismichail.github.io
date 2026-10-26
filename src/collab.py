@@ -18,7 +18,7 @@ CITIES = [
     dict(city='Volos', country='Greece', lat=39.37, lon=22.95, papers=2, institutions=['University of Thessaly']),
     dict(city='Aachen', country='Germany', lat=50.78, lon=6.08, papers=1, institutions=['FH Aachen']),
     dict(city='Athens', country='Greece', lat=37.98, lon=23.73, papers=1, institutions=['University of West Attica']),
-    dict(city='Berlin', country='Germany', lat=52.52, lon=13.41, papers=1, institutions=['Charité - Universitätsmedizin Berlin']),
+    dict(city='Berlin', country='Germany', lat=52.52, lon=13.41, papers=1, institutions=['Charité – Universitätsmedizin Berlin']),
     dict(city='Bochum', country='Germany', lat=51.48, lon=7.22, papers=1, institutions=['Hochschule für Gesundheit - University of Applied Sciences']),
     dict(city='Brisbane', country='Australia', lat=-27.47, lon=153.03, papers=1, institutions=['The University of Queensland']),
     dict(city='Cologne', country='Germany', lat=50.93, lon=6.95, papers=1, institutions=['German Sport University Cologne']),
