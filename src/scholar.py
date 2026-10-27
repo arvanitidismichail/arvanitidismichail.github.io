@@ -2,7 +2,7 @@
 # chart beside it, and the citation count on each publication.
 # Refresh with:  python3 update_scholar.py   (fetches the profile, rewrites this file, rebuilds)
 # Or edit the numbers by hand and run build.py.
-SCHOLAR = dict(citations=383, h_index=11, i10_index=11, as_of="2026-10-26")
+SCHOLAR = dict(citations=383, h_index=11, i10_index=11, as_of="2026-10-27")
 
 BY_YEAR = {2017: 2, 2018: 2, 2019: 2, 2020: 3, 2021: 11, 2022: 35, 2023: 19, 2024: 61, 2025: 115, 2026: 131}
 
