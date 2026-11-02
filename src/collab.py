@@ -4,10 +4,10 @@ HOME = dict(city="Birmingham", lat=52.45, lon=-1.93)
 
 CITIES = [
     dict(city='Brescia', country='Italy', lat=45.54, lon=10.21, papers=7, institutions=['University of Brescia']),
-    dict(city='Rome', country='Italy', lat=41.89, lon=12.51, papers=6, institutions=['Foro Italico University of Rome', "Istituto Nazionale per l'Assicurazione Contro gli Infortuni sul Lavoro", 'Roma Tre University']),
+    dict(city='Rome', country='Italy', lat=41.89, lon=12.51, papers=7, institutions=['Foro Italico University of Rome', "Istituto Nazionale per l'Assicurazione Contro gli Infortuni sul Lavoro", 'Roma Tre University']),
     dict(city='Amsterdam', country='The Netherlands', lat=52.37, lon=4.89, papers=5, institutions=['Vrije Universiteit Amsterdam']),
     dict(city='Groningen', country='The Netherlands', lat=53.22, lon=6.57, papers=5, institutions=['Martini Ziekenhuis']),
-    dict(city='Leiden', country='The Netherlands', lat=52.16, lon=4.49, papers=5, institutions=['Leiden University', 'Leiden University Medical Center']),
+    dict(city='Leiden', country='The Netherlands', lat=52.16, lon=4.49, papers=5, institutions=['Leiden University Medical Center']),
     dict(city='Newcastle-under-Lyme', country='United Kingdom', lat=53.0, lon=-2.23, papers=5, institutions=['Keele University']),
     dict(city='Rotterdam', country='The Netherlands', lat=51.92, lon=4.48, papers=5, institutions=['Maasstad Ziekenhuis']),
     dict(city='Sydney', country='Australia', lat=-33.87, lon=151.21, papers=5, institutions=['University of Technology Sydney']),
