@@ -2,9 +2,9 @@
 # chart beside it, and the citation count on each publication.
 # Refresh with:  python3 update_scholar.py   (fetches the profile, rewrites this file, rebuilds)
 # Or edit the numbers by hand and run build.py.
-SCHOLAR = dict(citations=385, h_index=11, i10_index=12, as_of="2026-11-02")
+SCHOLAR = dict(citations=386, h_index=11, i10_index=12, as_of="2026-11-03")
 
-BY_YEAR = {2017: 2, 2018: 2, 2019: 2, 2020: 3, 2021: 11, 2022: 35, 2023: 19, 2024: 61, 2025: 115, 2026: 133}
+BY_YEAR = {2017: 2, 2018: 2, 2019: 2, 2020: 3, 2021: 11, 2022: 35, 2023: 19, 2024: 61, 2025: 115, 2026: 134}
 
 # (title on Scholar, citations)
 PAPERS = [
@@ -18,8 +18,8 @@ PAPERS = [
     ('Can visual feedback on upper trapezius high-density surface electromyography increase time to task failure of an endurance task?', 19),
     ('Eccentric exercise-induced delayed onset trunk muscle soreness alters high-density surface EMG-torque relationships and lumbar kinematics', 17),
     ('Achilles tendon morpho-mechanical parameters are related to triceps surae motor unit firing properties', 14),
+    ('Cervical spine and muscle adaptation after spaceflight and relationship to herniation risk: protocol from ‘Cervical in Space’trial', 11),
     ('Does pain influence force steadiness? A protocol for a systematic review', 11),
-    ('Cervical spine and muscle adaptation after spaceflight and relationship to herniation risk: protocol from ‘Cervical in Space’trial', 10),
     ('Load and muscle‐dependent changes in triceps surae motor unit firing properties in individuals with non‐insertional Achilles tendinopathy', 9),
     ('Is manual therapy of the diaphragm effective for people with obstructive lung diseases? A systematic review', 9),
     ('Validation of a novel device for assessing neck muscle strength', 8),
