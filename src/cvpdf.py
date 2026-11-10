@@ -288,13 +288,13 @@ proposal PRO-AGE (91.8/100).</p>
 
 <h2>Registrations, Memberships &amp; Certifications</h2>
 <div class="subhd">Registration &amp; membership</div>
-<div class="tag-line">Association of Chartered Physiotherapists in Occupational Health and Ergonomics (ACPOHE), 2026 &middot;
+<div class="tag-line">Association of Chartered Physiotherapists in Occupational Health and Ergonomics (ACPOHE), Technical member, 2026 &middot;
 International Society of Electrophysiology and Kinesiology (ISEK), 2020 &middot;
 Musculoskeletal Association of Chartered Physiotherapists (MACP), 2019 &middot;
 Health and Care Professions Council (HCPC), 2018 &middot; Chartered Society of Physiotherapy (CSP), 2018 &middot;
 Panhellenic Association of Physiotherapists, 2016.</div>
 <div class="subhd">Certifications &amp; continuing training</div>
-<div class="tag-line">Vehicle Ergonomics Online Training, ACPOHE, 2026 &middot; Office Ergonomics (DSE), ACPOHE, 2026 &middot;
+<div class="tag-line">Occupational Health Essentials Course (35 CPD hours), ACPOHE, 2026 &middot; Vehicle Ergonomics Online Training, ACPOHE, 2026 &middot; Office Ergonomics (DSE), ACPOHE, 2026 &middot;
 Supervised Machine Learning: Regression and Classification, DeepLearning.AI / Stanford Online, 2025 &middot;
 R Programming, Johns Hopkins University, 2024 &middot; The Data Scientist's Toolbox, Johns Hopkins University, 2023 &middot;
 Certified Peer Reviewer Course, Elsevier, 2021 &middot; Introduction to Programming with MATLAB, Vanderbilt University, 2019 &middot;
