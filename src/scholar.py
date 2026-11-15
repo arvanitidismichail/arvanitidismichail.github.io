@@ -2,16 +2,16 @@
 # chart beside it, and the citation count on each publication.
 # Refresh with:  python3 update_scholar.py   (fetches the profile, rewrites this file, rebuilds)
 # Or edit the numbers by hand and run build.py.
-SCHOLAR = dict(citations=397, h_index=11, i10_index=12, as_of="2026-11-13")
+SCHOLAR = dict(citations=399, h_index=11, i10_index=12, as_of="2026-11-15")
 
-BY_YEAR = {2017: 2, 2018: 2, 2019: 2, 2020: 3, 2021: 11, 2022: 35, 2023: 19, 2024: 61, 2025: 115, 2026: 145}
+BY_YEAR = {2017: 2, 2018: 2, 2019: 2, 2020: 3, 2021: 11, 2022: 35, 2023: 19, 2024: 61, 2025: 115, 2026: 147}
 
 # (title on Scholar, citations)
 PAPERS = [
     ('Pain-induced changes in motor unit discharge depend on recruitment threshold and contraction speed', 49),
     ('People with chronic low back pain display spatial alterations in high-density surface EMG-torque oscillations', 47),
     ('Spatial distribution of lumbar erector spinae muscle activity in individuals with and without chronic low back pain during a dynamic isokinetic fatiguing task', 45),
-    ('Does pain influence control of muscle force? A systematic review and meta‐analysis', 32),
+    ('Does pain influence control of muscle force? A systematic review and meta‐analysis', 33),
     ('Bipolar versus high-density surface electromyography for evaluating risk in fatiguing frequency-dependent lifting activities', 28),
     ('EMG activity of the serratus anterior and trapezius muscles during the different phases of the push-up plus exercise on different support surfaces and different hand positions', 27),
     ('Low back pain–Induced dynamic trunk muscle control impairments are associated with altered spatial EMG–Torque relationships', 23),
@@ -23,7 +23,7 @@ PAPERS = [
     ('Load and muscle‐dependent changes in triceps surae motor unit firing properties in individuals with non‐insertional Achilles tendinopathy', 9),
     ('Is manual therapy of the diaphragm effective for people with obstructive lung diseases? A systematic review', 9),
     ('Validation of a novel device for assessing neck muscle strength', 8),
-    ('Temporal differences in the myoelectric activity of lower limb muscles during rearfoot and forefoot running: A statistical parametric mapping approach', 7),
+    ('Temporal differences in the myoelectric activity of lower limb muscles during rearfoot and forefoot running: A statistical parametric mapping approach', 8),
     ('Novel metrics for high-density sEMG analysis in the time–space domain during sustained isometric contractions', 6),
     ('Reduced knee extensor torque steadiness and increased motor unit discharge rate variability in young people with patellofemoral pain: a pilot study', 5),
     ('Diagnostic accuracy of physical examination tests for painful cervical radiculopathy: update of a systematic review and meta-analysis', 5),
