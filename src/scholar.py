@@ -2,9 +2,9 @@
 # chart beside it, and the citation count on each publication.
 # Refresh with:  python3 update_scholar.py   (fetches the profile, rewrites this file, rebuilds)
 # Or edit the numbers by hand and run build.py.
-SCHOLAR = dict(citations=399, h_index=11, i10_index=12, as_of="2026-11-18")
+SCHOLAR = dict(citations=400, h_index=11, i10_index=12, as_of="2026-11-18")
 
-BY_YEAR = {2017: 2, 2018: 2, 2019: 2, 2020: 3, 2021: 11, 2022: 35, 2023: 19, 2024: 61, 2025: 115, 2026: 147}
+BY_YEAR = {2017: 2, 2018: 2, 2019: 2, 2020: 3, 2021: 11, 2022: 35, 2023: 19, 2024: 61, 2025: 115, 2026: 148}
 
 # (title on Scholar, citations)
 PAPERS = [
@@ -28,10 +28,10 @@ PAPERS = [
     ('Reduced knee extensor torque steadiness and increased motor unit discharge rate variability in young people with patellofemoral pain: a pilot study', 5),
     ('Diagnostic accuracy of physical examination tests for painful cervical radiculopathy: update of a systematic review and meta-analysis', 5),
     ('Load and muscle dependent changes in triceps surae motor unit firing properties and motor unit firing-torque relationships in individuals with non-insertional Achilles tendinopathy', 4),
+    ('Evaluating the efficacy of wearable biofeedback on the outcomes of exercise interventions in people with chronic non-specific spinal pain: protocol for a systematic review and\xa0…', 4),
     ('Fatigue-induced alterations in the spatial distribution of lumbar erector spinae activity in older versus young adults', 3),
     ('The effects of ageing on fatigue and endurance of the spinal extensor muscles: a systematic review and meta-analysis', 3),
     ('Association between neck muscle size and physical features in individuals with chronic non-specific neck pain: A systematic review', 3),
-    ('Evaluating the efficacy of wearable biofeedback on the outcomes of exercise interventions in people with chronic non-specific spinal pain: protocol for a systematic review and\xa0…', 3),
     ('Does pain alter the spatial distribution of muscle activity in people experiencing spinal pain? A systematic review and meta-analysis', 2),
     ('Torque visuomotor feedback training versus standard eccentric exercise for the management of patellar tendinopathy: protocol for a randomised controlled trial', 2),
     ('Age-related alterations in trunk extensor force control during isometric and isokinetic contractions', 1),
