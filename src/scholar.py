@@ -2,9 +2,9 @@
 # chart beside it, and the citation count on each publication.
 # Refresh with:  python3 update_scholar.py   (fetches the profile, rewrites this file, rebuilds)
 # Or edit the numbers by hand and run build.py.
-SCHOLAR = dict(citations=404, h_index=12, i10_index=12, as_of="2026-11-21")
+SCHOLAR = dict(citations=405, h_index=12, i10_index=13, as_of="2026-11-22")
 
-BY_YEAR = {2017: 2, 2018: 2, 2019: 2, 2020: 3, 2021: 11, 2022: 35, 2023: 19, 2024: 62, 2025: 115, 2026: 151}
+BY_YEAR = {2017: 2, 2018: 2, 2019: 2, 2020: 3, 2021: 11, 2022: 35, 2023: 19, 2024: 62, 2025: 116, 2026: 151}
 
 # (title on Scholar, citations)
 PAPERS = [
@@ -20,8 +20,8 @@ PAPERS = [
     ('Achilles tendon morpho-mechanical parameters are related to triceps surae motor unit firing properties', 14),
     ('Cervical spine and muscle adaptation after spaceflight and relationship to herniation risk: protocol from ‘Cervical in Space’trial', 13),
     ('Does pain influence force steadiness? A protocol for a systematic review', 12),
+    ('Is manual therapy of the diaphragm effective for people with obstructive lung diseases? A systematic review', 10),
     ('Load and muscle‐dependent changes in triceps surae motor unit firing properties in individuals with non‐insertional Achilles tendinopathy', 9),
-    ('Is manual therapy of the diaphragm effective for people with obstructive lung diseases? A systematic review', 9),
     ('Validation of a novel device for assessing neck muscle strength', 8),
     ('Temporal differences in the myoelectric activity of lower limb muscles during rearfoot and forefoot running: A statistical parametric mapping approach', 8),
     ('Novel metrics for high-density sEMG analysis in the time–space domain during sustained isometric contractions', 6),
