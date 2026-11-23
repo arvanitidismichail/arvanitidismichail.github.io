@@ -35,8 +35,8 @@ CITIES = [
     dict(city='Padua', country='Italy', lat=45.41, lon=11.89, papers=1, institutions=['University of Padua']),
     dict(city='Pátrai', country='Greece', lat=38.24, lon=21.73, papers=1, institutions=['University of Patras']),
     dict(city='Rotterdam', country='The Netherlands', lat=51.92, lon=4.48, papers=1, institutions=['Maasstad Ziekenhuis']),
-    dict(city='Santiago', country='Chile', lat=-33.46, lon=-70.65, papers=1, institutions=['Universidad Mayor', 'Universidad de Los Andes, Chile']),
+    dict(city='Santiago', country='Chile', lat=-33.46, lon=-70.65, papers=1, institutions=['Universidad Mayor', 'Universidad de los Andes']),
     dict(city='Sydney', country='Australia', lat=-33.87, lon=151.21, papers=1, institutions=['University of Technology Sydney']),
     dict(city='Ulm', country='Germany', lat=48.4, lon=9.99, papers=1, institutions=['Universität Ulm']),
-    dict(city='Valparaíso', country='Chile', lat=-33.04, lon=-71.63, papers=1, institutions=['University of Valparaíso']),
+    dict(city='Valparaíso', country='Chile', lat=-33.04, lon=-71.63, papers=1, institutions=['Universidad de Valparaíso']),
 ]
