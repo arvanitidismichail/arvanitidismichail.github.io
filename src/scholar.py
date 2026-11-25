@@ -2,15 +2,15 @@
 # chart beside it, and the citation count on each publication.
 # Refresh with:  python3 update_scholar.py   (fetches the profile, rewrites this file, rebuilds)
 # Or edit the numbers by hand and run build.py.
-SCHOLAR = dict(citations=406, h_index=12, i10_index=13, as_of="2026-11-24")
+SCHOLAR = dict(citations=407, h_index=12, i10_index=13, as_of="2026-11-25")
 
-BY_YEAR = {2017: 2, 2018: 2, 2019: 2, 2020: 3, 2021: 11, 2022: 35, 2023: 19, 2024: 62, 2025: 116, 2026: 152}
+BY_YEAR = {2017: 2, 2018: 2, 2019: 2, 2020: 3, 2021: 11, 2022: 35, 2023: 19, 2024: 62, 2025: 116, 2026: 153}
 
 # (title on Scholar, citations)
 PAPERS = [
     ('Pain-induced changes in motor unit discharge depend on recruitment threshold and contraction speed', 49),
     ('People with chronic low back pain display spatial alterations in high-density surface EMG-torque oscillations', 48),
-    ('Spatial distribution of lumbar erector spinae muscle activity in individuals with and without chronic low back pain during a dynamic isokinetic fatiguing task', 46),
+    ('Spatial distribution of lumbar erector spinae muscle activity in individuals with and without chronic low back pain during a dynamic isokinetic fatiguing task', 47),
     ('Does pain influence control of muscle force? A systematic review and meta‐analysis', 33),
     ('Bipolar versus high-density surface electromyography for evaluating risk in fatiguing frequency-dependent lifting activities', 28),
     ('EMG activity of the serratus anterior and trapezius muscles during the different phases of the push-up plus exercise on different support surfaces and different hand positions', 27),
@@ -37,8 +37,8 @@ PAPERS = [
     ('Age-related alterations in trunk extensor force control during isometric and isokinetic contractions', 1),
     ('Eccentric and Concentric Torque Feedback Training Induce Similar Clinical Improvements but Distinct Triceps Surae Motor Unit Adaptations in Non-Insertional Achilles\xa0…', 1),
     ('Erector spinae muscle fibre size estimation using high-density surface electromyography in people with and without non-specific chronic low back pain: a cross-sectional study', 0),
+    ('Effects of aging on fatigue resistance and neuromuscular control of the trunk extensor muscles during isokinetic contractions', 0),
     ('Longitudinal Evaluation of Cervical Spine Structure, Function, and Disc Herniation in Astronauts', 0),
-    ('Effects of ageing on fatigue resistance and neuromuscular control of the trunk extensor muscles during isokinetic contractions', 0),
     ('Spaceflight-Associated Changes in Cervical Spine Structure, Muscle Function, and Disc Health in Astronauts', 0),
     ('Interactions between motor unit firing and fascicle dynamics during shortening and lengthening contractions', 0),
     ('The effect of eccentric exercise-induced delayed onset neck muscle soreness on force steadiness and the spatial distribution of neck extensor muscle activity', 0),
