@@ -2,9 +2,9 @@
 # chart beside it, and the citation count on each publication.
 # Refresh with:  python3 update_scholar.py   (fetches the profile, rewrites this file, rebuilds)
 # Or edit the numbers by hand and run build.py.
-SCHOLAR = dict(citations=407, h_index=12, i10_index=13, as_of="2026-11-26")
+SCHOLAR = dict(citations=408, h_index=12, i10_index=13, as_of="2026-11-27")
 
-BY_YEAR = {2017: 2, 2018: 2, 2019: 2, 2020: 3, 2021: 11, 2022: 35, 2023: 19, 2024: 62, 2025: 116, 2026: 153}
+BY_YEAR = {2017: 2, 2018: 2, 2019: 2, 2020: 3, 2021: 11, 2022: 35, 2023: 19, 2024: 62, 2025: 116, 2026: 154}
 
 # (title on Scholar, citations)
 PAPERS = [
@@ -33,9 +33,9 @@ PAPERS = [
     ('Evaluating the efficacy of wearable biofeedback on the outcomes of exercise interventions in people with chronic non-specific spinal pain: protocol for a systematic review and\xa0…', 4),
     ('Association between neck muscle size and physical features in individuals with chronic non-specific neck pain: A systematic review', 3),
     ('Does pain alter the spatial distribution of muscle activity in people experiencing spinal pain? A systematic review and meta-analysis', 2),
+    ('Eccentric and Concentric Torque Feedback Training Induce Similar Clinical Improvements but Distinct Triceps Surae Motor Unit Adaptations in Non-Insertional Achilles\xa0…', 2),
     ('Torque visuomotor feedback training versus standard eccentric exercise for the management of patellar tendinopathy: protocol for a randomised controlled trial', 2),
     ('Age-related alterations in trunk extensor force control during isometric and isokinetic contractions', 1),
-    ('Eccentric and Concentric Torque Feedback Training Induce Similar Clinical Improvements but Distinct Triceps Surae Motor Unit Adaptations in Non-Insertional Achilles\xa0…', 1),
     ('Erector spinae muscle fibre size estimation using high-density surface electromyography in people with and without non-specific chronic low back pain: a cross-sectional study', 0),
     ('Effects of aging on fatigue resistance and neuromuscular control of the trunk extensor muscles during isokinetic contractions', 0),
     ('Longitudinal Evaluation of Cervical Spine Structure, Function, and Disc Herniation in Astronauts', 0),
