@@ -2,47 +2,48 @@
 # chart beside it, and the citation count on each publication.
 # Refresh with:  python3 update_scholar.py   (fetches the profile, rewrites this file, rebuilds)
 # Or edit the numbers by hand and run build.py.
-SCHOLAR = dict(citations=408, h_index=12, i10_index=13, as_of="2026-11-27")
+SCHOLAR = dict(citations=416, h_index=12, i10_index=14, as_of="2026-11-28")
 
-BY_YEAR = {2017: 2, 2018: 2, 2019: 2, 2020: 3, 2021: 11, 2022: 35, 2023: 19, 2024: 62, 2025: 116, 2026: 154}
+BY_YEAR = {2017: 2, 2018: 2, 2019: 2, 2020: 3, 2021: 11, 2022: 35, 2023: 19, 2024: 62, 2025: 116, 2026: 162}
 
 # (title on Scholar, citations)
 PAPERS = [
     ('Pain-induced changes in motor unit discharge depend on recruitment threshold and contraction speed', 49),
     ('People with chronic low back pain display spatial alterations in high-density surface EMG-torque oscillations', 48),
-    ('Spatial distribution of lumbar erector spinae muscle activity in individuals with and without chronic low back pain during a dynamic isokinetic fatiguing task', 47),
+    ('Spatial distribution of lumbar erector spinae muscle activity in individuals with and without chronic low back pain during a dynamic isokinetic fatiguing task', 48),
     ('Does pain influence control of muscle force? A systematic review and meta‐analysis', 33),
     ('Bipolar versus high-density surface electromyography for evaluating risk in fatiguing frequency-dependent lifting activities', 28),
     ('EMG activity of the serratus anterior and trapezius muscles during the different phases of the push-up plus exercise on different support surfaces and different hand positions', 27),
-    ('Low back pain–Induced dynamic trunk muscle control impairments are associated with altered spatial EMG–Torque relationships', 23),
-    ('Can visual feedback on upper trapezius high-density surface electromyography increase time to task failure of an endurance task?', 19),
+    ('Low back pain–Induced dynamic trunk muscle control impairments are associated with altered spatial EMG–Torque relationships', 24),
+    ('Can visual feedback on upper trapezius high-density surface electromyography increase time to task failure of an endurance task?', 20),
     ('Eccentric exercise-induced delayed onset trunk muscle soreness alters high-density surface EMG-torque relationships and lumbar kinematics', 18),
-    ('Achilles tendon morpho-mechanical parameters are related to triceps surae motor unit firing properties', 14),
+    ('Achilles tendon morpho-mechanical parameters are related to triceps surae motor unit firing properties', 15),
     ('Cervical spine and muscle adaptation after spaceflight and relationship to herniation risk: protocol from ‘Cervical in Space’trial', 13),
     ('Does pain influence force steadiness? A protocol for a systematic review', 12),
+    ('Load and muscle‐dependent changes in triceps surae motor unit firing properties in individuals with non‐insertional Achilles tendinopathy', 10),
     ('Is manual therapy of the diaphragm effective for people with obstructive lung diseases? A systematic review', 10),
-    ('Load and muscle‐dependent changes in triceps surae motor unit firing properties in individuals with non‐insertional Achilles tendinopathy', 9),
     ('Validation of a novel device for assessing neck muscle strength', 8),
     ('Temporal differences in the myoelectric activity of lower limb muscles during rearfoot and forefoot running: A statistical parametric mapping approach', 8),
+    ('Reduced knee extensor torque steadiness and increased motor unit discharge rate variability in young people with patellofemoral pain: a pilot study', 6),
     ('Novel metrics for high-density sEMG analysis in the time–space domain during sustained isometric contractions', 6),
-    ('Reduced knee extensor torque steadiness and increased motor unit discharge rate variability in young people with patellofemoral pain: a pilot study', 5),
     ('Diagnostic accuracy of physical examination tests for painful cervical radiculopathy: update of a systematic review and meta-analysis', 5),
     ('Fatigue-induced alterations in the spatial distribution of lumbar erector spinae activity in older versus young adults', 4),
     ('The effects of ageing on fatigue and endurance of the spinal extensor muscles: a systematic review and meta-analysis', 4),
     ('Load and muscle dependent changes in triceps surae motor unit firing properties and motor unit firing-torque relationships in individuals with non-insertional Achilles tendinopathy', 4),
     ('Evaluating the efficacy of wearable biofeedback on the outcomes of exercise interventions in people with chronic non-specific spinal pain: protocol for a systematic review and\xa0…', 4),
     ('Association between neck muscle size and physical features in individuals with chronic non-specific neck pain: A systematic review', 3),
+    ('Eccentric and Concentric Torque Feedback Training Induce Similar Clinical Improvements but Distinct Triceps Surae Motor Unit Adaptations in Non-Insertional Achilles\xa0…', 3),
     ('Does pain alter the spatial distribution of muscle activity in people experiencing spinal pain? A systematic review and meta-analysis', 2),
-    ('Eccentric and Concentric Torque Feedback Training Induce Similar Clinical Improvements but Distinct Triceps Surae Motor Unit Adaptations in Non-Insertional Achilles\xa0…', 2),
     ('Torque visuomotor feedback training versus standard eccentric exercise for the management of patellar tendinopathy: protocol for a randomised controlled trial', 2),
+    ('Interactions between motor unit firing and fascicle dynamics during shortening and lengthening contractions', 1),
     ('Age-related alterations in trunk extensor force control during isometric and isokinetic contractions', 1),
     ('Erector spinae muscle fibre size estimation using high-density surface electromyography in people with and without non-specific chronic low back pain: a cross-sectional study', 0),
     ('Effects of aging on fatigue resistance and neuromuscular control of the trunk extensor muscles during isokinetic contractions', 0),
     ('Longitudinal Evaluation of Cervical Spine Structure, Function, and Disc Herniation in Astronauts', 0),
     ('Spaceflight-Associated Changes in Cervical Spine Structure, Muscle Function, and Disc Health in Astronauts', 0),
-    ('Interactions between motor unit firing and fascicle dynamics during shortening and lengthening contractions', 0),
     ('The effect of eccentric exercise-induced delayed onset neck muscle soreness on force steadiness and the spatial distribution of neck extensor muscle activity', 0),
     ('Longitudinal Evaluation of cervical spine structures and function in astronauts and their relation to intervertebral disc herniation', 0),
+    ('Real-time visualization of spatial muscle activity using augmented reality improves endurance during dynamic knee extensions', 0),
     ('Effects of microgravity on neuromuscular control of the spine: a protocol for a systematic review and meta-analysis', 0),
     ('Anpassung der Halswirbelsäule in der Schwerelosigkeit und das Risiko von Bandscheibenvorfällen', 0),
     ('Control of trunk muscle force in individuals with low back pain: new insights revealed by high-density surface electromyography', 0),
